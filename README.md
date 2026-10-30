@@ -38,3 +38,6 @@ On open, the game reads the website's `Date` header; if the phone's clock is mor
 
 ## Testing
 The Testing buttons (restart today, try the ending with 15 letters left) are hidden on the website. Add `#test` to the address to show them.
+
+## Invite gate
+On smaisle.github.io the page loads `https://smaisle.github.io/gate.js`, which asks for an invite code made on the smAisle stats page (this game's code, or an every-game code) and remembers it per browser. smaisle.app passes the code along as `?code=`, so it opens straight away. A soft lock only.
