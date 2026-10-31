@@ -88,6 +88,9 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 #ask{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;justify-content:center;padding:0 max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(10px,env(safe-area-inset-left,0px))}
 #ask.top{bottom:auto;top:0;padding-top:calc(env(safe-area-inset-top,0px) + 6px);padding-bottom:0}
 #askList{max-height:34vh;overflow-y:auto}
+#askNext{display:flex;align-items:center;gap:6px;margin:0 0 5px;font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+#askNext .t{position:relative;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:5px;background:#fffdf6;border:1.5px solid var(--ink);color:var(--ink);font-size:17px;font-weight:900;letter-spacing:0}
+#askNext .t sub{position:absolute;right:2px;bottom:0;font-size:9px}#askNext .t.dbl{background:#ffd9e0}#askNext .t.q{background:#1a1814;color:#ffd23f}#askNext .t.n2{opacity:.6;border-style:dashed}
 #ask .in{width:100%;max-width:480px;background:var(--paper);border:2px solid var(--ink);box-shadow:4px 5px 0 var(--ink);padding:8px 10px}
 #ask .ah{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0 0 4px}
 #peek{border:1.5px solid var(--ink);border-radius:6px;background:#fffdf6;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 7px;white-space:nowrap;touch-action:none;-webkit-touch-callout:none}
@@ -208,7 +211,7 @@ body.demo #msg{min-height:64px}
   <div id="left"></div>
 </div>
 
-<div id="ask" hidden><div class="in"><div class="ah"><h3 id="askHead">Word made · game paused</h3><button id="peek">👁 Hold to see board</button></div><div id="askList"></div><button id="askHold">Hold (keep building)</button></div></div>
+<div id="ask" hidden><div class="in"><div class="ah"><h3 id="askHead">Word made · game paused</h3><button id="peek">👁 Hold to see board</button></div><div id="askNext"></div><div id="askList"></div><button id="askHold">Hold (keep building)</button></div></div>
 
 <div class="sheet" id="cover"><div class="in">
   <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
@@ -306,7 +309,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='2.2',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='2.3',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -446,6 +449,10 @@ function showAsk(nw,head){clearTimeout(timer);askI=0;$('askHead').textContent=he
   $('askHold').textContent=!demo&&!cur&&li>=letters.length?"Don't clear (game ends)":asking.length>1?'Hold all (keep building)':'Hold (keep building)';
   // Keep the board visible: the panel sits over whichever half of the board has fewer tiles (usually the empty top).
   const cnt=(a,b)=>grid.slice(a,b).flat().filter(Boolean).length;$('ask').classList.toggle('top',cnt(0,Math.ceil(H/2))<=cnt(Math.floor(H/2),H));
+  // The pop-up can cover the Now and Next tiles, so it shows the coming letters too (? for the Final 10).
+  const up2=(cur?[cur.l]:[]).concat(letters.slice(li,li+2)).slice(0,2).map((l,i)=>{const at=li+i-(cur?1:0),q=!demo&&at>=letters.length-MYSTERY&&!(i===0&&cur);
+    return `<span class="t${q?' q':isX2(l)?' dbl':''}${i?' n2':''}">${q?'?':up(l)+'<sub>'+PTS[up(l)]+'</sub>'}</span>`});
+  $('askNext').innerHTML=up2.length?'Coming up '+up2.join(''):'Last letter played';
   $('ask').hidden=false;showStrike();cycleAsk();tone(880,.06,'sine',.06)}
 function closeAsk(clearing){clearInterval(askT);askT=null;strike.innerHTML='';$('ask').hidden=true;asking=[];askI=0;paint();if(clearing||over)return;afterAsk()}
 function afterAsk(){if(over||paused())return;if(cur)tick();else spawn()}
