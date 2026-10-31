@@ -11,7 +11,7 @@
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
 <meta name="description" content="Gramble: a word slot machine. Find all 20 words before your 50 credits run out.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800;900&family=Courier+Prime:wght@700&display=swap">
 <style>
 /* The Daily 15's newspaper look, with a red-and-gold slot machine in the middle. */
 :root{--paper:#f4efe1;--ink:#1a1814;--ink2:#4a453b;--fade:#8c8574;--red:#1a1814;--acc:#ffd23f;--accD:#b8860b;--hi:#ffd23f;--hiE:#e0a800;--gold:#e0a800;--cab:#9c1f18;--cab2:#6e130e;
@@ -93,14 +93,14 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 #word .wt.pick{outline:3px solid var(--red);outline-offset:2px;transform:translateY(-4px)}
 #word{touch-action:none}#word .wt{touch-action:none}
 #list{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:420px;padding:0 10px}
-#list span{position:relative;border:1.5px solid var(--ink);border-radius:3px;background:#fffdf6;text-align:center;font-family:var(--sans);font-weight:900;font-size:15px;letter-spacing:.12em;padding:4px 0 3px;line-height:1.1}
-#list span.fit{background:#fff3c4;border-color:var(--hiE)}
+#list span{position:relative;border:1.5px dashed var(--ink);border-radius:0;background:transparent;text-align:center;font-family:"Courier Prime","Courier New",monospace;font-weight:700;font-size:17px;letter-spacing:.14em;padding:5px 0 4px;line-height:1.1}
+#list span.fit{background:transparent;border-color:#b8860b}
 #list span.got{background:#ebe6d8;border-color:#c9c2b0;color:#9a9384}
 #list span.got::after{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:2.5px solid var(--red);transform:rotate(-4deg)}
 #list span.new{animation:pick .5s ease-out}
 @keyframes pick{50%{transform:scale(1.25)}}
 #bonusL{min-height:16px;text-align:center;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink2)}#bonusL b{color:var(--ink);cursor:pointer;text-decoration:underline dotted}
-#list span.miss{color:var(--fade);border-style:dashed}
+#list span.miss{color:var(--fade);border-style:dotted}
 .reel .tag{position:absolute;left:0;right:0;bottom:3px;z-index:2;text-align:center;font-family:var(--sans);font-weight:900;font-size:9px;letter-spacing:.14em;color:#fffdf6;pointer-events:none}
 .reel .tag span{background:var(--ink);border-radius:8px;padding:1px 6px;font-size:12px;letter-spacing:0}
 .reel.unl .sym.on{opacity:.5}.reel.unl .tag span{background:#6b6355}
@@ -413,7 +413,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='8.0',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='8.1',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
