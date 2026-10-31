@@ -45,6 +45,10 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 #msg{height:38px;margin:0 10px;display:flex;align-items:center;justify-content:center;text-align:center;font-style:italic;font-size:14px;color:var(--ink2);line-height:1.25}
 #msg.warn{color:var(--red);font-style:normal;font-family:var(--sans);font-weight:800;font-size:14px}
 #left.warn{color:var(--red)}
+#lrow{display:flex;justify-content:center;align-items:center;gap:14px}#lrow #left{margin:0}
+#gauge{display:flex;align-items:flex-end;gap:2px;font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+#gauge span{margin-right:4px}#gauge i{width:5px;border:1.5px solid var(--ink2);border-radius:1px}#gauge i:nth-of-type(1){height:6px}#gauge i:nth-of-type(2){height:8px}#gauge i:nth-of-type(3){height:10px}#gauge i:nth-of-type(4){height:12px}#gauge i:nth-of-type(5){height:14px}
+#gauge i.on{background:var(--ink);border-color:var(--ink)}#gauge.max i.on{background:var(--red);border-color:var(--red)}
 .cell.fin::after,#fallT.fin::after{content:'';position:absolute;inset:1px;border:2.5px solid #b07d00;border-radius:4px;pointer-events:none}
 .cell.fin::before,#fallT.fin::before{content:'★';position:absolute;right:7%;top:4%;font-size:calc(var(--cell)*.24);line-height:1;color:#b07d00}
 #msg.good{color:var(--ink);font-style:normal;font-family:var(--sans);font-weight:800;font-size:15px}
@@ -208,7 +212,7 @@ body.demo #msg{min-height:64px}
   <div id="msg"></div>
   <div id="stage"><div id="col"><div id="nextRow"><div class="nl"><span>Now</span></div><div id="nowT" class="cell on"></div><div class="nr"><span>Next</span><div id="nextT" class="cell on"></div><em id="nextNote"></em></div></div><div id="board"></div></div></div>
   <div id="bar"><button id="lBtn" aria-label="Left">◀︎</button><button id="dBtn" aria-label="Drop">▼︎</button><button id="rBtn" aria-label="Right">▶︎</button><button id="goBtn" hidden>Finish</button></div>
-  <div id="left"></div>
+  <div id="lrow"><div id="left"></div><div id="gauge" aria-label="Speed"><span>Speed</span><i></i><i></i><i></i><i></i><i></i></div></div>
 </div>
 
 <div id="ask" hidden><div class="in"><div class="ah"><h3 id="askHead">Word made · game paused</h3><button id="peek">👁 Hold to see board</button></div><div id="askNext"></div><div id="askList"></div><button id="askHold">Hold (keep building)</button></div></div>
@@ -309,7 +313,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='2.3',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='2.4',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -391,6 +395,8 @@ function paint(){const L=new Set(),D=new Set();for(const w of lit)for(const[y,x]
   placeFall();
   $('score').textContent=score;$('stars').textContent=demo?'–':starsFor(score)||'–';const nx=letters[li],hid=!demo&&nx&&li>=letters.length-MYSTERY;$('nextT').innerHTML=hid?'?':nx?tileHTML(nx):'–';$('nextT').classList.toggle('q',!!hid);$('nextRow').style.visibility=nx||hid||cur?'visible':'hidden';$('nowT').innerHTML=cur?tileHTML(cur.l):'–';$('nowT').classList.toggle('dbl',!!cur&&isX2(cur.l));$('nowT').classList.toggle('fin',!!cur&&isFin(cur.l));$('nextNote').textContent=hid?'Final 10':'';$('nextT').classList.toggle('dbl',!hid&&!!nx&&isX2(nx));
   $('left').textContent=over?'':demo?'Demo':cur||li<letters.length?(letters.length-li+(cur?1:0))+' letters left':'Last letter';
+  // Speedometer: 1 to 5 bars as the letters speed up (all 5, in red, from letter 88).
+  const lv=1+Math.round(4*Math.min(1,li/88));[...$('gauge').children].slice(1).forEach((b,i)=>b.classList.toggle('on',i<lv));$('gauge').classList.toggle('max',lv===5);$('gauge').hidden=demo||over;
   $('left').classList.toggle('warn',!demo&&!!letters&&li>letters.length-MYSTERY&&!over);
   $('goBtn').hidden=!(!cur&&li>=letters.length&&!over&&!demo);['lBtn','dBtn','rBtn'].forEach(b=>$(b).hidden=!$('goBtn').hidden)}
 function msg(t,cls=''){const m=$('msg');m.textContent=t;m.className=cls}
