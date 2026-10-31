@@ -52,7 +52,8 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 .cell.fin::after,#fallT.fin::after{content:'';position:absolute;inset:1px;border:2.5px solid #b07d00;border-radius:4px;pointer-events:none}
 .cell.fin::before,#fallT.fin::before{content:'★';position:absolute;right:7%;top:4%;font-size:calc(var(--cell)*.24);line-height:1;color:#b07d00}
 #msg.good{color:var(--ink);font-style:normal;font-family:var(--sans);font-weight:800;font-size:15px}
-#stage{flex:1;min-height:0;display:grid;place-items:center}
+#stage{flex:none;display:grid;place-items:center}
+#app::after{content:'';flex:1 1 0}   /* spare height goes under the arrows, so the board and arrows sit up top together */
 #board{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;background:#d9d2bf;border-radius:8px;padding:3px;display:grid;grid-template-columns:repeat(7,var(--cell));grid-auto-rows:var(--cell);gap:3px;position:relative;touch-action:none}
 .cell{position:relative;background:#d9d2bf;display:grid;place-items:center;font-family:var(--sans);font-weight:800;font-size:calc(var(--cell)*.58);line-height:1}
 /* Style A: raised ivory game tiles on a recessed tray. */
@@ -313,7 +314,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='2.4',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='2.5',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -453,13 +454,16 @@ function showAsk(nw,head){clearTimeout(timer);askI=0;$('askHead').textContent=he
     d.innerHTML=`<div class="w"><small>Joined words, ${joined.length===2?'both':'all '+joined.length} score</small></div><div class="p">+${joined.reduce((a,v)=>a+wordPts(v),0)}</div><button>Clear ${joined.length===2?'both':'all'}</button>`;
     d.firstChild.prepend(joined.map(v=>v.w).join(' + '));d.querySelector('button').onclick=()=>{closeAsk(true);clearWords(joined)};L.appendChild(d)}
   $('askHold').textContent=!demo&&!cur&&li>=letters.length?"Don't clear (game ends)":asking.length>1?'Hold all (keep building)':'Hold (keep building)';
-  // Keep the board visible: the panel sits over whichever half of the board has fewer tiles (usually the empty top).
-  const cnt=(a,b)=>grid.slice(a,b).flat().filter(Boolean).length;$('ask').classList.toggle('top',cnt(0,Math.ceil(H/2))<=cnt(Math.floor(H/2),H));
-  // The pop-up can cover the Now and Next tiles, so it shows the coming letters too (? for the Final 10).
-  const up2=(cur?[cur.l]:[]).concat(letters.slice(li,li+2)).slice(0,2).map((l,i)=>{const at=li+i-(cur?1:0),q=!demo&&at>=letters.length-MYSTERY&&!(i===0&&cur);
+  // The pop-up can cover the Now and Next tiles, so it shows the next letter too (? for the Final 10).
+  const up2=(cur?[cur.l]:[]).concat(letters.slice(li,li+1)).slice(0,1).map((l,i)=>{const at=li+i-(cur?1:0),q=!demo&&at>=letters.length-MYSTERY&&!(i===0&&cur);
     return `<span class="t${q?' q':isX2(l)?' dbl':''}${i?' n2':''}">${q?'?':up(l)+'<sub>'+PTS[up(l)]+'</sub>'}</span>`});
   $('askNext').innerHTML=up2.length?'Coming up '+up2.join(''):'Last letter played';
-  $('ask').hidden=false;showStrike();cycleAsk();tone(880,.06,'sine',.06)}
+  // Keep the board visible: the panel goes under the board if it fits there (it only covers the arrows, which do nothing
+  // while paused). If not, it sits over whichever half of the board has fewer tiles (usually the empty top).
+  $('ask').classList.remove('top');$('ask').hidden=false;
+  const room=innerHeight-boardEl.getBoundingClientRect().bottom,need=$('ask').querySelector('.in').offsetHeight+18;
+  const cnt=(a,b)=>grid.slice(a,b).flat().filter(Boolean).length;if(room<need)$('ask').classList.toggle('top',cnt(0,Math.ceil(H/2))<=cnt(Math.floor(H/2),H));
+  showStrike();cycleAsk();tone(880,.06,'sine',.06)}
 function closeAsk(clearing){clearInterval(askT);askT=null;strike.innerHTML='';$('ask').hidden=true;asking=[];askI=0;paint();if(clearing||over)return;afterAsk()}
 function afterAsk(){if(over||paused())return;if(cur)tick();else spawn()}
 $('askHold').onclick=()=>{closeAsk(false);tip()};
