@@ -274,12 +274,21 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 #bCard p{font-size:16px;line-height:1.35;margin:4px 0 8px}#bCard .math{font-size:14px;color:#555;margin-bottom:6px;line-height:1.4}#bCard .math b{color:var(--ink);font-size:16px}
 #bCard button{display:block;width:100%;border:2px solid var(--ink);border-radius:9px;font-size:18px;font-weight:800;padding:11px;margin-top:9px;font-family:var(--sans)}
 #bCard button small{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;margin-top:2px}#bCard .g{background:var(--ink);color:var(--acc)}#bCard .w2{background:#fff;color:var(--ink)}
+#lkSheet{display:none;position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+#lkSheet.show{display:flex}#lkSheet>div{box-sizing:border-box;width:100%;max-width:420px;background:#fffdf6;border:2px solid var(--ink);border-bottom:0;border-radius:16px 16px 0 0;padding:18px 16px 22px;font-family:var(--sans);text-align:center}
+#lkSheet>div>b{display:block;font:700 italic 24px var(--head)}#lkSheet p{margin:2px 0 12px;font-size:14px;color:var(--ink2)}
+#lkList{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lkOpt{display:flex;align-items:center;gap:10px;padding:9px 10px;border:2px solid #d9d2bf;border-radius:10px;background:#fff;font:700 15px var(--sans);color:var(--ink);text-align:left}
+.lkOpt i{flex:0 0 34px;height:26px;border-radius:5px;border:2px solid;position:relative}.lkOpt i u{position:absolute;left:5px;right:5px;top:9px;height:4px;border-radius:2px}
+.lkOpt span{flex:1}.lkOpt em{font-style:normal;color:var(--ink);visibility:hidden}.lkOpt.on{border-color:var(--ink);background:#fff3c4}.lkOpt.on em{visibility:visible}
+#lkDone{margin-top:14px;width:100%;background:var(--ink);color:var(--acc);border:0;border-radius:9px;font:800 17px var(--sans);padding:13px}
 #hintDone{display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:34px}
 #hintDone.show{display:flex}#hintDone>div{background:#fffdf6;border:2px solid var(--ink);border-radius:14px;padding:22px 18px;text-align:center;box-shadow:0 6px 0 var(--ink);max-width:330px;font-family:var(--sans)}
 #hintDone .ic{font-size:44px}#hintDone b{display:block;font-size:24px;margin:6px 0}#hintDone p{font-size:16px;margin:0 0 16px;line-height:1.35}
 #hintDone button{background:var(--ink);color:#fff;border:0;border-radius:8px;font-size:17px;font-weight:700;padding:12px 30px;font-family:var(--sans)}
 #msg.step{flex-direction:column;font-style:normal}#msg.step b{font-family:var(--head);font-style:italic;font-size:20px;color:var(--ink);font-weight:700}#msg.step span{font-size:14px;font-style:italic}
 #bar #spinBtn.pick{background:#fffdf6!important;color:var(--ink)!important;border-color:var(--ink)!important;box-shadow:2px 3px 0 var(--ink)!important}
+.coin{position:fixed;z-index:30;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#ffd23f 45%,#b8860b);border:2px solid #8a6400;font:900 16px var(--sans);display:grid;place-items:center;color:#1a1814;box-shadow:0 3px 6px rgba(0,0,0,.3);pointer-events:none}
 </style>
 </head>
 <body>
@@ -288,7 +297,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
     <div class="box bank" id="bankBox"><small>Credits</small><b id="bank">50</b></div>
     <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
     <button id="menuBtn" aria-label="Menu">☰</button></div>
-  <div id="msg"></div><div id="bCard"><div><div class="st">⭐ BONUS WORD ⭐</div><div class="w" id="bcW"></div><p>That's a real word, but it's not on your list. Bonus words pay half.</p><div class="math" id="bcM"></div><button id="bcTake" class="g"></button><button id="bcKeep" class="w2"></button></div></div><div id="hintDone"><div><div class="ic">💡</div><b>Hints are done</b><p>You found your first 2 words.<br>From here, you're on your own.<br>Good luck!</p><button id="hintOk">Got it</button></div></div>
+  <div id="msg"></div><div id="bCard"><div><div class="st">⭐ BONUS WORD ⭐</div><div class="w" id="bcW"></div><p>That's a real word, but it's not on your list. Bonus words pay half.</p><div class="math" id="bcM"></div><button id="bcTake" class="g"></button><button id="bcKeep" class="w2"></button></div></div><div id="lkSheet"><div><b>Pick a look</b><p>Tap one to try it on the machine.</p><div id="lkList"></div><button id="lkDone">Done</button></div></div><div id="hintDone"><div><div class="ic">💡</div><b>Hints are done</b><p>You found your first 2 words.<br>From here, you're on your own.<br>Good luck!</p><button id="hintOk">Got it</button></div></div>
   <div id="stage">
     <div id="cab">
       <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">Quick 10 · 5 credits a spin</small></div>
@@ -402,7 +411,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='7.5',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='7.7',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -540,7 +549,7 @@ function animReel(i,to,dur){return new Promise(res=>{const s=strips[i],n=STRIP,e
   setTimeout(()=>{clearInterval(ticks);el.classList.remove('spin');drawReel(i);rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
 let ddOn=false,DD_HELP=.8;   // Double down: with one reel left, the spin costs double and a word on it pays double
 async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
-  $('reels').classList.remove('struck');spinCue=false;ddOn=!!dd&&spun&&nLocked()===REELS-1&&bank>=2*COST;bank-=ddOn?2*COST:COST;spins++;spinning=true;popUp(ddOn?'−10':'−5','cost');sfx.pay();
+  $('reels').classList.remove('struck');spinCue=false;ddOn=!!dd&&spun&&nLocked()===REELS-1&&bank>=2*COST;bank-=ddOn?2*COST:COST;spins++;spinning=true;coinDrop(ddOn?10:5);sfx.pay();
   const which=[0,1,2,3,4].filter(i=>!locked(i));fullSpin=which.length===REELS;const fixed=line.filter((c,i)=>locked(i)&&spun);hold=hold.map(h=>h===1?1:0);
   // With nothing locked the machine gives no help, so a whole word (a Jackpot) is pure luck.
   // Each reel lands in turn; a letter that lands counts as fixed for the reels after it, so the loaded letters fit together.
@@ -554,6 +563,10 @@ async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun
 let rolling=new Set(),fullSpin=false,nJack=0;   // fullSpin: no letters were locked for this spin (a word then is a Jackpot)
 let _r0;   // rolling: reels still spinning, whose tiles stay blank until they stop
 // Tap a reel (or its tile) to lock it 🔒; tap again to unlock it.
+// Paying for a spin: a gold coin drops from the credits box into the top of the machine.
+function coinDrop(n){if(quick)return;const a=$('bankBox').getBoundingClientRect(),m=$('marq').getBoundingClientRect(),c=document.createElement('div');c.className='coin';c.textContent=n;
+  const x=a.left+a.width/2-17,y1=a.bottom-4,y2=m.top+4;c.style.left=x+'px';c.style.top=y1+'px';document.body.appendChild(c);
+  const dx=(m.left+m.width/2-17)-x;c.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+dx*.6+'px,'+(y2-y1)*.7+'px) scale(1)',opacity:1,offset:.75},{transform:'translate('+dx+'px,'+(y2-y1)+'px) scale(.55)',opacity:0}],{duration:650,easing:'cubic-bezier(.5,0,.9,.6)'}).onfinish=()=>c.remove()}
 function tapReel(i){if(over||!spun||spinning||pend)return;hold[i]=hold[i]?0:1;
   (hold[i]?sfx.lock:sfx.unlock)();save();paint();tip()}
 // After a spin: do the five letters spell a word still on the list, in any order? Then it's found and paid.
@@ -732,9 +745,16 @@ $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
 
 // Machine looks: tap Look in the menu to cycle through them. ?look=neon in the address also works (for previews).
 const LOOKS=[['classic','Classic red'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx']];
+const LOOKSW={classic:['#9c1f18','#e0a800'],navy:['#1c2a44','#c9a961'],walnut:['#5b3a22','#d8b46a'],ivory:['#f3ecd8','#b08d3c'],oxblood:['#5a1019','#d4b26a'],onyx:['#1a1a1a','#8a8a8a']};
 function setLook(k){if(!LOOKS.some(l=>l[0]===k))k='onyx';store.set('look2',k);LOOKS.forEach(l=>document.body.classList.toggle('lk-'+l[0],l[0]===k&&k!=='classic'));
   const n=LOOKS.find(l=>l[0]===k)[1];$('mLook').innerHTML='<span>🎰</span>Look: <b>'+n+'</b>'}
-$('mLook').onclick=()=>{const i=LOOKS.findIndex(l=>l[0]===store.get('look2','onyx'));setLook(LOOKS[(i+1)%LOOKS.length][0]);sfx.lock()};
+// Look picker: a card with all the machine looks; tap one to try it, Done to close.
+function showLooks(){$('menu').hidden=true;const cur=store.get('look2','onyx'),L=$('lkList');L.innerHTML='';
+  LOOKS.forEach(([k,n])=>{const b=document.createElement('button');b.className='lkOpt'+(k===cur?' on':'');const [c,t]=LOOKSW[k];
+    b.innerHTML='<i style="background:'+c+';border-color:'+t+'"><u style="background:'+t+'"></u></i><span></span><em>✓</em>';b.querySelector('span').textContent=n;
+    b.onclick=()=>{setLook(k);sfx.lock();L.querySelectorAll('.lkOpt').forEach(x=>x.classList.toggle('on',x===b))};L.appendChild(b)});
+  $('lkSheet').classList.add('show')}
+$('mLook').onclick=showLooks;$('lkDone').onclick=()=>$('lkSheet').classList.remove('show');
 setLook((location.search.match(/look=(\w+)/)||[])[1]||store.get('look2','onyx'));
 const hintLabel=()=>{const on=hintsOn();$('mHints').innerHTML='<span>💡</span>Hints: <b>'+(on?'On':'Off')+'</b>';$('mHints').classList.toggle('on',on)};
 $('hintOk').onclick=()=>$('hintDone').classList.remove('show');
