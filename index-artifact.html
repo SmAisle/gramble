@@ -288,6 +288,11 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 #msg.step{flex-direction:column;font-style:normal}#msg.step b{font-family:var(--head);font-style:italic;font-size:20px;color:var(--ink);font-weight:700}#msg.step span{font-size:14px;font-style:italic}
 #bar #spinBtn.pick{background:#fffdf6!important;color:var(--ink)!important;border-color:var(--ink)!important;box-shadow:2px 3px 0 var(--ink)!important}
 .coin{position:fixed;z-index:30;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#ffd23f 45%,#b8860b);border:2px solid #8a6400;font:900 16px var(--sans);display:grid;place-items:center;color:#1a1814;box-shadow:0 3px 6px rgba(0,0,0,.3);pointer-events:none}
+#rCard .rstars{font-size:22px;letter-spacing:6px;color:#b8860b;text-align:center}#rCard .rh{font:900 28px var(--head);text-align:center;margin:4px 0 2px}
+#rCard .rsub{text-align:center;font:600 15px var(--sans);color:var(--ink2);margin:0}#rCard .rwin{text-align:center;font:500 12px var(--sans);color:var(--fade);margin:2px 0 12px}
+.rchs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.rch{border:2px solid var(--ink);border-radius:12px;padding:12px 8px;background:#fff;text-align:center;cursor:pointer;font-family:var(--sans)}
+.rch.rd{background:var(--ink);color:#fffdf6}.rch .t{font:800 12px var(--sans);letter-spacing:.1em;text-transform:uppercase}.rch .n{font:900 34px var(--head);margin:4px 0}.rch.rd .n{color:var(--acc)}.rch .d{font-size:12.5px;line-height:1.35;text-transform:none;letter-spacing:0;font-weight:500}
+#rRide{color:var(--acc)}
 </style>
 </head>
 <body>
@@ -388,17 +393,14 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 <div id="demoCap" hidden><div class="st" id="dcStep"></div><p id="dcText"></p><div class="row"><button class="sk" id="dcSkip">Skip</button><button id="dcNext">Next</button></div></div>
 
 <div class="sheet" id="ride" hidden><div id="confetti"></div><div class="card" id="rCard">
-  <div class="rk">★ ★ ★ Winner ★ ★ ★</div>
-  <h2>Quick 10<br>cleared!</h2>
-  <div class="rticks"><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span></div>
-  <div class="rbill">
-    <div><span>Winnings</span><span id="rWin"></span></div>
-    <div class="g"><span>Clear bonus</span><span>+50</span></div>
-    <div class="t"><span>Total</span><span id="rBank"></span></div>
-  </div>
-  <button class="go" id="rRide">Let it ride 🎲<small style="display:block;font-size:11px;letter-spacing:.08em;margin-top:3px;color:var(--acc)">Win up to +100 more</small></button>
-  <div class="rnote">10 harder words. Go broke and you bank 0 credits today.</div>
-  <button class="go alt" id="rCash">Cash out <span id="rCashN"></span></button>
+  <div class="rstars">★ ★ ★ ★ ★</div>
+  <h2 class="rh">You cleared all 10!</h2>
+  <p class="rsub">You have <b id="rBank"></b>. What now?</p>
+  <p class="rwin"><span id="rWin"></span> won + 50 clear bonus</p>
+  <div class="rchs"><div class="rch" id="rchSafe"><div class="t">Play it safe</div><div class="n" id="rSafeN"></div><div class="d">Bank it now. It counts toward your lifetime winnings.</div></div>
+  <div class="rch rd" id="rchRide"><div class="t">Let it ride 🎲</div><div class="n" id="rRideN"></div><div class="d">10 harder words. Clear them for a +100 bonus. Go broke and you get 0.</div></div></div>
+  <button class="go" id="rRide">Let it ride 🎲</button>
+  <button class="go alt" id="rCash">Bank <span id="rCashN"></span></button>
 </div></div>
 
 <div class="sheet" id="def" hidden><div class="card"><h3 id="defW"></h3><div id="defT"></div><button class="go" id="defOk">Close</button></div></div>
@@ -410,7 +412,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='7.8',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='8.0',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -589,7 +591,7 @@ function bonusCash(){if(!pend)return;const b=pend,c=bonusPay(b);pend='';bank+=c;
 // Clearing the Quick 10: +50 credits, then Cash out or Let it ride.
 function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=false;hold=[0,0,0,0,0];save();paint();
   popUp('Clear bonus +50 credits','jp');jackpot();msg('Quick 10 cleared! +50 credit clear bonus.','good');setTimeout(showRide,quick?0:1200)}
-function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('rWin').textContent=money(bank-CLEAR_BONUS);$('rCashN').textContent=money(bank);
+function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('rSafeN').textContent=cr(bank);$('rRideN').textContent=(cr(bank)+cr(HR_BONUS))+'+';$('rWin').textContent=money(bank-CLEAR_BONUS);$('rCashN').textContent=money(bank);
   const C=$('confetti');C.innerHTML='';const cols=['#ffd23f','#e0a800','#fff3c4','#1a1814','#fff'];
   if(!quick)for(let k=0;k<70;k++){const i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.background=cols[k%cols.length];i.style.animationDuration=(2.2+Math.random()*2)+'s';i.style.animationDelay=(Math.random()*1.2)+'s';i.style.transform='rotate('+Math.random()*180+'deg)';C.appendChild(i)}
   $('ride').hidden=false;if(mode!=='demo'||true)sfx.allFound()}
@@ -597,6 +599,7 @@ function letItRide(){if(!ride)return;ride=false;$('ride').hidden=true;round=2;ro
   strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('High Roller 10! You have '+money(bank)+'. Good luck.','good')}
 $('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if(!ride||mode==='demo')return;ride=false;$('ride').hidden=true;end('cashout')};
 function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
+$('rchSafe').onclick=()=>$('rCash').click();$('rchRide').onclick=()=>$('rRide').click();
 $('bDD').onclick=()=>spin(true);$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 // The bonus card: what a bonus word is, why it pays what it pays, and what each choice does.
 function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
@@ -788,9 +791,16 @@ function actx(){if(typeof soundOn==='function'&&!soundOn())return null;try{if(!a
   if(ac.state!=='running')ac.resume();
   if(!noiseBuf){noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return ac}catch(e){return null}}
 // iPhones: the first tap unlocks sound, and a silent looping audio element lets sound play even with the ringer switch on silent.
-function unlockAudio(){if(unlocked)return;unlocked=true;try{const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
-  const el=document.createElement('audio');el.setAttribute('playsinline','');el.loop=true;
-  el.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';el.play().catch(()=>{})}catch(e){}}
+// Coming back to the app: iPhones pause the sound and the silent loop, so the next tap unlocks again, and a stuck sound engine is rebuilt.
+let silentEl=null;
+function unlockAudio(){if(unlocked)return;unlocked=true;try{
+  if(ac&&ac.state!=='running'){const old=ac;old.resume().catch(()=>{});setTimeout(()=>{if(ac===old&&old.state!=='running'){try{old.close()}catch(e){}ac=null;master=null;noiseBuf=null;actx()}},250)}
+  const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
+  if(!silentEl){silentEl=document.createElement('audio');silentEl.setAttribute('playsinline','');silentEl.loop=true;
+    silentEl.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='}
+  silentEl.play().catch(()=>{})}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)unlocked=false});
+window.addEventListener('pageshow',()=>{unlocked=false});
 ['touchstart','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:false,passive:true}));
 function tone(f,dur=.08,type='sine',vol=.1,delay=0,f2){const a=actx();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);

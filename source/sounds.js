@@ -7,9 +7,16 @@ function actx(){if(typeof soundOn==='function'&&!soundOn())return null;try{if(!a
   if(ac.state!=='running')ac.resume();
   if(!noiseBuf){noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return ac}catch(e){return null}}
 // iPhones: the first tap unlocks sound, and a silent looping audio element lets sound play even with the ringer switch on silent.
-function unlockAudio(){if(unlocked)return;unlocked=true;try{const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
-  const el=document.createElement('audio');el.setAttribute('playsinline','');el.loop=true;
-  el.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';el.play().catch(()=>{})}catch(e){}}
+// Coming back to the app: iPhones pause the sound and the silent loop, so the next tap unlocks again, and a stuck sound engine is rebuilt.
+let silentEl=null;
+function unlockAudio(){if(unlocked)return;unlocked=true;try{
+  if(ac&&ac.state!=='running'){const old=ac;old.resume().catch(()=>{});setTimeout(()=>{if(ac===old&&old.state!=='running'){try{old.close()}catch(e){}ac=null;master=null;noiseBuf=null;actx()}},250)}
+  const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
+  if(!silentEl){silentEl=document.createElement('audio');silentEl.setAttribute('playsinline','');silentEl.loop=true;
+    silentEl.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='}
+  silentEl.play().catch(()=>{})}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)unlocked=false});
+window.addEventListener('pageshow',()=>{unlocked=false});
 ['touchstart','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:false,passive:true}));
 function tone(f,dur=.08,type='sine',vol=.1,delay=0,f2){const a=actx();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
