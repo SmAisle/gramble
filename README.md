@@ -8,19 +8,19 @@ Play: https://smaisle.github.io/gramble/ (once GitHub Pages is on)
 
 ## Rules
 - **Quick 10:** each day everyone gets the same **10 words** (from The Daily 15's everyday five-letter puzzle words, `source/tray.txt`) and **$5**. Every spin costs **50¢**.
-- **Clear bonus:** find all 10 and get **+$5**. Then choose **Cash out** (bank it) or **Let it ride** into the **High Roller 20**: a new list of 20 words played with the money you have. Find all 20 for a **+$10 bonus**. Go broke and you bank $0 for the day. Cash out is in the menu during the High Roller (not during the Quick 10).
+- **Clear bonus:** find all 10 and get **+$5**. Then choose **Cash out** (bank it) or **Let it ride** into the **High Roller 10**: 10 more words played with the money you have, where the machine helps less (`LOAD2` 0.3 instead of 0.4). Find all 10 for a **+$10 bonus**. Go broke and you bank $0 for the day. Cash out is in the menu during the High Roller (not during the Quick 10).
 - Don't clear the Quick 10 and you bank $0.
 - **Lifetime winnings:** the total banked over all daily games. Bragging rights only.
 - Tap a reel to **lock** it 🔒; tap again to unlock. Spin again spins only the unlocked reels.
 - Locked letters show as tiles under the machine. Drag a tile to rearrange; tap one to unlock it.
-- When the five letters on the line spell a list word **in any order**, it's found, crossed off, and pays Scrabble points × **20¢**.
+- When the five letters on the line spell a list word **in any order**, it's found, crossed off, and pays Scrabble points × **20¢**. A red line strikes through the letters on the reels until the next spin.
 - Words that still fit your locked letters light up on the list, with the letters you already have in gray.
 - **Jackpot:** a list word on a spin with nothing locked pays double. Rare, because the machine gives no help on those spins.
-- **Bonus words:** any other everyday five-letter word (`source/bonus.txt`) offers Cash in (half pay, once per game) or Pass.
+- **Bonus words:** any other everyday five-letter word (`source/bonus.txt`) offers Cash in (half pay, once per game) or Pass; a ★ BONUS WORD ★ badge shows on the reels while you choose.
 - **Demo:** first-time players get a guided demo on the real machine (8 steps, scripted letters). Also on the cover and in the menu.
 
 ## The loaded machine
-When at least one letter is locked, each spinning reel lands, with chance `LOAD` (0.4), on a letter that fits a list word you could still make with what's held (counting reels that already landed this spin). Otherwise it lands on a letter from a random word still on the list. With nothing locked there is no help (`NOHELP_FULL`). Daily spins are seeded, so the same choices give the same letters for everyone. Robot tests (`tests/flow.js`, 60 days each, always letting it ride): a careful robot clears the Quick 10 about 40% of the time with about $9.70, and then wins the High Roller about 80% of the time, banking about $18.60. A sloppy robot clears the 10 about 28% of the time and wins the High Roller about 40%. `START`, `COST`, `PER_PT`, `LOAD`, `CLEAR_BONUS` and `HR_BONUS` in `source/src.html` tune it.
+When at least one letter is locked, each spinning reel lands, with chance `LOAD` (0.4), on a letter that fits a list word you could still make with what's held (counting reels that already landed this spin). Otherwise it lands on a letter from a random word still on the list. With nothing locked there is no help (`NOHELP_FULL`). Daily spins are seeded, so the same choices give the same letters for everyone. Robot tests (`tests/flow.js`, always letting it ride): a careful robot clears the Quick 10 about 40% of the time with about $10, then wins the High Roller 10 about half the time, banking about $16.50. A sloppy robot wins the High Roller about 40% of the time. `START`, `COST`, `PER_PT`, `LOAD`, `CLEAR_BONUS` and `HR_BONUS` in `source/src.html` tune it.
 
 ## Sound and looks
 Sounds are made in the browser (`source/sounds.js`, shared with the sound board). The game plays Jeff's picks (`PICK` in `source/src.html`). Sound plays with the iPhone ringer switch on silent. Machine looks (menu → Look): Onyx (default), Classic red, Navy & brass, Walnut, Ivory & gold, Oxblood.
