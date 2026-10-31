@@ -277,6 +277,8 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 #hintDone.show{display:flex}#hintDone>div{background:#fffdf6;border:2px solid var(--ink);border-radius:14px;padding:22px 18px;text-align:center;box-shadow:0 6px 0 var(--ink);max-width:330px;font-family:var(--sans)}
 #hintDone .ic{font-size:44px}#hintDone b{display:block;font-size:24px;margin:6px 0}#hintDone p{font-size:16px;margin:0 0 16px;line-height:1.35}
 #hintDone button{background:var(--ink);color:#fff;border:0;border-radius:8px;font-size:17px;font-weight:700;padding:12px 30px;font-family:var(--sans)}
+#msg.step{flex-direction:column;font-style:normal}#msg.step b{font-family:var(--head);font-style:italic;font-size:20px;color:var(--ink);font-weight:700}#msg.step span{font-size:14px;font-style:italic}
+#bar #spinBtn.pick{background:#fffdf6!important;color:var(--ink)!important;border-color:var(--ink)!important;box-shadow:2px 3px 0 var(--ink)!important}
 </style>
 </head>
 <body>
@@ -399,7 +401,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='7.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='7.5',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -421,6 +423,7 @@ let START=500,LOAD=.4,NOHELP_FULL=true;const COST=50,PER_PT=20,CLEAR_BONUS=500,H
 // Credits: 1 credit = 10 of the old cents (start 50 credits, 5 a spin, 2 a point).
 const cr=c=>Math.round(c/10),money=c=>cr(c).toLocaleString()+' credits',cents=money;
 const wordPts=w=>[...w].reduce((a,c)=>a+PTS[c],0);
+const BONUS_MIN=0,bonusPay=w=>Math.max(wordPts(w)*PER_PT/2,BONUS_MIN);   // bonus words pay half (a 10-credit minimum was tried in v7.3: clear rate 42%→63%, too easy)
 // R is the random source: seeded by the date for the daily game and its replays (so everyone gets the same words and
 // the same spins for the same choices), and truly random for Plus lists.
 let R=Math.random;
@@ -475,8 +478,9 @@ function paint(){const lit=spun&&!over;const HH=bestHint();reelEls.forEach((el,i
   drawTray();
   $('spinBtn').firstChild.textContent=nh||spinCue?'Spin again':'Spin';const cue=spinCue&&!over&&!pend&&!ride;$('spinBtn').classList.toggle('cue',cue);document.body.classList.toggle('cue',cue);$('marqSub').textContent=cue?'★ SPIN AGAIN ★':(round===1?'Quick 10':'High Roller 10')+' · 5 credits a spin';$('spinBtn').querySelector('small').textContent=bank<COST?'Not enough money':nh===REELS?'Let go of a letter to spin':'5 credits'+(nh?' · '+(REELS-nh)+' reel'+(REELS-nh>1?'s':''):'');
   if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent='Spin again ▸';$('spinBtn').querySelector('small').textContent='Word cashed in · next round'}
+  const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent='Pick letters ↑';$('spinBtn').querySelector('small').textContent='then spin · 5 credits'}
   $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
-  $('bDD').hidden=!(spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo');$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(wordPts(pend)*PER_PT/2);$('lever').disabled=$('spinBtn').disabled||!!pend;
+  $('bDD').hidden=!(spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo');$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
   const fs=new Set(F);$('bonusL').innerHTML=bonus.length?'Bonus words: '+bonus.map(w=>'<b data-w="'+w+'">'+w+'</b>').join(' · '):'';
   const hl=heldLetters(),xo=crossOn()&&lit&&!spinning;
   $('list').innerHTML=words.map(w=>'<span data-w="'+w+'" class="'+(found.includes(w)?'got':over?'miss':fs.has(w)?'fit':'')+(HH&&HH.w===w?' tgt':'')+'">'+(xo&&fs.has(w)?crossed(w,hl):w)+'</span>').join('')}
@@ -510,13 +514,17 @@ function bestHint(){if(!hintLive()||!spun||spinning||over||pend||ride||mode==='d
     if(h.includes(-9))continue;line.forEach((c,i)=>{if(!locked(i)){const j=a.indexOf(c);if(j>=0){a.splice(j,1);h[i]=1}}});
     const m=h.reduce((x,y)=>x+y,0);if(!best||m>best.m)best={w,h,m}}
   return best&&best.m>=2?best:null}
+// Right after a spin with nothing locked: a plain 'Step 2' message and a white 'Pick letters' Spin button (it still spins if tapped).
+const pickCue=()=>spun&&!spinning&&!over&&!pend&&!ride&&!spinCue&&nLocked()===0&&mode!=='demo'&&bank>=COST;
+const step=(h,t)=>{const m=$('msg');m.className='step';m.innerHTML='<b></b><span></span>';m.firstChild.textContent=h;m.lastChild.textContent=t};
 function tip(){const H=bestHint();
   if(H){const add=H.h.map((v,i)=>v&&!locked(i)?i:-1).filter(i=>i>=0);
     if(add.length)return msg('💡 '+add.map(i=>line[i]).join(', ')+(add.length>1?' are':' is')+' in '+H.w+'. Tap the glowing letter'+(add.length>1?'s':'')+' to keep '+(add.length>1?'them':'it')+', then tap Spin.','good');
     return msg('💡 Good. Now tap Spin to fill in the rest of '+H.w+'.','good')}
   if(hintLive()&&spun&&!spinning&&!over&&!pend&&!ride&&mode!=='demo'&&!nLocked())return msg('💡 No good letters this time. Just tap Spin again.','good');if(over)return msg(found.length===NWORDS?'You found them all!':'Game over. Tap Play again for a new list.');
+  if(!spun&&!found.length&&mode!=='demo')return step('Step 1: Tap Spin','Each spin costs 5 credits.');
   if(!spun)return msg(found.length?(hintsOn()&&round===1&&found.length===HINT_WORDS?'Nice! Hints are done for this game. You\'re on your own now. Spin for new letters.':'Spin for new letters.'):'Tap Spin or pull the lever. Each spin is 5 credits.');
-  if(!nLocked())return msg('Tap reels to lock letters that could spell a word on your list, then spin the rest.');
+  if(!nLocked())return step('Step 2: Keep some letters','Tap any letters that are in a word on your list.');
   if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg('One letter to go! Spin for 5 credits, or Double down for 10. It\'s riskier, but a word pays double.');
   if(nLocked()===REELS)return msg('All five are locked. Tap a reel to unlock one, then spin.','warn');
   msg('Spin again, or tap a locked letter to unlock it.')}
@@ -563,7 +571,7 @@ function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].
 // After cashing in a word: a red line through the letters, a stamp on the reels and a pulsing Spin again button, until the next spin.
 function strike(label){const RE=$('reels');RE.classList.remove('struck');RE.offsetWidth;RE.classList.add('struck');spinCue=true}
 let spinCue=false;
-function bonusCash(){if(!pend)return;const b=pend,c=wordPts(b)*PER_PT/2;pend='';bank+=c;peak=Math.max(peak,bank);bonus.push(b);hold=[0,0,0,0,0];spun=false;strike('Bonus '+b);
+function bonusCash(){if(!pend)return;const b=pend,c=bonusPay(b);pend='';bank+=c;peak=Math.max(peak,bank);bonus.push(b);hold=[0,0,0,0,0];spun=false;strike('Bonus '+b);
   popUp('Bonus '+b+' +'+cents(c),'jp');jackpot();sfx.win();save();paint();msg('Bonus word '+b+'! +'+cents(c)+' · Spin again.','good');if(bank<COST)end('broke')}
 // Clearing the Quick 10: +50 credits, then Cash out or Let it ride.
 function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=false;hold=[0,0,0,0,0];save();paint();
@@ -578,8 +586,8 @@ $('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if
 function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
 $('bDD').onclick=()=>spin(true);$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 // The bonus card: what a bonus word is, why it pays what it pays, and what each choice does.
-function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=wordPts(b)*PER_PT/2,f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
-  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' credit = <b>'+cents(c)+'</b>';
+function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
+  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' credit = <b>'+cents(c)+'</b>');
   $('bcTake').innerHTML='Take '+cents(c)+'<small>Your locked letters reset</small>';
   $('bcKeep').innerHTML='Keep my letters<small>'+(hl.length?'Keep '+hl.join(' ')+(f.length?' and go for '+f[0]:''):'Skip it and keep spinning')+'</small>';
   $('bCard').classList.add('show')}
