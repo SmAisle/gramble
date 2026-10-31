@@ -238,6 +238,22 @@ body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo 
 #reels .bbadge{position:absolute;left:50%;top:-12px;transform:translateX(-50%);z-index:5;display:none;background:linear-gradient(#ffe680,#ffcf2e);color:#5a3d00;border:2px solid #b8860b;border-radius:14px;padding:2px 10px;font:900 12px var(--sans);letter-spacing:.12em;white-space:nowrap;box-shadow:0 0 10px #ffd23f}
 #reels.bonus .bbadge{display:block;animation:bpulse .9s ease-in-out infinite}#reels.bonus .reel .sym.on{background:linear-gradient(#e8f5e1,#c6e8b8)}
 @keyframes bpulse{50%{transform:translateX(-50%) scale(1.08)}}
+#rCard{text-align:center;position:relative;z-index:2;max-width:350px}
+#rCard .rk{font:800 10px var(--sans);letter-spacing:.3em;text-transform:uppercase}
+#rCard h2{font-size:36px;line-height:1.05;margin:6px 0 4px;border:0;padding:0}
+#rCard .rticks{display:flex;justify-content:center;gap:4px;margin:10px 0}
+#rCard .rticks span{width:24px;height:24px;border-radius:4px;background:linear-gradient(#ffe680,#ffcf2e);font:900 13px var(--sans);display:grid;place-items:center;animation:tick .35s ease-out backwards}
+#rCard .rticks span:nth-child(1){animation-delay:0.00s}#rCard .rticks span:nth-child(2){animation-delay:0.06s}#rCard .rticks span:nth-child(3){animation-delay:0.12s}#rCard .rticks span:nth-child(4){animation-delay:0.18s}#rCard .rticks span:nth-child(5){animation-delay:0.24s}#rCard .rticks span:nth-child(6){animation-delay:0.30s}#rCard .rticks span:nth-child(7){animation-delay:0.36s}#rCard .rticks span:nth-child(8){animation-delay:0.42s}#rCard .rticks span:nth-child(9){animation-delay:0.48s}#rCard .rticks span:nth-child(10){animation-delay:0.54s}
+@keyframes tick{from{transform:scale(0)}}
+#rCard .rbill{border-top:3px double var(--ink);border-bottom:3px double var(--ink);padding:8px 0;margin:6px 0 12px}
+#rCard .rbill div{display:flex;justify-content:space-between;font:700 14px var(--sans)}#rCard .rbill .g{color:#2e7d32}
+#rCard .rbill .t{font:900 26px var(--head);margin-top:2px}
+#rCard #rRide{height:56px;font-size:17px;box-shadow:2px 3px 0 #c9a961;margin:0}
+#rCard .rnote{font:600 11px var(--sans);color:var(--ink2);margin:5px 0 10px}
+#rCard #rCash{margin:0}
+#confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+#confetti i{position:absolute;top:-20px;width:8px;height:13px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 </style>
 </head>
 <body>
@@ -337,13 +353,18 @@ body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo 
 
 <div id="demoCap" hidden><div class="st" id="dcStep"></div><p id="dcText"></p><div class="row"><button class="sk" id="dcSkip">Skip</button><button id="dcNext">Next</button></div></div>
 
-<div class="sheet" id="ride" hidden><div class="card" style="text-align:center">
-  <h2>Quick 10 cleared!</h2>
-  <p style="margin:0;font-family:var(--sans);font-weight:800;color:#2e7d32">+$5 clear bonus</p>
-  <div class="big" id="rBank"></div>
-  <p style="margin:0;font-style:italic;font-size:14px">What now?</p>
-  <button class="go alt" id="rCash">Cash out<small style="display:block;font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:600">Bank it. It goes into your lifetime winnings.</small></button>
-  <button class="go" id="rRide">Let it ride 🎲<small style="display:block;font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:600">Take your money into the High Roller 10. Find all 10 for a +$10 bonus. They're harder. Go broke and you bank nothing today.</small></button>
+<div class="sheet" id="ride" hidden><div id="confetti"></div><div class="card" id="rCard">
+  <div class="rk">★ ★ ★ Winner ★ ★ ★</div>
+  <h2>Quick 10<br>cleared!</h2>
+  <div class="rticks"><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span><span>✓</span></div>
+  <div class="rbill">
+    <div><span>Winnings</span><span id="rWin"></span></div>
+    <div class="g"><span>Clear bonus</span><span>+$5.00</span></div>
+    <div class="t"><span>Total</span><span id="rBank"></span></div>
+  </div>
+  <button class="go" id="rRide">Let it ride 🎲 <span style="text-transform:none;letter-spacing:.02em">for +$10 more</span></button>
+  <div class="rnote">10 harder words. Go broke and you bank $0 today.</div>
+  <button class="go alt" id="rCash">Cash out <span id="rCashN"></span></button>
 </div></div>
 
 <div class="sheet" id="def" hidden><div class="card"><h3 id="defW"></h3><div id="defT"></div><button class="go" id="defOk">Close</button></div></div>
@@ -355,7 +376,7 @@ body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo 
 </div></div>
 
 <script>
-const VERSION='6.1',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='6.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -504,7 +525,10 @@ function bonusCash(){if(!pend)return;const b=pend,c=wordPts(b)*PER_PT/2;pend='';
 // Clearing the Quick 10: +$5, then Cash out or Let it ride.
 function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=false;hold=[0,0,0,0,0];save();paint();
   popUp('Clear bonus +$5','jp');jackpot();msg('Quick 10 cleared! +$5 clear bonus.','good');setTimeout(showRide,quick?0:1200)}
-function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('ride').hidden=false}
+function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('rWin').textContent=money(bank-CLEAR_BONUS);$('rCashN').textContent=money(bank);
+  const C=$('confetti');C.innerHTML='';const cols=['#ffd23f','#e0a800','#d81b78','#2e7d32','#1e4fa0','#fff'];
+  if(!quick)for(let k=0;k<70;k++){const i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.background=cols[k%cols.length];i.style.animationDuration=(2.2+Math.random()*2)+'s';i.style.animationDelay=(Math.random()*1.2)+'s';i.style.transform='rotate('+Math.random()*180+'deg)';C.appendChild(i)}
+  $('ride').hidden=false;if(mode!=='demo'||true)sfx.allFound()}
 function letItRide(){if(!ride)return;ride=false;$('ride').hidden=true;round=2;roundUI();words=pickWords(N2,'#hr',found);found=[];spun=false;hold=[0,0,0,0,0];order=[0,1,2,3,4];
   strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('High Roller 10! You have '+money(bank)+'. Good luck.','good')}
 $('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if(!ride||mode==='demo')return;ride=false;$('ride').hidden=true;end('cashout')};
