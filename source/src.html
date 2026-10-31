@@ -13,7 +13,7 @@
 <meta name="description" content="Gramble: a daily falling-letter word game. Hold your words, or play it safe.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800&display=swap">
 <style>
-/* The Daily 15's newspaper look on a 7x7 board. Letters fall; words light up; double tap a lit word to clear it. */
+/* The Daily 15's newspaper look on a 7-by-8 board. Letters fall; words light up; double tap a lit word to clear it. */
 :root{--paper:#f4efe1;--ink:#1a1814;--ink2:#4a453b;--fade:#8c8574;--red:#b3261e;--hi:#ffd23f;--hiE:#e0a800;--dia:#bfe0f5;--diaE:#3b8ec2;
   --head:"Playfair Display",Georgia,serif;--body:"Libre Baskerville",Georgia,serif;--sans:"Libre Franklin","Helvetica Neue",Arial,sans-serif;--cell:34px;color-scheme:light}
 *,*::before,*::after{box-sizing:border-box}
@@ -201,7 +201,7 @@ body.demo #msg{min-height:64px}
     <button id="menuBtn" aria-label="Menu">☰</button></div>
   <div id="msg"></div>
   <div id="stage"><div id="col"><div id="nextRow"><div class="nl"><span>Now</span></div><div id="nowT" class="cell on"></div><div class="nr"><span>Next</span><div id="nextT" class="cell on"></div><em id="nextNote"></em></div></div><div id="board"></div></div></div>
-  <div id="bar"><button id="lBtn" aria-label="Left">◀</button><button id="dBtn" aria-label="Drop">▼</button><button id="rBtn" aria-label="Right">▶</button><button id="goBtn" hidden>Finish</button></div>
+  <div id="bar"><button id="lBtn" aria-label="Left">◀︎</button><button id="dBtn" aria-label="Drop">▼︎</button><button id="rBtn" aria-label="Right">▶︎</button><button id="goBtn" hidden>Finish</button></div>
   <div id="left"></div>
 </div>
 
@@ -221,7 +221,7 @@ body.demo #msg{min-height:64px}
   <h2>How to Play</h2>
   <ul class="rules">
     <li><b>Goal:</b> score as many points as you can from today's <b>100 letters</b>. Everyone gets the same letters in the same order.</li>
-    <li><b>Move and drop:</b> tap a column to move the falling letter there, then tap it again to drop it. ◀ ▶ ▼ work too.</li>
+    <li><b>Move and drop:</b> tap a column to move the falling letter there, then tap it again to drop it. ◀︎ ▶︎ ▼︎ work too.</li>
     <li><b>Make words:</b> 3 or more letters across (left to right only), down or up light up <span class="sw" style="background:var(--hi)"></span>. Diagonal words <span class="sw" style="background:var(--dia)"></span> score <b>double</b>. A pink <b>2×</b> vowel doubles any word it's in, and they stack.</li>
     <li><b>Hold or clear:</b> each new word pauses the game. <b>Clear</b> it for its points now, or <b>Hold</b> it and build a longer word for more (CAR → CARDS). Double tap a held word to clear it, or press and hold it to choose again.</li>
     <li><b>Points:</b> each letter has a value, like A, B, C, Deal. Words of 5+ letters get +5 for each extra letter.</li>
@@ -300,7 +300,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='1.8.1',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='1.9',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -313,7 +313,7 @@ const DICT=new Set('__WORDS__'.split(/\s+/));
 const PTS={A:1,B:3,C:3,D:2,E:1,F:4,G:2,H:4,I:1,J:8,K:5,L:1,M:3,N:1,O:1,P:3,Q:10,R:1,S:1,T:1,U:1,V:4,W:4,X:8,Y:4,Z:10};
 const FREQ={A:9,B:2,C:2,D:4,E:12,F:2,G:3,H:2,I:9,J:1,K:1,L:4,M:2,N:6,O:8,P:2,Q:1,R:6,S:4,T:6,U:4,V:2,W:2,X:1,Y:2,Z:1};
 const BAG=Object.entries(FREQ).flatMap(([l,n])=>Array(n).fill(l));
-const W=7,H=7,TOTAL=100;   // 7x7 board
+const W=7,H=8,TOTAL=100;   // 7 wide, 8 high
 
 // ---------- Days ----------
 const LAUNCH=new Date(2026,9,30);
@@ -492,7 +492,7 @@ function clearWord(w){const p=wordPts(w);score+=p;cleared.push((isChain(w)?'⛓'
 
 // ---------- Stars ----------
 // Points for each star (after leftover letters come off). A good player who clears every word right away
-// lands around 180 on the 7x7 board (2 stars); 3 stars takes holding words for longer ones and finishing with a clean board.
+// lands around 180 on the 7x8 board (2 stars); 3 stars takes holding words for longer ones and finishing with a clean board.
 const STARS=[90,180,300];
 const starCount=s=>STARS.filter(t=>s>=t).length;
 const starsFor=s=>'⭐'.repeat(starCount(s));
@@ -575,7 +575,7 @@ function start(again,day){demoOff();slowTest=false;playDay=day||today();late=pla
   grid=Array.from({length:H},()=>Array(W).fill(null));li=0;score=0;cleared=[];over=false;cur=null;lit=[];chains=new Set();
   let prog=null;try{prog=JSON.parse(store.get('prog_'+playDay.k,''))}catch(e){}
   const done=result(playDay.k);
-  if(!again&&prog&&!done&&prog.grid&&prog.grid.length===H&&prog.grid[0].length===W)({grid,li,score,cleared}=prog);   // skip saves from the old 9x9 board
+  if(!again&&prog&&!done&&prog.grid&&prog.grid.length===H&&prog.grid[0].length===W)({grid,li,score,cleared}=prog);   // skip saves from the old 9x9 or 7x7 board
   $('pno').textContent=(replay?'Replay · ':late?'Late · ':'')+'No. '+playDay.n;$('cover').hidden=true;layout();lit=findWords();offered=new Set(lit.map(keyOf));asking=[];$('ask').hidden=true;
   if(!again&&done){over=true;score=done.s;if(done.grid&&done.grid.length===H)grid=done.grid;paint();tip();return}
   paint();tip();if(!paused())spawn();else waitStart=true}
