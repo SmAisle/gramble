@@ -94,7 +94,7 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 #word{touch-action:none}#word .wt{touch-action:none}
 #list{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:420px;padding:0 10px}
 #list span{position:relative;border:1.5px dashed var(--ink);border-radius:0;background:transparent;text-align:center;font-family:"Courier Prime","Courier New",monospace;font-weight:700;font-size:17px;letter-spacing:.14em;padding:5px 0 4px;line-height:1.1}
-#list span.fit{background:transparent;border-color:#b8860b}
+#list span.fit{background:#fff3c4;border:1.5px solid var(--hiE)}
 #list span.got{background:#ebe6d8;border-color:#c9c2b0;color:#9a9384}
 #list span.got::after{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:2.5px solid var(--red);transform:rotate(-4deg)}
 #list span.new{animation:pick .5s ease-out}
@@ -413,7 +413,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='8.1',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='8.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
