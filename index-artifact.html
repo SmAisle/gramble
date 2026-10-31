@@ -249,7 +249,7 @@ body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo 
 #rCard .rbill{border-top:3px double var(--ink);border-bottom:3px double var(--ink);padding:8px 0;margin:6px 0 12px}
 #rCard .rbill div{display:flex;justify-content:space-between;font:700 14px var(--sans)}#rCard .rbill .g{color:var(--ink)}
 #rCard .rbill .t{font:900 26px var(--head);margin-top:2px}
-#rCard #rRide{height:56px;font-size:17px;box-shadow:2px 3px 0 #c9a961;margin:0}
+#rCard #rRide{height:60px;line-height:1.1;font-size:17px;box-shadow:2px 3px 0 #c9a961;margin:0}
 #rCard .rnote{font:600 11px var(--sans);color:var(--ink2);margin:5px 0 10px}
 #rCard #rCash{margin:0}
 #confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
@@ -385,7 +385,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
     <div class="g"><span>Clear bonus</span><span>+50</span></div>
     <div class="t"><span>Total</span><span id="rBank"></span></div>
   </div>
-  <button class="go" id="rRide">Let it ride 🎲 <span style="text-transform:none;letter-spacing:.02em">for +100 credits more</span></button>
+  <button class="go" id="rRide">Let it ride 🎲<small style="display:block;font-size:11px;letter-spacing:.08em;margin-top:3px;color:var(--acc)">Win up to +100 more</small></button>
   <div class="rnote">10 harder words. Go broke and you bank 0 credits today.</div>
   <button class="go alt" id="rCash">Cash out <span id="rCashN"></span></button>
 </div></div>
@@ -399,7 +399,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='7.1',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='7.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
