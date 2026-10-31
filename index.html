@@ -81,7 +81,7 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 /* The word in the Hold or Clear pop-up keeps its colors but floats up off the board, bigger, gently bobbing. */
 #strike{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;overflow:visible}
 #strike line{stroke:#b3261e;stroke-width:5;stroke-linecap:round;opacity:.85;transition:stroke-dashoffset .35s ease-out}
-.aw.cur{background:#fff3c4;box-shadow:inset 4px 0 0 #b3261e}.aw{padding-left:8px!important;padding-right:4px}
+.aw.cur{background:#fff3c4;box-shadow:inset 4px 0 0 #b3261e}.aw.both{background:#eef5e4}.aw.both .w{font-size:15px}.aw{padding-left:8px!important;padding-right:4px}
 #board .cell.ask{z-index:3;animation:askF 1.1s ease-in-out infinite alternate;box-shadow:0 8px 14px rgba(0,0,0,.35),0 2px 0 rgba(0,0,0,.25)!important}
 @keyframes askF{from{transform:translateY(-3px) scale(1.14)}to{transform:translateY(-7px) scale(1.2)}}
 @keyframes askP{to{filter:brightness(.85)}}
@@ -191,6 +191,9 @@ body.demo #msg{min-height:64px}
 .res{text-align:center;font-size:15px;margin:4px 0}
 #dLost{margin:0;font-family:var(--sans);font-size:14px}#dLost.lost{color:var(--red)}
 .wl{text-align:center;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink2);line-height:1.5}
+.dw{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.tapnote{margin:-6px 0 0;font-size:11px;font-style:italic;color:var(--ink2);text-align:center}
+#dTop{margin:0;font-family:var(--sans);font-size:15px}
+#def{z-index:45}#def .card{text-align:left}#defW{margin:0 0 6px;font-family:var(--sans);letter-spacing:.08em;font-size:22px}#defT p{margin:0 0 8px;font-size:15px;line-height:1.4}#defT i{color:var(--ink2)}#defT .dsm{font-size:13px}#defT a{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -271,8 +274,10 @@ body.demo #msg{min-height:64px}
   <div class="big" id="dStars"></div>
   <div class="dpts"><b id="dScore"></b> points</div>
   <p id="dRes" style="margin:0;font-weight:700"></p>
+  <p id="dTop" hidden></p>
   <p id="dWhy" style="margin:0;font-style:italic;font-size:14px;line-height:1.35"></p>
   <p class="wl" id="dWords"></p>
+  <p id="dTap" class="tapnote" hidden>Tap a word to see what it means</p>
   <p id="dLost" hidden></p>
   <p id="dStreak" hidden></p>
   <button class="go" id="dShare">Share result</button>
@@ -280,6 +285,7 @@ body.demo #msg{min-height:64px}
   <p style="margin:0;font-size:12px;font-style:italic;color:var(--ink2)">New letters at midnight.</p>
 </div></div>
 
+<div class="sheet" id="def" hidden><div class="card"><h3 id="defW"></h3><div id="defT"></div><button class="go" id="defOk">Close</button></div></div>
 <div class="sheet" id="stats" hidden><div class="card" style="text-align:center">
   <h2>Your Stats</h2>
   <div id="statStreak" class="sstreak"></div>
@@ -300,7 +306,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='1.9',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='2.0',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -429,6 +435,13 @@ function showAsk(nw,head){clearTimeout(timer);askI=0;$('askHead').textContent=he
     const why=[];if(w.fin)why.push('final 10 ×2');if(isChain(w))why.push('chain ×2');if(w.dia)why.push('diagonal ×2');if(w.x2)why.push(w.x2+' vowel'+(w.x2>1?'s':'')+' ×'+2**w.x2);
     if(why.length){const sm=document.createElement('small');sm.textContent=why.join(' · ')+(why.length>1?' = ×'+mult(w):'');d.firstChild.appendChild(sm)}
     d.querySelector('button').onclick=()=>{closeAsk(true);clearWord(w)};L.appendChild(d)});
+  // Words that share a letter: clearing one would break the others, so offer to clear them all together.
+  const share=(a,b)=>a.path.some(([y,x])=>b.path.some(([p,q])=>p===y&&q===x)),jn=asking.slice();
+  for(let i=0;i<jn.length;i++)for(const v of lit)if(!jn.some(u=>keyOf(u)===keyOf(v))&&share(jn[i],v))jn.push(v);
+  const joined=jn.filter(a=>jn.some(b=>b!==a&&share(a,b)));
+  if(!demo&&joined.length>1){const d=document.createElement('div');d.className='aw both';
+    d.innerHTML=`<div class="w"><small>Joined words, ${joined.length===2?'both':'all '+joined.length} score</small></div><div class="p">+${joined.reduce((a,v)=>a+wordPts(v),0)}</div><button>Clear ${joined.length===2?'both':'all'}</button>`;
+    d.firstChild.prepend(joined.map(v=>v.w).join(' + '));d.querySelector('button').onclick=()=>{closeAsk(true);clearWords(joined)};L.appendChild(d)}
   $('askHold').textContent=!demo&&!cur&&li>=letters.length?"Don't clear (game ends)":asking.length>1?'Hold all (keep building)':'Hold (keep building)';
   // Keep the board visible: the panel sits over whichever half of the board has fewer tiles (usually the empty top).
   const cnt=(a,b)=>grid.slice(a,b).flat().filter(Boolean).length;$('ask').classList.toggle('top',cnt(0,Math.ceil(H/2))<=cnt(Math.floor(H/2),H));
@@ -473,15 +486,19 @@ function tapCell(e){const el=e.target.closest('.cell');if(!el||over)return;const
   if(!hits.length){lastTap={k:'',t:0};return false}
   if(lastTap.k===k&&now-lastTap.t<400){lastTap={k:'',t:0};clearWord(hits.sort((a,b)=>wordPts(b)-wordPts(a))[0]);return true}
   lastTap={k,t:now};el.classList.remove('pick');void el.offsetWidth;el.classList.add('pick');return true}
-function clearWord(w){const p=wordPts(w);score+=p;cleared.push((isChain(w)?'⛓':'')+w.w+(w.dia?'↘':'')+(mult(w)>1&&!(w.dia&&mult(w)===2)?' ×'+mult(w):''));
-  for(const[y,x]of w.path)cellEl(y,x).classList.add('boom');
-  const[y0,x0]=w.path[0],pop=document.createElement('div');pop.className='pop'+(w.dia?' d':'');pop.textContent=w.w+' +'+p;
+// Each cleared word is saved as text, e.g. "⛓CARDS↘ ×4 +52": chain mark, word, ↘ for diagonal, multiplier, points.
+const clearLabel=w=>(isChain(w)?'⛓':'')+w.w+(w.dia?'↘':'')+(mult(w)>1&&!(w.dia&&mult(w)===2)?' ×'+mult(w):'')+' +'+wordPts(w);
+function clearWord(w){clearWords([w])}
+// Clear several words at once (Clear both): each scores in full, shared letters count in every word they're in.
+function clearWords(ws){const w=ws[0],p=ws.reduce((a,v)=>a+wordPts(v),0);score+=p;ws.forEach(v=>cleared.push(clearLabel(v)));
+  for(const v of ws)for(const[y,x]of v.path)cellEl(y,x).classList.add('boom');
+  const[y0,x0]=w.path[0],pop=document.createElement('div');pop.className='pop'+(w.dia?' d':'');pop.textContent=ws.map(v=>v.w).join(' + ')+' +'+p;
   pop.style.left=Math.min(cellEl(y0,x0).offsetLeft,boardEl.clientWidth-90)+'px';pop.style.top=cellEl(y0,x0).offsetTop+'px';boardEl.appendChild(pop);setTimeout(()=>pop.remove(),1000);
-  tone(784,.08);tone(1046,.12,'sine',.08,.08);if(w.dia)tone(1318,.14,'sine',.08,.16);
-  msg(w.w+(mult(w)>1?' (×'+mult(w)+')':'')+' +'+p+(!demo&&starCount(score)>starCount(score-p)?'  ·  '+'⭐'.repeat(starCount(score))+' earned!':''),'good');
+  tone(784,.08);tone(1046,.12,'sine',.08,.08);if(w.dia||ws.length>1)tone(1318,.14,'sine',.08,.16);
+  msg((ws.length>1?ws.map(v=>v.w).join(' + '):w.w+(mult(w)>1?' (×'+mult(w)+')':''))+' +'+p+(!demo&&starCount(score)>starCount(score-p)?'  ·  '+'⭐'.repeat(starCount(score))+' earned!':''),'good');
   setTimeout(()=>{const sig=v=>v.w+'|'+(v.path.length>1?(v.path[1][0]-v.path[0][0])+','+(v.path[1][1]-v.path[0][1]):''),
-      before=new Set(lit.filter(v=>v!==w&&keyOf(v)!==keyOf(w)).map(sig)),was=grid.map(r=>r.slice());
-    for(const[y,x]of w.path)grid[y][x]=null;
+      gone=new Set(ws.map(keyOf)),before=new Set(lit.filter(v=>!ws.includes(v)&&!gone.has(keyOf(v))).map(sig)),was=grid.map(r=>r.slice());
+    for(const v of ws)for(const[y,x]of v.path)grid[y][x]=null;
     // Letters above a cleared square drop down.
     for(let c=0;c<W;c++){const col=[];for(let r=H-1;r>=0;r--)if(grid[r][c])col.push(grid[r][c]);for(let r=H-1,i=0;r>=0;r--,i++)grid[r][c]=col[i]||null}
     if(cur&&grid[cur.r][cur.c])cur.r=Math.max(0,cur.r-1);
@@ -507,32 +524,55 @@ function end(why){const lost=findWords().map(w=>w.w+' ('+wordPts(w)+')');let lef
   for(const row of grid)for(const l of row)if(l){left+=PTS[up(l)];nl++}
   const words=score;score=Math.max(0,score-left);over=true;cur=null;clearTimeout(timer);paint();tip();
   const best=cleared.reduce((a,w)=>{const x=w.replace('⛓','').split(/[ ↘]/)[0];return x.length>a.length?x:a},'');
-  const r={s:score,w:cleared.length,best,why,list:cleared.slice(0,40)};if(late)r.late=1;if(lost.length)r.lost=lost;if(left)Object.assign(r,{words,left,nl});
+  const top=topWord(cleared);
+  const r={s:score,w:cleared.length,best,why,list:cleared.slice(0,40)};if(top)r.top=top;if(late)r.late=1;if(lost.length)r.lost=lost;if(left)Object.assign(r,{words,left,nl});
   if(!replay){store.set('day_'+playDay.k,JSON.stringify(r));store.set('ndone',+store.get('ndone',0)+1);
     store.set('best',Math.max(score,+store.get('best',0)));if(!late)checkIn(score)}
   tone(523,.12);tone(392,.2,'sine',.1,.14);if(starCount(score))[[659,.12,.3],[784,.12,.43],[1047,.3,.56]].forEach(([f,d,t])=>tone(f,d,'triangle',.08,t));
   setTimeout(()=>showDone(r),500)}
+// The word that scored the most points, from the saved labels ("CARDS ×2 +26").
+const ptsOf=l=>+((l.match(/\+(\d+)$/)||[])[1]||0),wordOf=l=>(l.match(/[A-Z]+/)||[''])[0];
+function topWord(list){let b=null;for(const l of list){const p=ptsOf(l);if(p&&(!b||p>b.p))b={w:wordOf(l),p}}return b}
 function result(k){try{return JSON.parse(store.get('day_'+k,''))}catch(e){return null}}
 // The result card, like The Daily 15: stars, points, why it ended, streak, Share.
 function showDone(r){const n=starCount(r.s),st=starsFor(r.s);
   $('dTitle').textContent=(replay?'Replay: ':'')+(n===3?'Brilliant!':n===2?'Well played!':n?'Nice game!':'Game over');
   $('dStars').textContent=st||'☆';$('dScore').textContent=r.s;
   $('dRes').textContent=[r.w+' word'+(r.w===1?'':'s')+' cleared',r.best&&r.best.length>=4?'longest '+r.best:'',r.late?'played late':''].filter(Boolean).join(' · ');
+  $('dTop').hidden=!r.top;if(r.top)$('dTop').innerHTML='Best word: <b></b> +'+r.top.p,$('dTop').querySelector('b').textContent=r.top.w;
   const nx=nextStar(r.s);$('dWhy').textContent=(r.why?r.why+'. ':'')+(nx?(nx-r.s)+' more points for '+'⭐'.repeat(n+1)+'.':'All 3 stars!');
-  $('dWords').textContent=(r.list||cleared).join(' · ');
+  // Each word is tappable for its meaning.
+  const WL=$('dWords');WL.innerHTML='';(r.list||cleared).forEach((l,i)=>{if(i)WL.append(' · ');const b=document.createElement('span');b.className='dw';b.textContent=l.replace(/ \+\d+$/,'');b.onclick=()=>showDef(wordOf(l));WL.appendChild(b)});
+  $('dTap').hidden=!(r.list||cleared).length;
   $('dLost').hidden=!r.lost&&!r.left;$('dLost').className='lost';
   $('dLost').innerHTML=(r.left?'Words '+r.words+' − '+r.nl+' letter'+(r.nl>1?'s':'')+' left on the board '+r.left+' = <b>'+r.s+'</b>':'')+(r.lost?'<br><b>Held and lost:</b> '+r.lost.join(', '):'');
   const sk=streak(),real=!replay&&!r.late;$('dStreak').hidden=!real||!sk.n;$('dStreak').textContent='🔥 Streak: '+sk.n+' day'+(sk.n>1?'s':'')+' · Best: '+sk.best;
   // Share always uses the first, saved result for that day.
   const first=result(playDay.k)||r,top='🔤 Gramble · No. '+playDay.n+(first.late?' (played late)':'')+'\n',streakL=!first.late&&sk.n>=2?' · 🔥 '+sk.n+'-day streak':'';
-  $('done').dataset.share=top+(starsFor(first.s)||'☆')+' '+first.s+' points · '+first.w+' words'+streakL+'\n'+location.href.split('?')[0].split('#')[0];
+  $('done').dataset.share=top+(starsFor(first.s)||'☆')+' '+first.s+' points · '+first.w+' words'+streakL+'\n'+shareGrid(first)+location.href.split('?')[0].split('#')[0];
   $('dAgain').hidden=replay&&false;$('done').hidden=false}
+// Share grid: one square per word cleared, in order, 8 to a row. 🟨 straight, 🟦 diagonal, 🟩 chain, 🟪 ×4 or more.
+// Then the best word, and a line for letters left on the board.
+function shareGrid(r){const sq=(r.list||[]).map(l=>{const m=+((l.match(/×(\d+)/)||[])[1]||1);return m>=4?'🟪':l.includes('⛓')?'🟩':l.includes('↘')?'🟦':'🟨'});
+  let g='';for(let i=0;i<sq.length;i+=8)g+=sq.slice(i,i+8).join('')+'\n';
+  if(r.top)g+='Best word: '+r.top.w+' +'+r.top.p+'\n';if(r.nl)g+='⬜ '+r.nl+' letter'+(r.nl>1?'s':'')+' left on the board\n';return g}
 // Streak: days in a row finished on the day they came out (late plays don't count). Today still open doesn't break it.
 function streak(){const on=d=>{const r=result(d.k);return !!r&&!r.late};let n=0;
   for(let i=on(today())?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
   const best=Math.max(n,+store.get('streakBest',0));store.set('streakBest',String(best));return{n,best,today:on(today())}}
 $('dShare').onclick=async()=>{const t=$('done').dataset.share;try{if(navigator.share){await navigator.share({text:t});return}}catch(e){return}
   try{await navigator.clipboard.writeText(t);$('dShare').textContent='Copied!'}catch(e){$('dShare').textContent='Could not copy'}setTimeout(()=>$('dShare').textContent='Share result',1500)};
+// Meanings come from the free dictionary at dictionaryapi.dev (only the word is sent). If it can't be reached
+// or doesn't know the word, there's a link to look it up instead.
+const defCache={};
+async function showDef(w){if(!w)return;$('defW').textContent=w;const T=$('defT');T.textContent='Looking it up…';$('def').hidden=false;
+  const look=()=>{T.innerHTML+='<p class="dsm"><a target="_blank" rel="noopener">Look up '+w+' online</a></p>';T.querySelector('a').href='https://www.google.com/search?q=define+'+encodeURIComponent(w.toLowerCase())};
+  try{const d=defCache[w]||(defCache[w]=await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w.toLowerCase())).then(r=>r.ok?r.json():null));
+    if($('defW').textContent!==w)return;const ms=d&&d[0]&&d[0].meanings||[];T.innerHTML='';
+    ms.slice(0,3).forEach(m=>{const p=document.createElement('p');p.innerHTML='<i></i> ';p.firstChild.textContent=m.partOfSpeech;p.append(m.definitions[0].definition);T.appendChild(p)});
+    if(!ms.length){T.textContent="It's in Gramble's word list, but the dictionary doesn't have a meaning for it.";look()}}
+  catch(e){if($('defW').textContent!==w)return;T.textContent="Couldn't reach the dictionary.";look()}}
+$('defOk').onclick=()=>{$('def').hidden=true};$('def').onclick=e=>{if(e.target.id==='def')$('def').hidden=true};
 $('dAgain').onclick=()=>{$('done').hidden=true;start(true,playDay)};
 $('dClose').onclick=()=>$('done').hidden=true;
 $('dPast').onclick=()=>{backTo='done';showPast()};
@@ -620,7 +660,7 @@ $('mEnd').onclick=()=>{$('menu').hidden=true;$('done').hidden=true;clearTimeout(
   for(li=0;li<TOTAL-15;li++){const l=letters[li];let best=null;
     for(let c=0;c<W;c++){const r=landRow(c);if(r<2)continue;grid[r][c]=l;const v=findWords().reduce((a,w)=>a+wordPts(w),0)*10+r;grid[r][c]=null;if(!best||v>best.v)best={c,r,v}}
     if(!best)break;grid[best.r][best.c]=l;
-    if(li<TOTAL-22)for(let g=0;g<20;g++){const ws=findWords();if(!ws.length)break;const w=ws.sort((a,b)=>wordPts(b)-wordPts(a))[0];score+=wordPts(w);cleared.push(w.w);
+    if(li<TOTAL-22)for(let g=0;g<20;g++){const ws=findWords();if(!ws.length)break;const w=ws.sort((a,b)=>wordPts(b)-wordPts(a))[0];score+=wordPts(w);cleared.push(clearLabel(w));
       for(const[y,x]of w.path)grid[y][x]=null;for(let c=0;c<W;c++){const col=[];for(let r=H-1;r>=0;r--)if(grid[r][c])col.push(grid[r][c]);for(let r=H-1,i=0;r>=0;r--,i++)grid[r][c]=col[i]||null}}}
   lit=findWords();offered=new Set(lit.map(keyOf));slowTest=true;$('pno').textContent='Ending test';paint();tip();spawn()};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
