@@ -1,0 +1,11 @@
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});p.on('pageerror',e=>console.log('ERR',e.message));
+await p.goto('file://'+require('path').resolve(__dirname,'../index-artifact.html'));await p.evaluate(()=>store.set('seenHelp3','1'));await p.click('#coverGo');await p.waitForTimeout(300);
+await p.screenshot({path:'/tmp/rw3/h0.png',clip:{x:0,y:0,width:390,height:700}});
+await p.evaluate(async()=>{const w=left()[0];forced=[w[2],'Q',w[0],'Z',w[3]];await spin();forced=null});await p.waitForTimeout(4200);
+console.log(await p.evaluate(()=>[$('msg').textContent,[...document.querySelectorAll('.reel.hint')].length,document.querySelector('#list .tgt')?.textContent]));
+await p.screenshot({path:'/tmp/rw3/h1.png',clip:{x:0,y:0,width:390,height:700}});
+await p.evaluate(()=>{tapReel(0);tapReel(2)});await p.waitForTimeout(300);
+console.log(await p.evaluate(()=>$('msg').textContent));
+await p.screenshot({path:'/tmp/rw3/h2.png',clip:{x:0,y:0,width:390,height:700}});
+await p.evaluate(()=>{$('mHints').click()});console.log(await p.evaluate(()=>[$('msg').textContent,document.querySelectorAll('.reel.hint').length,$('mHints').textContent]));
+await b.close()})();

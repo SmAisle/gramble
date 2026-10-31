@@ -16,7 +16,8 @@ Play: https://smaisle.github.io/gramble/ (once GitHub Pages is on)
 - When the five letters on the line spell a list word **in any order**, it's found, crossed off, and pays Scrabble points × **20¢**. A red line strikes through the letters on the reels until the next spin.
 - Words that still fit your locked letters light up on the list, with the letters you already have in gray.
 - **Jackpot:** a list word on a spin with nothing locked pays double. Rare, because the machine gives no help on those spins.
-- **Bonus words:** any other everyday five-letter word (`source/bonus.txt`) offers Cash in (half pay, once per game) or Pass; a ★ BONUS WORD ★ badge shows on the reels while you choose.
+- **Bonus words:** any other everyday five-letter word (`source/bonus.txt`) offers Cash in (half pay, once per game) or Pass; a ★ BONUS WORD ★ badge shows on the reels while you choose. A pop-up card shows the word, the half-pay math (letter points × 10¢), and two plain buttons: Take (locks reset) or Keep my letters (names the list word you're close to).
+- **Hints (💡):** for the first 2 words of each game, the letters worth keeping glow after each spin, the target word glows on the list, and the message says what to tap. A "Hints are done" card appears when the second word is found. Hints never show in the High Roller round. The menu has Hints On/Off, and Off stays off.
 - **Demo:** first-time players get a guided demo on the real machine (8 steps, scripted letters). Also on the cover and in the menu.
 
 ## The loaded machine
