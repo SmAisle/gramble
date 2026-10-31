@@ -223,6 +223,14 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
 #mCross{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
 #mCross b{font-size:10px}#mCross.on{background:var(--ink);color:#fffdf6}
 #list span i{font-style:normal}#list span i.x{color:#b5ad9a}
+/* ---------- Demo: a guided walk-through on the real machine ---------- */
+#demoCap{position:fixed;left:50%;transform:translateX(-50%);top:8px;width:min(94vw,500px);z-index:40;background:#fffdf6;border:2px solid var(--ink);box-shadow:3px 4px 0 var(--ink);padding:10px 12px;font-family:var(--sans)}
+#demoCap .st{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+#demoCap p{margin:4px 0 8px;font-family:var(--body);font-size:15px;line-height:1.35}
+#demoCap .row{display:flex;gap:8px}#demoCap button{flex:1;height:40px;border:2px solid var(--ink);background:var(--ink);color:#fffdf6;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:3px}
+#demoCap button.sk{flex:none;width:80px;background:#fffdf6;color:var(--ink)}
+body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo #word{pointer-events:none}
+.reel.hint{box-shadow:0 0 0 3px #ffd23f,0 0 14px #ffd23f}
 </style>
 </head>
 <body>
@@ -234,14 +242,14 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
   <div id="msg"></div>
   <div id="stage">
     <div id="cab">
-      <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">50¢ a spin · 20¢ a point</small></div>
+      <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">Quick 10 · 50¢ a spin</small></div>
       <div id="row"><div id="reels"><div id="line"></div></div>
         <button id="lever" aria-label="Spin"><div class="base"></div><div class="arm"><div class="ball"></div></div></button></div>
     </div>
     <div id="word"></div>
     <div id="wsum"></div>
     <div id="bar"><button id="spinBtn">Spin<small>50¢</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Cash in<small id="bCashN"></small></button></div>
-    <div id="logLbl">Find all 20 words</div>
+    <div id="logLbl">Find all 10 words</div>
     <div id="list"></div>
     <div id="bonusL"></div>
   </div>
@@ -250,13 +258,13 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
 <div class="sheet" id="cover"><div class="in">
   <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
   <div id="cvReels"><span>S</span><span>P</span><span>I</span><span>N</span><span>S</span></div>
-  <div class="tag">Spin the reels to spell all 20 words before your money runs out.</div>
+  <div class="tag">Clear 10 words with $5. Then cash out, or let it ride.</div>
   <div id="cvStreak" hidden></div>
   <button id="cvStats" hidden aria-label="Your stats"></button>
   <button class="go" id="coverGo">Play today's game</button>
-  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">A fresh 20 words, as many as you like</small></button></div>
-  <div style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same 20 words each day. Your first game counts.</div>
-  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverHow">How to play</button></div>
+  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists, as many as you like</small></button></div>
+  <div style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
+  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverDemo">Watch the demo</button><span>·</span><button id="coverHow">How to play</button></div>
   <button id="coverSm" class="smline"><i class="smico"></i><b>smAisle</b><em>See our other games ›</em></button>
   <div class="ver" id="cvVer" style="margin-top:0"></div>
 </div></div>
@@ -264,8 +272,10 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
 <div class="sheet" id="help" hidden><div class="card">
   <h2>How to Play</h2>
   <ul class="rules">
-    <li><b>Daily game:</b> everyone gets the same 20 words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus.</li>
-    <li><b>Goal:</b> find all <b>20 words</b> on your list before your money runs out. You start with <b>$10</b>, and every spin costs <b>50¢</b>.</li>
+    <li><b>Daily game:</b> everyone gets the same words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus.</li>
+    <li><b>Quick 10:</b> you start with <b>$5</b> and a list of <b>10 words</b>. Find them all before your money runs out. Every spin costs <b>50¢</b>.</li>
+    <li><b>Clear bonus:</b> clear all 10 and you get <b>+$5</b>. Then choose: <b>Cash out</b> and bank your money, or <b>Let it ride</b> into the <b>High Roller 20</b>, a new list of 20 words played with the money you have. Find all 20 for a <b>+$10 bonus</b>. Go broke and you bank nothing today. You can cash out any time during the High Roller.</li>
+    <li><b>Lifetime winnings:</b> what you bank each day adds up. It's just for bragging rights.</li>
     <li><b>Spin:</b> tap <b>Spin</b> (or pull the lever). Five reels land on letters.</li>
     <li><b>Lock:</b> tap a reel (or its tile) to lock its letter 🔒. Locked letters stay put when you spin again. Tap again to unlock it.</li>
     <li><b>Hints:</b> words that still fit your locked letters light up, and the letters you already have turn gray.</li>
@@ -300,6 +310,7 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
   <button class="go alt" id="mStats">Stats</button>
   <button class="go alt" id="mCover">Home screen</button>
   <button class="go alt" id="mHow">How to play</button>
+  <button class="go alt" id="mDemo">Watch the demo</button>
   <div class="ver" id="menuVer"></div>
 </div></div>
 
@@ -317,6 +328,17 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
   <button class="go alt" id="dClose" style="padding:9px 4px;font-size:13px">See the machine</button>
 </div></div>
 
+<div id="demoCap" hidden><div class="st" id="dcStep"></div><p id="dcText"></p><div class="row"><button class="sk" id="dcSkip">Skip</button><button id="dcNext">Next</button></div></div>
+
+<div class="sheet" id="ride" hidden><div class="card" style="text-align:center">
+  <h2>Quick 10 cleared!</h2>
+  <p style="margin:0;font-family:var(--sans);font-weight:800;color:#2e7d32">+$5 clear bonus</p>
+  <div class="big" id="rBank"></div>
+  <p style="margin:0;font-style:italic;font-size:14px">What now?</p>
+  <button class="go alt" id="rCash">Cash out<small style="display:block;font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:600">Bank it. It goes into your lifetime winnings.</small></button>
+  <button class="go" id="rRide">Let it ride 🎲<small style="display:block;font-size:11px;letter-spacing:.04em;text-transform:none;font-weight:600">Take your money into the High Roller 20. Find all 20 for a +$10 bonus. Go broke and you bank nothing today.</small></button>
+</div></div>
+
 <div class="sheet" id="def" hidden><div class="card"><h3 id="defW"></h3><div id="defT"></div><button class="go" id="defOk">Close</button></div></div>
 <div class="sheet" id="stats" hidden><div class="card" style="text-align:center">
   <h2>Your Stats</h2>
@@ -326,7 +348,7 @@ body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 
 </div></div>
 
 <script>
-const VERSION='5.3',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='6.0',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -340,11 +362,11 @@ const POOL='DREAM GREEN EXTRA STAFF ENJOY IMPLY HURRY NINTH SEVEN AGREE GLOVE UP
 const BONUS=new Map();for(const w of 'ABOUT ABOVE ABUSE ACIDS ACORN ACRES ACTED ACTOR ACUTE ADAPT ADMIT ADOPT ADORE ADULT AFTER AGAIN AGENT AGILE AGING AGREE AHEAD AIDED AIMED AISLE ALARM ALBUM ALERT ALGAE ALIAS ALIBI ALIEN ALIGN ALIKE ALIVE ALLEY ALLOW ALLOY ALOHA ALONE ALONG ALOUD ALTAR ALTER AMAZE AMBER AMEND AMONG AMPLE AMUSE ANGER ANGLE ANGRY ANKLE ANNEX ANNOY ANVIL APART APPLE APPLY APRON AREAS ARENA ARGUE ARISE ARMED ARMOR AROMA ARRAY ARROW ASHES ASIDE ASPEN ASSET ATLAS ATOMS ATTIC AUDIO AUDIT AUNTS AUTOS AVAIL AVOID AWAIT AWAKE AWARD AWARE AWFUL AWOKE BACKS BACON BADGE BADLY BAGEL BAGGY BAILS BAKER BAKES BALLS BALMY BANDS BANGS BANJO BANKS BARGE BARKS BARNS BARON BASED BASES BASIC BASIN BASIS BATCH BATHE BATHS BATON BAYOU BEACH BEADS BEADY BEAMS BEANS BEARD BEARS BEAST BEATS BEECH BEEFY BEERS BEGAN BEGIN BEGUN BEIGE BEING BELLS BELLY BELOW BELTS BENCH BENDS BERET BERRY BIKER BIKES BILLS BINDS BINGO BIRCH BIRDS BIRTH BISON BITES BLACK BLADE BLAME BLAND BLANK BLARE BLAST BLAZE BLEAK BLEED BLEND BLESS BLIMP BLIND BLINK BLISS BLITZ BLOCK BLOND BLOOD BLOOM BLOWN BLOWS BLUES BLUFF BLUNT BLURT BLUSH BOARD BOAST BOATS BOILS BONDS BONES BONGO BONUS BOOKS BOOST BOOTH BOOTS BOOTY BORED BORES BOSSY BOUND BOWLS BOXER BOXES BRACE BRAID BRAIN BRAKE BRAND BRASS BRAVE BRAVO BRAWL BREAD BREAK BREED BRIBE BRICK BRIDE BRIEF BRINE BRING BRINK BRISK BROAD BROIL BROKE BROOK BROOM BROTH BROWN BRUSH BUDDY BUDGE BUGGY BUGLE BUILD BUILT BULKY BULLS BULLY BUMPS BUMPY BUNCH BUNNY BURNS BURNT BURST BUSES BUSHY BUYER CABIN CABLE CADET CAGES CAKES CALLS CALMS CAMEL CAMEO CAMPS CANAL CANDY CANOE CARDS CARES CARGO CAROL CARRY CARTE CARTS CARVE CASES CASTS CATCH CATER CAUSE CAVES CEASE CEDAR CELLO CELLS CENTS CHAIN CHAIR CHALK CHAMP CHANT CHAOS CHARM CHARS CHART CHASE CHATS CHEAP CHEAT CHECK CHEEK CHEER CHEFS CHESS CHEST CHEWS CHEWY CHICK CHIEF CHILD CHILI CHILL CHIME CHIMP CHINA CHINS CHIPS CHIRP CHOIR CHOKE CHOPS CHORD CHORE CHOSE CHUCK CHUNK CHURN CHUTE CIDER CITES CIVIC CIVIL CLAIM CLAMP CLANG CLASH CLASP CLASS CLEAN CLEAR CLERK CLICK CLIFF CLIMB CLING CLINK CLOAK CLOCK CLONE CLOSE CLOTH CLOUD CLOWN CLUBS CLUES CLUMP CLUNG COACH COALS COAST COATS COBRA COCOA CODES COINS COLON COLOR COMBS COMES COMET COMFY COMIC COMMA CONDO COOKS COPES CORAL CORES CORNS CORNY CORPS COSTS COUCH COUGH COULD COUNT COUPS COURT COVER CRACK CRAFT CRAMP CRANE CRANK CRASH CRATE CRAVE CRAWL CRAZY CREAK CREAM CREEK CREEP CREPT CREST CREWS CRIES CRIME CRISP CROAK CROOK CROPS CROSS CROWD CROWN CRUDE CRUEL CRUMB CRUSH CRUST CUBIC CUPID CURED CURES CURLS CURLY CURRY CURVE CURVY CYCLE DAILY DAIRY DAISY DAMPS DANCE DANDY DARES DARTS DATED DATES DAWNS DEALS DEALT DEBTS DEBUG DEBUT DECAF DECAL DECAY DECKS DECOR DECOY DEFER DELAY DELTA DENIM DENSE DEPOT DEPTH DERBY DESKS DEVIL DIALS DIARY DIETS DIGIT DIMLY DINER DIRTY DISCO DISCS DISKS DITCH DITTO DIVER DIVES DIZZY DODGE DOLLS DOLLY DONOR DOORS DOUBT DOUGH DOWNS DOZEN DRAFT DRAGS DRAIN DRAMA DRANK DRAPE DRAWN DRAWS DREAD DREAM DRESS DRIED DRIER DRIES DRIFT DRILL DRINK DRIVE DRONE DROOL DROOP DROPS DROVE DROWN DRUMS DRUNK DRYER DUCKS DUMMY DUMPS DUSTY DWARF DWELL DYING EAGER EAGLE EARLY EARNS EARTH EASEL EASES EATEN EBONY EDGES EDITS EERIE EIGHT EJECT ELBOW ELDER ELECT ELITE ELVES EMPTY ENACT ENDED ENEMY ENJOY ENTER ENTRY EQUAL EQUIP ERASE ERODE ERROR ERUPT ESSAY EUROS EVADE EVENT EVERY EVICT EVILS EVOKE EXACT EXAMS EXCEL EXERT EXILE EXIST EXITS EXPEL EXTRA FABLE FACED FACES FACET FACTS FADES FAILS FAINT FAIRS FAIRY FALLS FALSE FAMED FANCY FARES FARMS FATAL FATES FATTY FAULT FAVOR FEARS FEAST FEEDS FEELS FENCE FERRY FETCH FEVER FIBER FIELD FIERY FIFTH FIFTY FIGHT FILED FILES FILLS FILMS FINAL FINCH FINDS FINES FIRES FIRMS FIRST FISHY FIXED FIXES FLAGS FLAIR FLAKE FLAKY FLAME FLARE FLASH FLASK FLATS FLEES FLEET FLESH FLICK FLIER FLIES FLING FLOAT FLOCK FLOOD FLOOR FLOSS FLOUR FLOWN FLOWS FLUFF FLUID FLUKE FLUNG FLUSH FLUTE FOAMY FOCUS FOGGY FOLDS FOLKS FOODS FOOLS FORCE FORGE FORKS FORMS FORTH FORTY FORUM FOUND FOYER FRAIL FRAME FRANK FRAUD FREAK FRESH FRIED FRIES FROGS FRONT FROST FROTH FROWN FROZE FRUIT FUDGE FUELS FULLY FUMES FUNDS FUNKY FUNNY FURRY FUSES FUSSY FUZZY GAFFE GAINS GAMES GANGS GASES GATES GAUGE GAZES GEARS GEESE GENES GENRE GHOST GIANT GIDDY GIFTS GIRLS GIVEN GIVES GIZMO GLAND GLARE GLASS GLAZE GLEAM GLIDE GLINT GLOAT GLOBE GLOOM GLORY GLOSS GLOVE GLOWS GLUES GNOME GOALS GOATS GOING GOODS GOOEY GOOFY GOOSE GORGE GOURD GRABS GRACE GRADE GRAFT GRAIN GRAMS GRAND GRANT GRAPE GRAPH GRASP GRASS GRATE GRAVE GRAVY GRAZE GREAT GREED GREEN GREET GRIEF GRILL GRIME GRIMY GRIND GRIPE GRIPS GROAN GROOM GROSS GROUP GROVE GROWL GROWN GROWS GRUFF GRUNT GUARD GUESS GUEST GUIDE GUILD GUILT GULLY GUMBO GUMMY GUSTO GUSTY HABIT HAIRS HAIRY HALLS HALTS HALVE HANDS HANDY HANGS HAPPY HARDY HARMS HARSH HASTE HASTY HATCH HATES HAUNT HAVEN HAVOC HAZEL HEADS HEALS HEARD HEARS HEART HEATS HEAVE HEAVY HEDGE HEELS HEFTY HEIST HELLO HELPS HENCE HERBS HERON HIDES HIGHS HIKER HILLS HILLY HINGE HINTS HIPPO HIRES HITCH HOARD HOBBY HOIST HOLDS HOLES HOLLY HOMES HONEY HONOR HOOKS HOPES HORDE HORNS HORSE HOSTS HOTEL HOTLY HOUND HOURS HOUSE HOVER HOWDY HUMAN HUMID HUMOR HUNCH HUNTS HURRY HURTS HUSKY HUTCH HYENA ICING IDEAL IDEAS IDIOM IGLOO IMAGE IMPLY INDEX INLET INNER INPUT IRONS IRONY ISLES ISSUE ITCHY ITEMS IVORY JAILS JAZZY JEANS JELLY JETTY JEWEL JIFFY JOINS JOINT JOKER JOKES JOLLY JUDGE JUICE JUICY JUMBO JUMPS JUMPY JUROR KARMA KAYAK KEEPS KHAKI KICKS KINDS KINGS KIOSK KITES KITTY KNACK KNEAD KNEEL KNEES KNELT KNIFE KNITS KNOCK KNOTS KNOWN KNOWS KOALA LABEL LABOR LACKS LADLE LAKES LAMBS LAMPS LANCE LANDS LANES LANKY LAPEL LAPSE LARGE LARVA LASER LASSO LASTS LATCH LATER LAUGH LAYER LEADS LEAFY LEAKS LEAKY LEANS LEAPT LEARN LEASE LEASH LEAST LEAVE LEDGE LEGAL LEMON LENDS LEVEL LEVER LIFTS LIGHT LIKES LILAC LIMBO LIMIT LINED LINEN LINER LINES LINGO LINKS LISTS LITER LIVER LIVES LIVID LLAMA LOADS LOANS LOBBY LOCAL LOCKS LODGE LOFTY LOGIC LOGOS LONER LOOKS LOOPS LOOSE LORDS LOSER LOSES LOTUS LOUSY LOVER LOVES LOWER LOWLY LOYAL LUCKY LUMPS LUMPY LUNAR LUNCH LUNGE LUNGS LYING LYRIC MACHO MACRO MADAM MADLY MAFIA MAGIC MAILS MAINS MAJOR MAKER MAKES MALES MALLS MANGO MANIA MANOR MAPLE MARCH MARKS MARRY MARSH MASKS MASON MATCH MATES MAXIM MAYBE MAYOR MEALS MEANS MEANT MEATS MEATY MEDAL MEDIA MEETS MELON MELTS MENUS MERCY MERGE MERIT MERRY MESSY METAL METER METRO MICRO MIDST MIGHT MILES MILKY MILLS MIMIC MINCE MINDS MINER MINES MINOR MINTY MINUS MIRTH MISER MISTS MISTY MIXED MIXER MIXES MODEL MODEM MODES MOIST MOLAR MOLDY MOMMY MONEY MONTH MOODS MOODY MOONS MOOSE MOPED MORAL MOSSY MOTEL MOTIF MOTOR MOTTO MOUND MOUNT MOURN MOUSE MOUTH MOVER MOVES MOVIE MOWER MUDDY MUGGY MULCH MUMMY MUNCH MURAL MURKY MUSHY MUSIC MUSTY MYTHS NAILS NAIVE NAMES NANNY NASAL NASTY NAVAL NECKS NEEDS NEEDY NERDY NERVE NESTS NEVER NEWLY NICHE NIECE NIFTY NIGHT NINES NINTH NOBLE NOISE NOISY NOMAD NOONS NORTH NOSES NOTCH NOTED NOTES NOUNS NOVEL NUDGE NURSE NUTTY NYLON OASIS OBEYS OCCUR OCEAN ODDLY OFFER OFTEN OLDEN OLDIE OLIVE ONION ONSET OPENS OPERA OPTIC ORBIT ORDER ORGAN OTHER OTTER OUGHT OUNCE OUTDO OUTER OVENS OWNED OWNER OXIDE OZONE PACES PACKS PACTS PAGER PAGES PAINS PAINT PAIRS PANDA PANEL PANIC PANSY PANTS PAPER PARKA PARKS PARTS PARTY PASTA PASTE PASTS PATCH PATHS PATIO PATTY PAUSE PEACE PEACH PEAKS PEARL PECAN PEDAL PEELS PEERS PENNY PERCH PERIL PERKY PESKY PESOS PESTS PETAL PETTY PHASE PHONE PHONY PHOTO PIANO PICKS PICKY PIECE PIGGY PILES PILLS PILOT PINCH PINES PINTS PIPES PITCH PIVOT PIXEL PIXIE PIZZA PLACE PLAID PLAIN PLANE PLANK PLANS PLANT PLATE PLAYS PLAZA PLEAD PLEAT PLOTS PLUCK PLUGS PLUME PLUMP PLUSH POACH POEMS POETS POINT POISE POKER POLAR POLES POLKA POLLS PONDS POOLS POPPY PORCH PORTS POSED POSES POSTS POUCH POUND POURS POWER PRANK PRESS PRICE PRIDE PRIME PRINT PRIOR PRISM PRIZE PROBE PRONE PRONG PROOF PROSE PROUD PROVE PROWL PROXY PRUNE PSYCH PUDGY PUFFY PULLS PULSE PUMPS PUNCH PUPIL PUPPY PUREE PURGE PURSE PUSHY PUTTY QUACK QUAIL QUAKE QUART QUASH QUEEN QUERY QUEST QUICK QUIET QUILL QUILT QUIRK QUITE QUITS QUOTA QUOTE RACES RADAR RADIO RAGES RAIDS RAILS RAINS RAINY RAISE RALLY RANCH RANGE RANKS RAPID RATES RATIO RAVEN RAZOR REACH REACT READS READY REALM REARS REBEL RECAP RECUR REFER REGAL REHAB REIGN RELAX RELAY RELIC RENEW RENTS REPAY REPEL REPLY RERUN RESTS RETRO REVEL RHINO RHYME RIDER RIDES RIDGE RIGHT RIGID RINGS RINSE RIPEN RISEN RISER RISES RISKS RISKY RIVAL RIVER RIVET ROACH ROADS ROAST ROBIN ROBOT ROCKS ROCKY RODEO ROGUE ROLES ROLLS ROOFS ROOMS ROOMY ROOST ROOTS ROPES ROSES ROTOR ROUGH ROUND ROUTE ROVER ROWDY ROYAL RUGBY RUINS RULER RULES RUMOR RUNNY RURAL RUSTY SACKS SADLY SAILS SALAD SALES SALON SALSA SALTS SALTY SANDS SANDY SASSY SATIN SAUCE SAUCY SAUNA SAVED SAVER SAVES SAVOR SAVVY SCALE SCALP SCALY SCARE SCARF SCARS SCARY SCENE SCENT SCOLD SCOOP SCOOT SCOPE SCORE SCOUR SCOUT SCOWL SCRAP SCREW SCRUB SCUFF SEALS SEATS SEDAN SEEDS SEEDY SEEKS SEEMS SEIZE SELLS SENDS SENSE SERUM SERVE SETUP SEVEN SEVER SEWER SHACK SHADE SHADY SHAFT SHAKE SHAKY SHALL SHAME SHAPE SHARE SHARK SHARP SHAVE SHAWL SHEAR SHEDS SHEEN SHEEP SHEER SHEET SHELF SHELL SHIFT SHINE SHINY SHIPS SHIRT SHOCK SHOES SHONE SHOOK SHOOT SHOPS SHORE SHORT SHOTS SHOUT SHOVE SHOWN SHOWS SHOWY SHRED SHRUB SHRUG SHUTS SHYLY SIDED SIDES SIEGE SIEVE SIGHS SIGHT SIGNS SILKS SILKY SILLY SINCE SINGS SINKS SINUS SIREN SITES SIXES SIXTH SIXTY SIZED SIZES SKATE SKIER SKIES SKILL SKIMP SKINS SKIPS SKIRT SKULL SKUNK SLACK SLAMS SLANG SLANT SLAPS SLASH SLATE SLEEK SLEEP SLEET SLEPT SLICE SLICK SLIDE SLIME SLIMY SLING SLIPS SLOPE SLOSH SLOTH SLUMP SLUNG SLURP SLUSH SLYLY SMACK SMALL SMART SMASH SMEAR SMELL SMILE SMIRK SMITH SMOCK SMOKE SMOKY SNACK SNAIL SNAKE SNAPS SNARE SNARL SNEAK SNEER SNIFF SNOOP SNORE SNORT SNOUT SNOWS SNOWY SNUCK SOAKS SOAPS SOAPY SOBER SOCKS SOFAS SOGGY SOILS SOLAR SOLID SOLOS SOLVE SONGS SONIC SORES SORRY SORTS SOULS SOUND SOUPS SOUTH SPACE SPADE SPARE SPARK SPASM SPAWN SPEAK SPEAR SPECK SPEED SPELL SPEND SPENT SPICE SPICY SPIES SPIKE SPILL SPINE SPINS SPIRE SPITE SPLAT SPLIT SPOIL SPOKE SPOOF SPOOK SPOOL SPOON SPORT SPOTS SPOUT SPRAY SPREE SPRIG SPURS SPURT SQUAD SQUAT SQUID STACK STAFF STAGE STAIN STAIR STAKE STALE STALK STALL STAMP STAND STARE STARK STARS START STASH STATE STAYS STEAK STEAL STEAM STEEL STEEP STEER STEMS STEPS STERN STICK STIFF STILL STILT STING STINK STIRS STOCK STOKE STOLE STOMP STONE STONY STOOD STOOL STOOP STOPS STORE STORK STORM STORY STOUT STOVE STRAP STRAW STRAY STRIP STRUM STRUT STUCK STUDY STUFF STUMP STUNG STUNK STUNT STYLE SUAVE SUEDE SUGAR SUITE SUITS SULKY SUNNY SUPER SURFS SURGE SWAMP SWANS SWARM SWEAR SWEAT SWEEP SWEET SWELL SWEPT SWIFT SWIMS SWING SWIPE SWIRL SWISH SWOOP SWORD SWORE SWORN SWUNG SYRUP TABBY TABLE TABOO TACKY TAFFY TAILS TAKEN TAKES TALES TALKS TALLY TALON TANGO TANGY TANKS TAPES TARDY TASKS TASTE TASTY TAUNT TAWNY TAXES TAXIS TEACH TEAMS TEARS TEASE TEENS TEETH TELLS TEMPO TEMPT TENDS TENOR TENSE TENTH TENTS TEPID TERMS TERSE TESTS TESTY TEXTS THANK THEFT THEIR THEME THERE THESE THICK THIEF THIGH THING THINK THIRD THORN THOSE THREE THREW THROB THROW THUMB THUMP TIARA TICKS TIDAL TIDES TIGER TIGHT TILLS TIMER TIMES TIMID TIRED TITLE TOAST TODAY TOKEN TOMBS TONES TONGS TONIC TOOLS TOOTH TOPIC TORCH TORSO TOTAL TOUCH TOUGH TOURS TOWEL TOWER TOWNS TOXIC TRACE TRACK TRADE TRAIL TRAIN TRAIT TRAMP TRAPS TRASH TREAD TREAT TREES TREND TRIAL TRIBE TRICK TRIED TRIES TRIPS TROLL TROOP TROUT TRUCE TRUCK TRULY TRUMP TRUNK TRUST TRUTH TUBBY TUBES TULIP TUMMY TUNER TUNES TUNIC TURBO TURNS TUTOR TWANG TWEAK TWEED TWEET TWICE TWINE TWINS TWIRL TWIST TYPES UNCLE UNCUT UNDER UNDID UNFIT UNIFY UNION UNITE UNITS UNITY UNTIE UNTIL UNZIP UPPER UPSET URBAN URGES USAGE USERS USHER USUAL UTTER VAGUE VALET VALID VALOR VALUE VALVE VAPOR VASES VAULT VEGAN VEINS VENOM VENUE VERBS VERGE VERSE VERVE VESTS VIBES VIDEO VIEWS VIGOR VILLA VINYL VIOLA VIPER VIRAL VIRUS VISAS VISIT VISOR VISTA VITAL VIVID VOCAL VOGUE VOICE VOTED VOTER VOTES VOUCH VOWEL WACKY WAFER WAGER WAGES WAGON WAIST WAITS WAIVE WAKES WALKS WALLS WALTZ WANTS WARDS WARNS WASTE WATCH WATER WAVER WAVES WEARS WEARY WEAVE WEDGE WEEDS WEEKS WEIGH WEIRD WELLS WHACK WHALE WHARF WHEAT WHEEL WHERE WHICH WHIFF WHILE WHINE WHIPS WHIRL WHISK WHITE WHOLE WHOOP WHOSE WIDEN WIDER WIDOW WIDTH WIELD WILLS WINCE WINCH WINDS WINDY WINES WINGS WIPER WIPES WIRED WIRES WISPY WITCH WITTY WIVES WOKEN WOMAN WOMEN WOODS WOODY WOOLS WOOZY WORDS WORDY WORKS WORLD WORMS WORRY WORSE WORST WORTH WOULD WOUND WOVEN WRAPS WRATH WRECK WRING WRIST WRITE WRONG WROTE WRUNG YACHT YARDS YEARN YEARS YEAST YELLS YIELD YODEL YOUNG YOURS YOUTH YUCKY YUMMY ZEBRA ZEROS ZONES'.split(/\s+/)){const k=[...w].sort().join('');if(!BONUS.has(k))BONUS.set(k,w)}
 // Scrabble letter points.
 const PTS={A:1,B:3,C:3,D:2,E:1,F:4,G:2,H:4,I:1,J:8,K:5,L:1,M:3,N:1,O:1,P:3,Q:10,R:1,S:1,T:1,U:1,V:4,W:4,X:8,Y:4,Z:10};
-const REELS=5,STRIP=24;let NWORDS=20;
+const REELS=5,STRIP=24;let NWORDS=10;
 // Money is kept in cents. LOAD is how often a spinning reel lands on a letter that fits a word you could still make
 // with what you're holding (the rest of the time it's any letter from the words still on the list).
 // Robot tests over 300 games each: careful play finds all 20 about half the time; sloppy play about one game in five.
-let START=1000,LOAD=.4,NOHELP_FULL=true;const COST=50,PER_PT=20;   // let: the balance sims change START and LOAD
+let START=500,LOAD=.4,NOHELP_FULL=true;const COST=50,PER_PT=20,CLEAR_BONUS=500,HR_BONUS=1000,N1=10,N2=20;   // Quick 10 with $5; clear it for +$5, then cash out or let it ride into the High Roller 20   // let: the balance sims change START and LOAD
 const money=c=>'$'+(c/100).toFixed(2),cents=c=>c<100?c+'¢':money(c);
 const wordPts=w=>[...w].reduce((a,c)=>a+PTS[c],0);
 // R is the random source: seeded by the date for the daily game and its replays (so everyone gets the same words and
@@ -367,7 +389,7 @@ function result(k){try{return JSON.parse(store.get('day_'+k,''))}catch(e){return
 
 // ---------- State ----------
 // line: the five letters on the line. strips: what each reel shows above and below (just for looks).
-let pend='',bonus=[],order=[0,1,2,3,4],words=[],found=[],line=[],hold=[0,0,0,0,0],bank=START,spins=0,peak=START,spun=false,over=false,spinning=false,strips=[];
+let round=1,ride=false,pend='',bonus=[],order=[0,1,2,3,4],words=[],found=[],line=[],hold=[0,0,0,0,0],bank=START,spins=0,peak=START,spun=false,over=false,spinning=false,strips=[];
 const left=()=>words.filter(w=>!found.includes(w));
 // Does word w contain all these letters (counting repeats)? Returns the letters of w still needed, or null.
 function needs(w,letters){const a=[...w];for(const c of letters){const j=a.indexOf(c);if(j<0)return null;a.splice(j,1)}return a}
@@ -440,13 +462,13 @@ function animReel(i,to,dur){return new Promise(res=>{const s=strips[i],n=STRIP,e
   strip.offsetHeight;strip.style.transition='transform '+dur+'ms cubic-bezier(.2,.6,.3,1.04)';strip.style.transform='translateY(calc(var(--t)*-.2))';
   let tk=0,ticks=setInterval(()=>sfx.tick(tk++),70);
   setTimeout(()=>{clearInterval(ticks);el.classList.remove('spin');drawReel(i);rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
-async function spin(){if(over||spinning||bank<COST||pend)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
+async function spin(){if(over||spinning||bank<COST||pend||ride)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
   bank-=COST;spins++;spinning=true;popUp('−50¢','cost');sfx.pay();
   const which=[0,1,2,3,4].filter(i=>!locked(i));fullSpin=which.length===REELS;const fixed=line.filter((c,i)=>locked(i)&&spun);hold=hold.map(h=>h===1?1:0);
   // With nothing locked the machine gives no help, so a whole word (a Jackpot) is pure luck.
   // Each reel lands in turn; a letter that lands counts as fixed for the reels after it, so the loaded letters fit together.
   R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+':'+spins));
-  for(const i of which){const c=landLetter(fixed);line[i]=c;fixed.push(c);strips[i]=stripAround(c)}
+  for(const i of which){const c=forced?forced[i]:landLetter(fixed);line[i]=c;fixed.push(c);strips[i]=stripAround(c)}
   which.forEach(i=>rolling.add(i));spun=true;save();
   $('lever').classList.add('pull');setTimeout(()=>$('lever').classList.remove('pull'),350);sfx.lever();
   paint();msg('Spinning…');
@@ -461,9 +483,9 @@ function tapReel(i){if(over||!spun||spinning||pend)return;hold[i]=hold[i]?0:1;
 function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].sort().join('')===key);
   if(w){const jp=fullSpin;if(jp)nJack++;const c=wordPts(w)*PER_PT*(jp?2:1);bank+=c;peak=Math.max(peak,bank);found.push(w);hold=[0,0,0,0,0];spun=false;
     reelEls.forEach(el=>el.classList.add('sel'));setTimeout(()=>reelEls.forEach(el=>el.classList.remove('sel')),900);
-    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?'🎰 JACKPOT! No locks, double pay. ':'')+'Found '+w+'! +'+cents(c),'good');
+    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS||round===1)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?'🎰 JACKPOT! No locks, double pay. ':'')+'Found '+w+'! +'+cents(c),'good');
     const el=$('list').querySelector('[data-w="'+w+'"]');if(el)el.classList.add('new');
-    if(found.length===NWORDS)return end('win');if(bank<COST)return end('broke');return}
+    if(found.length===NWORDS)return round===1?clearRound():end('win');if(bank<COST)return end('broke');return}
   // Not on the list but still an everyday word: it pays half, once per game, and isn't crossed off.
   const b=BONUS.get(key);if(b&&!bonus.includes(b)&&!words.includes(b)){pend=b;sfx.bonus();save();paint();
     msg('Bonus word '+b+'! It isn\'t on your list. Cash it in, or pass and keep your letters.','good');return}
@@ -471,6 +493,13 @@ function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].
 // A bonus word waits for your choice. Cash in: it pays half and a new round starts. Pass: keep your letters and locks and keep going.
 function bonusCash(){if(!pend)return;const b=pend,c=wordPts(b)*PER_PT/2;pend='';bank+=c;peak=Math.max(peak,bank);bonus.push(b);hold=[0,0,0,0,0];spun=false;
   popUp('Bonus '+b+' +'+cents(c),'jp');jackpot();sfx.win();save();paint();msg('Bonus word '+b+'! +'+cents(c),'good');if(bank<COST)end('broke')}
+// Clearing the Quick 10: +$5, then Cash out or Let it ride.
+function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=false;hold=[0,0,0,0,0];save();paint();
+  popUp('Clear bonus +$5','jp');jackpot();msg('Quick 10 cleared! +$5 clear bonus.','good');setTimeout(showRide,quick?0:1200)}
+function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('ride').hidden=false}
+function letItRide(){if(!ride)return;ride=false;$('ride').hidden=true;round=2;roundUI();words=pickWords(N2,'#hr',found);found=[];spun=false;hold=[0,0,0,0,0];order=[0,1,2,3,4];
+  strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('High Roller 20! You have '+money(bank)+'. Good luck.','good')}
+$('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if(!ride||mode==='demo')return;ride=false;$('ride').hidden=true;end('cashout')};
 function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
 $('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 function popUp(t,cls){const r=$('reels').getBoundingClientRect(),d=document.createElement('div');d.className='pop '+(cls||'');d.textContent=t;
@@ -481,29 +510,31 @@ $('spinBtn').onclick=$('lever').onclick=()=>spin();
 
 // ---------- Game over ----------
 // why: 'win' (all 20 found), 'broke' (can't afford a spin) or 'cashout' (from the menu).
-function end(why){if(over)return;over=true;pend='';spun=false;hold=[0,0,0,0,0];paint();tip();
+function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=Math.max(peak,bank);popUp('High Roller bonus +$10','jp')}over=true;ride=false;$('ride').hidden=true;pend='';spun=false;hold=[0,0,0,0,0];paint();tip();
   const best=found.reduce((a,w)=>!a||wordPts(w)>wordPts(a)?w:a,null);
-  const r={why,found:found.length,bank,spins,peak,list:found.slice(),missed:left(),bonus:bonus.slice()};if(best)r.best=best;
+  const r={why,round,banked:why==='broke'?0:bank,found:found.length,bank,spins,peak,list:found.slice(),missed:left(),bonus:bonus.slice()};if(best)r.best=best;
   store.set('games',+store.get('games',0)+1);if(why==='win')store.set('wins',+store.get('wins',0)+1);
-  store.set('mostFound',Math.max(found.length,+store.get('mostFound',0)));store.set('nwords',+store.get('nwords',0)+found.length);
-  if(why==='win')store.set('bestWin',Math.max(bank,+store.get('bestWin',0)));if(why==='win'&&(!+store.get('fewest',0)||spins<+store.get('fewest',0)))store.set('fewest',spins);
+  store.set('mostFound',Math.max(found.length+(round===2?N1:0),+store.get('mostFound',0)));store.set('nwords',+store.get('nwords',0)+found.length);
+  store.set('life',+store.get('life',0)+r.banked);store.set('bestBank',Math.max(r.banked,+store.get('bestBank',0)));if(why==='win'&&(!+store.get('fewest',0)||spins<+store.get('fewest',0)))store.set('fewest',spins);
   try{localStorage.removeItem(CODE+'_'+progKey())}catch(e){}
   r.mode=mode;if(mode==='daily'){r.n=dayNo();store.set('day_'+playDay,JSON.stringify(r));checkIn(true)}
   if(why==='win'){$('cab').classList.remove('win');$('cab').offsetWidth;$('cab').classList.add('win');sfx.allFound()}
   else if(why==='broke')sfx.broke();
   setTimeout(()=>showDone(r),quick?0:why==='win'?1400:700)}
-function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?'All 20 found!':r.why==='broke'?'Out of money':'Cashed out');
+const banked=r=>r.banked!=null?r.banked:(r.why==='broke'?0:r.bank);
+const rLine=r=>r.round===2?'Quick 10 ✓ · High Roller '+r.found+' of 20':r.round===1?'Quick 10: '+r.found+' of 10':r.found+' of 20';
+function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?(r.round===2?'High Roller cleared!':'All 20 found!'):r.why==='broke'?'Out of money':'Cashed out');
   $('dAgain').hidden=r.mode==='plus';$('dPlus').textContent=r.mode==='plus'?'Another new list ⭐':'New list ⭐ Plus';
-  $('dFound').textContent=r.found+' of '+NWORDS;
-  $('dRes').textContent=r.spins+' spin'+(r.spins===1?'':'s')+' · '+(r.why==='broke'?'most in the bank: '+money(r.peak):money(r.bank)+' left');
+  $('dFound').textContent='Banked '+money(banked(r));
+  $('dRes').textContent=rLine(r)+' · '+r.spins+' spin'+(r.spins===1?'':'s');
   $('dTop').hidden=!r.best;if(r.best){$('dTop').innerHTML='Best word: <b></b> +'+cents(wordPts(r.best)*PER_PT);$('dTop').querySelector('b').textContent=r.best}
   const WL=$('dWords');WL.innerHTML='';const add=(w,miss)=>{if(WL.childNodes.length)WL.append(' · ');const b=document.createElement('span');b.className='dw';if(miss)b.style.color='var(--red)';b.textContent=w;b.onclick=()=>showDef(w);WL.appendChild(b)};
   r.list.forEach(w=>add(w));if(r.missed.length){WL.append(document.createElement('br'));WL.append('Missed: ');r.missed.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--red)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   if(r.bonus&&r.bonus.length){WL.append(document.createElement('br'));WL.append('Bonus: ');r.bonus.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='#2e7d32';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   $('dTap').hidden=false;
-  const sk=streak();$('dBest').textContent=r.mode==='daily'?(sk.n?'🔥 Streak: '+sk.n+' day'+(sk.n>1?'s':'')+' · New list tomorrow':'New list tomorrow'):r.mode==='replay'?'Replays don\'t change today\'s score ('+((result(playDay)||{}).found??'–')+' of '+NWORDS+').':'Plus games don\'t change your daily score.';
+  const sk=streak(),ds=dailyStats();$('dBest').textContent=r.mode==='daily'?'Lifetime winnings: '+money(ds.life)+(sk.n>1?' · 🔥 '+sk.n+'-day streak':'')+' · New list tomorrow':r.mode==='replay'?'Replays don\'t change today\'s score ('+(result(playDay)?money(banked(result(playDay))):'–')+' banked).':'Plus games don\'t change your daily score.';
   const first=r.mode==='replay'?(result(playDay)||r):r;r=first;
-  $('done').dataset.share='🎰 Gramble'+(r.mode==='plus'?'':' No. '+(r.n||dayNo()))+'\n'+(r.why==='win'?'Found all 20 words in '+r.spins+' spins with '+money(r.bank)+' left':'Found '+r.found+' of '+NWORDS+' words in '+r.spins+' spins')+'\n'+(r.best?'Best word: '+r.best+'\n':'')+location.href.split('?')[0].split('#')[0];
+  $('done').dataset.share='🎰 Gramble'+(r.mode==='plus'?'':' No. '+(r.n||dayNo()))+'\n'+'Banked '+money(banked(r))+' · '+rLine(r)+' · '+r.spins+' spins'+'\n'+(r.best?'Best word: '+r.best+'\n':'')+location.href.split('?')[0].split('#')[0];
   $('done').hidden=false}
 $('dShare').onclick=async()=>{const t=$('done').dataset.share;try{if(navigator.share){await navigator.share({text:t});return}}catch(e){return}
   try{await navigator.clipboard.writeText(t);$('dShare').textContent='Copied!'}catch(e){$('dShare').textContent='Could not copy'}setTimeout(()=>$('dShare').textContent='Share',1500)};
@@ -525,21 +556,23 @@ $('dStats').onclick=()=>{backTo='done';showStats()};
 
 // ---------- Stats ----------
 function dailyStats(){const rs=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^rw_day_\d{4}-\d\d-\d\d$/.test(k))continue;const r=result(k.slice(7));if(r)rs.push(r)}
-  return{played:rs.length,wins:rs.filter(r=>r.why==='win').length,avg:rs.length?(rs.reduce((a,r)=>a+r.found,0)/rs.length).toFixed(1):'–'}}
+  return{played:rs.length,wins:rs.filter(r=>r.why==='win').length,life:rs.reduce((a,r)=>a+banked(r),0),best:rs.reduce((a,r)=>Math.max(a,banked(r)),0),rides:rs.filter(r=>r.round===2).length}}
 // Streak: days in a row with the daily game finished. Today still open doesn't break it.
 function streak(){const on=d=>!!result(d.k);let n=0;for(let i=on(dayAt(0))?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
   const best=Math.max(n,+store.get('streakBest',0));store.set('streakBest',String(best));return{n,best,today:on(dayAt(0))}}
 function showStats(){$('done').hidden=true;$('menu').hidden=true;$('cover').hidden=true;const g=+store.get('games',0),w=+store.get('wins',0),fw=+store.get('fewest',0);
-  const d=dailyStats(),sk=streak();const T=[[d.played,'Days played'],[sk.n,'Streak'],[sk.best,'Best streak'],[d.wins,'All-20 days'],[d.avg,'Avg found'],[g,'Games (all)']];
+  const d=dailyStats(),sk=streak();const T=[[money(d.life),'Lifetime winnings'],[money(d.best),'Best day'],[d.played,'Days played'],[sk.n,'Streak'],[d.rides,'Let it ride'],[d.wins,'High Roller wins']];
   $('statGrid').innerHTML=T.map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');$('stats').hidden=false}
 let backTo=null;
 function goBack(){const b=backTo;backTo=null;if(b==='cover')cover();else if(b==='menu')$('menu').hidden=false;else if(b==='done')$('done').hidden=false}
 $('statsBack').onclick=()=>{$('stats').hidden=true;goBack()};
 
 // ---------- Save and start ----------
-function save(){if(over)return;store.set(progKey(),JSON.stringify({v:3,pend,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
+function save(){if(over||mode==='demo')return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
 let quick=false;   // tests only: no spin animation
-function newGame(){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+'#list'));words=[];while(words.length<NWORDS){const w=rnd(POOL);if(!words.includes(w))words.push(w)}words.sort();
+function pickWords(n,tag,avoid){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+tag));const ws=[];while(ws.length<n){const w=rnd(POOL);if(!ws.includes(w)&&!avoid.includes(w))ws.push(w)}return ws.sort()}
+function roundUI(){NWORDS=round===1?N1:N2;$('marqSub').textContent=(round===1?'Quick 10':'High Roller 20')+' · 50¢ a spin';$('logLbl').textContent='Find all '+NWORDS+' words';document.body.classList.toggle('hr',round===2)}
+function newGame(){round=1;ride=false;roundUI();words=pickWords(N1,'#q',[]);
   pend='';bonus=[];order=[0,1,2,3,4];found=[];hold=[0,0,0,0,0];bank=START;spins=0;peak=START;spun=false;over=false;spinning=false;
   line=[0,1,2,3,4].map(()=>rnd(rnd(words).split('')));strips=line.map(c=>stripAround(c));
   $('pno').textContent=mode==='daily'?'No. '+dayNo():mode==='replay'?'Replay':'⭐ Plus';$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip()}
@@ -549,18 +582,42 @@ function startMode(m,fresh){mode=m;playDay=today();if(m==='plus'&&!hasPlus())ret
   if(fresh)try{localStorage.removeItem(CODE+'_'+progKey())}catch(e){}
   resumeGame()}
 function resumeGame(){let p=null;try{p=JSON.parse(store.get(progKey(),''))}catch(e){}
-  if(!p||p.v!==3)return newGame();
+  if(!p||p.v!==4)return newGame();round=p.round||1;ride=!!p.ride;roundUI();
   $('pno').textContent=mode==='daily'?'No. '+dayNo():mode==='replay'?'Replay':'⭐ Plus';
   ({words,found,line,hold,bank,spins,peak,spun,strips}=p);order=p.order||[0,1,2,3,4];bonus=p.bonus||[];pend=p.pend||'';over=false;spinning=false;$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);paint();tip();
-  if(bank<COST&&!pend)end('broke')}
+  if(ride)return showRide();if(bank<COST&&!pend)end('broke')}
 function cover(){const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
   $('cvDate').textContent=t.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});$('cvNo').textContent='Game No. '+t.n;
-  $('coverGo').textContent=r?"See today's result ("+r.found+' of '+NWORDS+')':p&&p.spins?'Keep playing ('+p.found.length+' of '+NWORDS+')':"Play today's game";
+  $('coverGo').textContent=r?"See today's result (banked "+money(banked(r))+')':p&&p.spins?'Keep playing ('+(p.round===2?'High Roller':'Quick 10')+')':"Play today's game";
   $('cvMore').hidden=!r;
   const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it');
-  const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[d.played,'Days played'],[d.wins,'All-20 days'],[sk.best,'Best streak']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
+  const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[money(d.life),'Lifetime'],[money(d.best),'Best day'],[d.played,'Days played']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
   $('cover').hidden=false}
-const play=()=>{if(!store.get('seenHelp3','')){store.set('seenHelp3','1');return qOpen()}startMode('daily')};
+let forced=null;   // demo only: the letters the next spin lands on
+// The demo plays a scripted mini game on the real machine, one step per tap of Next.
+const DEMO_WORDS=['BRAVE','CHAIR','DREAM','HONEY','LUCKY','MUSIC','PLANT','READY','SMILE','TOAST'];
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const DEMO=[
+ ['Every day you get <b>$5</b> and the same <b>10 words</b> as everyone else. Find them all on the slot machine.',async()=>{}],
+ ['Tap <b>Spin</b>. Each spin costs <b>50¢</b>, and five reels land on letters.',async()=>{forced=['R','E','Z','D','A'];await spin()}],
+ ['R, E, D, A could make <b>READY</b>. Tap a reel to <b>lock</b> 🔒 it. Locked letters stay put and show as tiles below. On the list, READY lights up and the letters you have turn gray.',async()=>{for(const i of [0,1,3,4]){tapReel(i);await sleep(350)}}],
+ ['<b>Spin again.</b> Only the unlocked reel spins.',async()=>{forced=['R','E','Y','D','A'];await spin()}],
+ ['<b>READY!</b> Any order counts. Each word pays <b>20¢ a point</b> (the small numbers), and it\'s crossed off your list. A word with nothing locked is a <b>Jackpot</b> and pays double.',async()=>{}],
+ ['Find all 10 before your money runs out and you get a <b>+$5 clear bonus</b>…',async()=>{words.forEach(w=>{if(!found.includes(w))found.push(w)});bank=480;paint();clearRound()}],
+ ['…then you choose. <b>Cash out</b> to bank your money. Or <b>let it ride</b> into the <b>High Roller 20</b>: find all 20 for <b>+$10</b>, but go broke and you bank nothing today.',async()=>{}],
+ ['Whatever you bank adds to your <b>lifetime winnings</b>. Run out of money in the Quick 10 and you bank $0. Good luck!',async()=>{$('ride').hidden=true}]];
+let dStep=0,dBusy=false;
+function demoShow(){$('dcStep').textContent='Demo · '+(dStep+1)+' of '+DEMO.length;$('dcText').innerHTML=DEMO[dStep][0];$('dcNext').textContent=dStep===DEMO.length-1?"Play today's game":dStep===1?'Spin':dStep===2?'Lock R E D A':dStep===3?'Spin again':'Next';
+  reelEls.forEach((el,i)=>el.classList.toggle('hint',dStep===2&&[0,1,3,4].includes(i)))}
+function startDemo(){mode='demo';playDay=today();document.body.classList.add('demo');$('cover').hidden=true;$('quick').hidden=true;['done','menu','help','stats','ride'].forEach(k=>$(k).hidden=true);
+  round=1;ride=false;roundUI();words=DEMO_WORDS.slice();pend='';bonus=[];order=[0,1,2,3,4];found=[];hold=[0,0,0,0,0];bank=START;spins=0;peak=START;spun=false;over=false;spinning=false;
+  line=['G','R','A','M','B'];strips=line.map(c=>stripAround(c));$('pno').textContent='Demo';layout();for(let i=0;i<REELS;i++)drawReel(i);paint();msg('');dStep=0;demoShow();$('demoCap').hidden=false}
+function endDemo(go){$('demoCap').hidden=true;$('ride').hidden=true;document.body.classList.remove('demo');reelEls.forEach(el=>el.classList.remove('hint'));forced=null;ride=false;over=true;
+  store.set('seenHelp3','1');if(go)startMode('daily');else cover()}
+$('dcNext').onclick=async()=>{if(dBusy)return;if(dStep===DEMO.length-1)return endDemo(true);dBusy=true;dStep++;demoShow();try{await DEMO[dStep][1]()}finally{forced=null;dBusy=false}};
+$('dcSkip').onclick=()=>endDemo(false);
+$('coverDemo').onclick=startDemo;
+const play=()=>{if(!store.get('seenHelp3',''))return startDemo();startMode('daily')};
 $('coverGo').onclick=play;
 $('coverReplay').onclick=()=>startMode('replay');
 $('coverPlus').onclick=()=>startMode('plus');
@@ -570,7 +627,7 @@ $('coverSm').onclick=()=>window.open('https://smaisle.app/','_blank','noopener')
 $('helpGo').onclick=()=>{$('help').hidden=true;if(!$('cover').hidden)startMode('daily')};
 const sndLabel=()=>{const on=store.get('sound','on')==='on';$('mSound').innerHTML='<span>'+(on?'🔊':'🔇')+'</span>Sound: <b>'+(on?'On':'Off')+'</b>';$('mSound').classList.toggle('on',on)};
 $('menuBtn').onclick=()=>{sndLabel();$('lTot').textContent=over?'Game over':'Bank: '+money(bank)+' · found '+found.length+' of '+NWORDS;
-  $('mCashOut').hidden=over;$('mCashOut').textContent='Cash out '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
+  $('mCashOut').hidden=over||round===1||ride;$('mCashOut').textContent='Cash out '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
 $('mClose').onclick=()=>{$('menu').hidden=true};
 // Cash out and New game end the game. Tap twice so they can't happen by accident.
 $('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1'){$('mCashOut').dataset.sure='1';$('mCashOut').textContent='Tap again to cash out '+money(bank);return}
@@ -578,6 +635,7 @@ $('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1
 $('mNew').onclick=()=>{if(spinning)return;if(!over&&$('mNew').dataset.sure!=='1'){$('mNew').dataset.sure='1';$('mNew').textContent='Tap again to start over';return}
   $('menu').hidden=true;$('done').hidden=true;startMode(mode,true)};
 $('mStats').onclick=()=>{backTo='menu';showStats()};
+$('mDemo').onclick=()=>{$('menu').hidden=true;startDemo()};
 $('mHow').onclick=()=>{$('menu').hidden=true;$('help').hidden=false};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
 
@@ -593,10 +651,11 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkIn(fa
 // ---------- First-time intro ----------
 const T=(s,c='')=>'<div class="qt '+c+'">'+s+'<sub>'+PTS[s]+'</sub></div>';
 const QS=[
-  [T('S')+T('T')+T('O')+T('N')+T('E'),'20 words to find','You get a list of <b>20 words</b> and <b>$10</b>. Find them all on the slot machine before your money runs out.'],
+  [T('S')+T('T')+T('O')+T('N')+T('E'),'Quick 10','You get <b>$5</b> and a list of <b>10 words</b>. Find them all on the slot machine before your money runs out.'],
   [T('R')+T('E')+T('Z')+T('D')+T('A'),'Spin','Each spin costs <b>50¢</b>. Five reels land on letters.'],
   [T('R','l')+T('E','l')+T('Z')+T('D','l')+T('A','l'),'Lock','Tap reels to <b>lock</b> 🔒 letters that could spell a word on your list (READY?). Words that still fit light up. Spin again for the rest. Tap a locked letter again to unlock it.'],
-  [T('R','l')+T('E','l')+T('Y','l')+T('D','l')+T('A','l'),'Found it!','When the five letters spell a list word, <b>in any order</b>, it\'s crossed off and pays <b>20¢ a point</b>.']];
+  [T('R','l')+T('E','l')+T('Y','l')+T('D','l')+T('A','l'),'Found it!','When the five letters spell a list word, <b>in any order</b>, it\'s crossed off and pays <b>20¢ a point</b>.'],
+  ['<div class="qt" style="width:auto;padding:0 10px">+$5</div>','Let it ride?','Clear all 10 for a <b>+$5 bonus</b>. Then <b>cash out</b>, or <b>let it ride</b> into the <b>High Roller 20</b>. Find all 20 for <b>+$10</b>, or go broke and bank nothing. What you bank adds to your <b>lifetime winnings</b>.']];
 let qStep=0;
 function qShow(){const q=QS[qStep];$('qPic').innerHTML=q[0];$('qTitle').textContent=q[1];$('qText').innerHTML=q[2];
   $('qDots').innerHTML=QS.map((_,i)=>'<span class="'+(i===qStep?'on':'')+'"></span>').join('');$('quickGo').textContent=qStep<QS.length-1?'Next':'Play'}
@@ -706,10 +765,10 @@ const sfx={lever:()=>SND.lever(),tick:k=>SND.tick(k),stop:i=>SND.stop(i),lock:()
 function devId(){let id=store.get('dev','');if(!id){id=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>'abcdefghijklmnopqrstuvwxyz0123456789'[b%36]).join('');store.set('dev',id)}return id}
 async function checkIn(ended){if(!/github\.io$|smaisle\.app$/.test(location.hostname))return;
   const day=today(),newDay=store.get('seen','')!==day;if(!ended&&!newDay)return;
-  const h={};for(let i=0;i<60;i++){const d=dayAt(i).k,r=result(d);if(r)h[d]=r.found}if(!(day in h))h[day]=-1;
+  const h={};for(let i=0;i<60;i++){const d=dayAt(i).k,r=result(d);if(r)h[d]=r.found+(r.round===2?N1:0)}if(!(day in h))h[day]=-1;
   const first=store.get('first','')||day,days=+store.get('days',0)+(newDay?1:0),I=v=>({integerValue:String(Math.round(v)||0)}),S=s=>({stringValue:s});
   const hm={};for(const k of Object.keys(h).sort().slice(-60))hm[k]=I(h[k]);
-  const body={fields:{first:S(first),last:S(day),days:I(days),v:S(VERSION),games:I(+store.get('games',0)),wins:I(+store.get('wins',0)),most:I(+store.get('mostFound',0)),desk:{booleanValue:innerWidth>=820},t:I(Date.now()),h:{mapValue:{fields:hm}}}};
+  const body={fields:{first:S(first),last:S(day),days:I(days),v:S(VERSION),games:I(+store.get('games',0)),wins:I(+store.get('wins',0)),most:I(+store.get('mostFound',0)),life:I(dailyStats().life),desk:{booleanValue:innerWidth>=820},t:I(Date.now()),h:{mapValue:{fields:hm}}}};
   try{const r=await fetch(`https://firestore.googleapis.com/v1/projects/${FB_PROJ}/databases/(default)/documents/${CODE}_devices/${devId()}?key=${FB_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(r.ok){store.set('seen',day);store.set('first',first);store.set('days',String(days))}}catch(e){}}
 
@@ -718,7 +777,7 @@ function layout(){const w=Math.min(innerWidth,540),t=Math.max(38,Math.min(Math.f
   document.documentElement.style.setProperty('--t',t+'px')}
 addEventListener('resize',layout);
 const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' · '+vline+' · smAisle';
-buildReels();words=POOL.slice(0,NWORDS);line=['S','P','I','N','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);cover();checkIn(false);
+buildReels();roundUI();words=POOL.slice(0,NWORDS);line=['S','P','I','N','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);cover();checkIn(false);
 </script>
 </body>
 </html>

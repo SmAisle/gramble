@@ -1,0 +1,4 @@
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});p.on('pageerror',e=>console.log('ERR',e.message));
+await p.goto('file://'+require('path').resolve(__dirname,'../index-artifact.html'));await p.waitForTimeout(300);await p.click('#coverGo');await p.waitForTimeout(300);
+for(let i=0;i<8;i++){await p.screenshot({path:`/tmp/rw3/d${i}.png`});const t=await p.textContent('#dcNext');console.log(i,t,await p.evaluate(()=>bank+' '+found.length+' '+line.join('')+' ride='+ride));if(i<7){await p.click('#dcNext');await p.waitForTimeout(i===0||i===2?4000:i===5?2200:1500)}}
+await p.click('#dcNext');await p.waitForTimeout(600);console.log('after demo',await p.evaluate(()=>mode+' '+round+' '+NWORDS+' '+bank+' '+words.length+' '+$('demoCap').hidden));await b.close()})();
