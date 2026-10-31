@@ -224,7 +224,7 @@ body.demo #msg{min-height:64px}
   <h2>How to Play</h2>
   <ul class="rules">
     <li><b>Goal:</b> score as many points as you can from today's <b>100 letters</b>. Everyone gets the same letters in the same order.</li>
-    <li><b>Move and drop:</b> tap a column to move the falling letter there, then tap it again to drop it. ◀︎ ▶︎ ▼︎ work too.</li>
+    <li><b>Move and drop:</b> the next letter waits at the top. Tap a column to move it there, then tap it again to drop it. No rush. ◀︎ ▶︎ ▼︎ work too.</li>
     <li><b>Make words:</b> 3 or more letters across (left to right only), down or up light up <span class="sw" style="background:var(--hi)"></span>. Diagonal words <span class="sw" style="background:var(--dia)"></span> score <b>double</b>. A pink <b>2×</b> vowel doubles any word it's in, and they stack.</li>
     <li><b>Hold or clear:</b> each new word pauses the game. <b>Clear</b> it for its points now, or <b>Hold</b> it and build a longer word for more (CAR → CARDS). Double tap a held word to clear it, or press and hold it to choose again.</li>
     <li><b>Points:</b> each letter has a value, like A, B, C, Deal. Words of 5+ letters get +5 for each extra letter.</li>
@@ -306,7 +306,7 @@ body.demo #msg{min-height:64px}
 </div></div>
 
 <script>
-const VERSION='2.1',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
+const VERSION='2.2 test',VDATE='Oct 31',TITLE='Gramble',CODE='gr';
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -400,8 +400,8 @@ function spawn(){if(cur||over)return;if(demo&&li>=letters.length)return demoFini
   // 10 letters left: a warning, since the mystery letters start and leftovers will soon cost points.
   if(!demo&&li===letters.length-MYSTERY){msg('⚠️ Final 10! Mystery letters, double points. Leftovers cost points.','warn');tone(440,.12,'square',.05);tone(440,.12,'square',.05,.18)}
   cur={l:letters[li]+(!demo&&li>=letters.length-MYSTERY?'*':''),r:0,c};li++;paint();tick();if(demo)demoTip()}
-function tick(){clearTimeout(timer);if(!cur||over||paused()||demo)return;   // in the demo the letter waits for you
-  timer=setTimeout(()=>{fall();tick()},speed())}
+// No timer: each letter waits at the top until you drop it, so there's time to think about words.
+function tick(){clearTimeout(timer)}
 // The falling tile is drawn on top of its square. It moves square to square, like Straight Down (no sliding, which looked jittery).
 const fallEl=document.createElement('div');fallEl.className='cell on fall';fallEl.id='fallT';boardEl.appendChild(fallEl);
 let fallKey='';
@@ -672,7 +672,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)clearTimeou
 const qt=(w,cls)=>[...w].map((l,i)=>{const c=typeof cls==='function'?cls(l,i):cls||'';if(l==='.')return'<span class="qt e"></span>';
   const u=l.toUpperCase();return'<span class="qt '+c+'">'+u+'<sub>'+PTS[u]+'</sub>'+(c.includes('x')?'<i>2×</i>':'')+'</span>'}).join('');
 const QS=[
-  [qt('GRAMBLE'),'Same letters for everyone','<b>100 letters</b> fall one at a time, the same for everyone today. Each one has points, like A, B, C, Deal.'],
+  [qt('GRAMBLE'),'Same letters for everyone','<b>100 letters</b> come one at a time, the same for everyone today. Take your time: each one waits until you drop it. Each one has points, like A, B, C, Deal.'],
   [qt('.T.'),'Tap, then tap again','Tap a column to move the letter there. <b>Tap that column again to drop it.</b>'],
   [qt('CAR','l')+'<span style="width:10px"></span>'+qt('SKY','d'),'Make words','3 or more letters across (left to right), down or up light up. <b>Diagonal words score double.</b> A pink <b>2×</b> vowel doubles any word it\'s in.'],
   ['<div class="qbtns"><span class="k">Clear +5</span><span>Hold</span></div>','Hold or clear','Clear a word for its points now, or <b>hold it</b> and build a longer one for more. <b>90, 180 and 300 points</b> earn ⭐ ⭐⭐ ⭐⭐⭐.']];
