@@ -38,7 +38,7 @@
 <script>
 const FIREBASE_CONFIG = {"apiKey":"AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs","authDomain":"aislerun-88e79.firebaseapp.com","projectId":"aislerun-88e79","storageBucket":"aislerun-88e79.firebasestorage.app","messagingSenderId":"589354345822","appId":"1:589354345822:web:c254c32c792212af381bcf"};
 const $=s=>document.querySelector(s), esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let DEV=[],COL="gr_devices",USER=null;
+let DEV=[],COL="rw_devices",USER=null;
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth=firebase.auth(), db=firebase.firestore();
 $("#signin").onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>{$("#msg").textContent="Sign-in didn't work: "+e.message;});
@@ -57,10 +57,10 @@ auth.onAuthStateChanged(u=>{USER=u;load(u)});
 // Days are the player's local date, as the game uses them.
 const dayStr=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const ago=n=>dayStr(new Date(Date.now()-n*864e5)), num=n=>Number(n||0).toLocaleString();
-// One day's numbers from each device's history map h: {day: pieces placed, -1 = opened but not finished}.
+// One day's numbers from each device's history map h: {day: games finished that day, -1 = opened but not finished}.
 function dayStats(d){
   const v=DEV.map(x=>x.h&&x.h[d]).filter(x=>x!==undefined&&x!==null), done=v.filter(x=>x>=0);
-  return {opened:v.length, done:done.length, avg:done.length?(done.reduce((a,b)=>a+b,0)/done.length).toFixed(1):"–", full:done.filter(x=>x>=15).length, best:done.length?Math.max(...done):"–"};
+  return {opened:v.length, done:done.length, avg:done.length?(done.reduce((a,b)=>a+b,0)/done.length).toFixed(1):"–", full:done.reduce((a,b)=>a+b,0), best:done.length?Math.max(...done):"–"};
 }
 function draw(){
   const today=ago(0), w=ago(6), m=ago(29), cnt=f=>DEV.filter(f).length, t=dayStats(today);
@@ -68,9 +68,9 @@ function draw(){
   const stat=(n,l)=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`;
   const tbl=(title,rows)=>`<div><h2>${title}</h2><table>${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${num(v)}</td></tr>`).join("")||`<tr><td class="muted">None yet</td><td></td></tr>`}</table></div>`;
   const days=[]; for(let i=0;i<14;i++){ const d=ago(i), s=dayStats(d); days.push(`<tr><td style="white-space:nowrap">${new Date(d+"T12:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}</td><td>${s.opened}</td><td>${s.done}</td><td>${s.avg}</td><td>${s.best}</td><td>${s.full}</td><td>${cnt(x=>x.first===d)}</td></tr>`); }
-  $("#usage").innerHTML=`<div class="stats">${stat(t.opened,"opened today")}${stat(t.done,"finished today")}${stat(t.avg,"avg placed today")}${stat(t.best==="–"?"–":t.best+"/15","best score today")}${stat(cnt(d=>d.last>=w),"active this week")}${stat(cnt(d=>d.last>=m),"active this month")}${stat(DEV.length,"devices ever")}${stat(cnt(d=>d.first>=w),"new this week")}${stat(num(DEV.reduce((a,d)=>a+(+d.daily||0),0)),"puzzles finished, all time")}</div>
-  <p class="muted">Counts phones and computers, not people. Each one checks in when it opens the game for the day and again when it finishes the puzzle. Only the website version is counted, not the Claude link.</p>
-  <h2>Last 14 days</h2><table><tr><th>Day</th><th>Opened</th><th>Done</th><th>Avg</th><th>Best</th><th>15/15</th><th>New</th></tr>${days.join("")}</table>
+  $("#usage").innerHTML=`<div class="stats">${stat(t.opened,"opened today")}${stat(t.done,"finished today")}${stat(t.full,"games played today")}${stat(t.avg,"games per player today")}${stat(t.best,"most games by one player today")}${stat(cnt(d=>d.last>=w),"active this week")}${stat(cnt(d=>d.last>=m),"active this month")}${stat(DEV.length,"devices ever")}${stat(cnt(d=>d.first>=w),"new this week")}${stat(num(DEV.reduce((a,d)=>a+(+d.games||0),0)),"games finished, all time")}</div>
+  <p class="muted">Counts phones and computers, not people. Each one checks in when it opens the game for the day and again when it finishes a game (runs out of money or cashes out). Only the website version is counted, not the Claude link.</p>
+  <h2>Last 14 days</h2><table><tr><th>Day</th><th>Opened</th><th>Played</th><th>Avg games</th><th>Most</th><th>Games</th><th>New</th></tr>${days.join("")}</table>
   <div class="two">
   ${tbl("App version, active this month",tallyBy("v").map(([k,v])=>["v"+k,v]))}
   ${tbl("Device, active this month",tallyBy("desk"))}

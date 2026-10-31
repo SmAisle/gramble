@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Gramble Sound Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@500;700;800&display=swap">
+<style>
+/* Layout: the game's own newspaper card table: masthead, then three short sections of tappable sound tiles */
+:root{
+  --paper:#f4efe1;--card:#fffdf6;--ink:#1a1814;--ink2:#4a453b;--rule:#cfc7b2;--hi:#ffe27a;
+  --head:"Playfair Display",Georgia,serif;--body:"Libre Baskerville",Georgia,serif;--sans:"Libre Franklin","Helvetica Neue",Arial,sans-serif;
+}
+/* Single look on purpose: it matches the game, which is always on paper */
+body{background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px;color:var(--ink);font-family:var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.mh{border-top:3px double var(--ink);border-bottom:3px double var(--ink);padding:8px 0;text-align:center}
+h1{font:900 clamp(30px,9vw,44px)/1 var(--head);margin:0;text-wrap:balance}
+.ln{display:flex;justify-content:space-between;font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-top:6px}
+.lede{font-style:italic;font-size:15px;margin:0;text-align:center;color:var(--ink2)}
+.bar{display:flex;gap:10px}
+.go{flex:1;padding:12px;border:2px solid var(--ink);border-radius:3px;background:var(--ink);color:var(--paper);font:800 14px var(--sans);text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+.go.alt{background:var(--card);color:var(--ink)}
+h2{font:800 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin:0 0 8px;border-bottom:1px solid var(--ink);padding-bottom:5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.snd{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:10px 12px;border:2px solid var(--ink);border-radius:3px;background:var(--card);color:var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;min-width:0}
+.snd:active,.snd.on{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);background:var(--hi)}
+.snd b{font:900 18px/1.1 var(--head)}
+.snd span{font:italic 12px/1.35 var(--body);color:var(--ink2)}
+.row{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border:2px solid var(--ink);border-radius:3px;background:var(--card);min-width:0}
+.row b{font:900 18px/1.1 var(--head)}
+.row>span{font:italic 12px/1.35 var(--body);color:var(--ink2)}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.opt{padding:7px 0;border:1.5px solid var(--ink);border-radius:3px;background:var(--paper);color:var(--ink);font:800 13px var(--sans);cursor:pointer}
+.opt.on{background:var(--hi)}
+.fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.fam{display:flex;flex-direction:column;gap:2px;text-align:left;padding:9px 11px;border:2px solid var(--ink);border-radius:3px;background:var(--card);box-shadow:3px 3px 0 var(--ink);cursor:pointer;color:var(--ink)}
+.fam.on{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink);background:var(--hi)}
+.fam b{font:900 17px var(--head)}.fam span{font:italic 11.5px var(--body);color:var(--ink2)}
+.keep{font:800 10px var(--sans);letter-spacing:.1em;color:var(--ink2);margin-left:6px}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.note{font:500 12px/1.5 var(--sans);color:var(--ink2);margin:0;text-align:center}
+@media (prefers-reduced-motion:reduce){.snd{transition:none}}
+html,body{touch-action:manipulation}
+.row .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.row .top em{font:800 11px var(--sans);font-style:normal;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.opt small{display:block;font:500 10px var(--sans);letter-spacing:0;margin-top:2px;color:var(--ink2)}
+#picks{font:700 13px/1.5 var(--sans);background:var(--card);border:2px dashed var(--ink);padding:10px;white-space:pre-wrap;margin:0}
+.ver{text-align:center;font:500 11px var(--sans);color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mh"><h1>Gramble Sound Board</h1><div class="ln"><span>Pick a sound for each moment</span><span>New: 6 lock sounds</span></div></div>
+  <p class="lede">Tap an option to hear it. Your pick is highlighted. When you're happy, tap Copy my picks and send them to Claude. No sound? Turn your volume up. Sound now plays even with the ringer switch on silent.</p>
+  <div class="bar"><button class="go" id="demoSpin">▶ Play a spin</button><button class="go alt" id="demoWin">▶ Play a win</button></div>
+  <div id="rows" style="display:flex;flex-direction:column;gap:10px"></div>
+  <h2>Your picks</h2>
+  <p id="picks"></p>
+  <div class="bar"><button class="go" id="copy">Copy my picks</button><button class="go alt" id="reset">Back to all A</button></div>
+  <div class="ver">Gramble sound board · v1.2 · Oct 31</div>
+</div>
+<script>
+// No pinch or double-tap zoom.
+for(const ev of['gesturestart','gesturechange'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+let lastTouch=0;document.addEventListener('touchend',e=>{const t=Date.now();if(t-lastTouch<350&&!e.target.closest('button'))e.preventDefault();lastTouch=t},{passive:false});
+// ---------- Sound engine (shared by the game and the sound board) ----------
+// Everything is made in the browser, no sound files. Phone speakers can't play deep bass, so every sound sits
+// above about 250 Hz. All sound goes through one compressor so quiet and loud sounds even out.
+let ac=null,noiseBuf=null,master=null,unlocked=false;
+function actx(){if(typeof soundOn==='function'&&!soundOn())return null;try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();
+    const comp=ac.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=4;master=ac.createGain();master.gain.value=1.6;master.connect(comp).connect(ac.destination)}
+  if(ac.state!=='running')ac.resume();
+  if(!noiseBuf){noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return ac}catch(e){return null}}
+// iPhones: the first tap unlocks sound, and a silent looping audio element lets sound play even with the ringer switch on silent.
+function unlockAudio(){if(unlocked)return;unlocked=true;try{const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
+  const el=document.createElement('audio');el.setAttribute('playsinline','');el.loop=true;
+  el.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';el.play().catch(()=>{})}catch(e){}}
+['touchstart','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:false,passive:true}));
+function tone(f,dur=.08,type='sine',vol=.1,delay=0,f2){const a=actx();if(!a)return;
+  const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(master);o.start(t);o.stop(t+dur+.02)}
+function noise(dur,freq,q=1,vol=.2,delay=0,type='bandpass'){const a=actx();if(!a)return;const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime+delay;
+  s.buffer=noiseBuf;f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+dur+.02)}
+// Casino bell: a bright strike with inharmonic overtones.
+function bell(f,delay=0,vol=.08,dur=.6){tone(f,dur,'sine',vol,delay);tone(f*2.76,dur*.5,'sine',vol*.4,delay);tone(f*5.4,dur*.25,'sine',vol*.2,delay);noise(.02,f*3,4,vol*.8,delay)}
+function coin(delay=0,pitch=1){const f=2100*pitch;tone(f,.25,'sine',.09,delay);tone(f*1.47,.18,'sine',.05,delay);noise(.025,6500,2,.12,delay)}
+const coins=(n,d0=0,gap=.05)=>{for(let k=0;k<n;k++)coin(d0+k*gap+Math.random()*.025,.85+Math.random()*.35)};
+const chip=(d=0)=>{noise(.012,4200,6,.35,d);noise(.015,3000,6,.3,d+.035)};
+const arp=(notes,gap,type='square',vol=.06,dur=.12,d0=0)=>notes.forEach((f,k)=>tone(f,dur,type,vol,d0+k*gap));
+// Each moment: four options [name, play]. The first is the game's default.
+const SOUNDS=[
+ {k:'lever',name:'Pull the lever',what:'When you tap Spin',o:[
+   ['Metal crank',()=>{for(let k=0;k<4;k++)noise(.02,1800,5,.35,k*.035);noise(.1,900,1.5,.4,.15);tone(420,.12,'triangle',.12,.15,260)}],
+   ['Coin in + crank',()=>{coin(0,.9);noise(.05,1200,2,.35,.18);for(let k=0;k<3;k++)noise(.02,2000,5,.3,.25+k*.035)}],
+   ['Electronic',()=>{tone(300,.25,'square',.06,0,1200);tone(600,.25,'square',.03,0,2400)}],
+   ['Bell + crank',()=>{bell(1568,0,.07,.4);noise(.08,1000,2,.35,.08)}]]},
+ {k:'tick',name:'Reels spinning',what:'Plays while the reels turn',demo:f=>{for(let k=0;k<14;k++)setTimeout(()=>f(k),k*70)},o:[
+   ['Rattle',()=>noise(.02,2400,3,.22)],
+   ['Electronic beeps',k=>tone((k||0)%2?1175:880,.04,'square',.035)],
+   ['Melody',k=>tone([523,659,784,880,784,659][(k||0)%6],.06,'square',.035)],
+   ['Whir',k=>{noise(.05,1500+((k||0)%3)*300,1,.12);tone(440,.06,'sawtooth',.02)}]]},
+ {k:'stop',name:'Reel stops',what:'Each reel, left to right',demo:f=>{for(let i=0;i<5;i++)setTimeout(()=>f(i),i*450)},o:[
+   ['Chunk',i=>{noise(.06,800,1.5,.45);tone(330,.1,'triangle',.18,0,200)}],
+   ['Bell ding',i=>bell(1047+(i||0)*131,0,.07,.4)],
+   ['Rising blips',i=>tone(523*Math.pow(1.19,(i||0)),.09,'square',.06)],
+   ['Heavy clack',i=>{tone(260,.05,'square',.1);noise(.04,2200,3,.4)}]]},
+ {k:'lock',name:'Lock a letter',what:'Tap a reel or tile to padlock it (A = your pick now)',o:[
+   ['Electronic click',()=>tone(1500,.05,'square',.05,0,2200)],
+   ['Padlock snap',()=>{noise(.015,3200,8,.45);tone(1850,.12,'sine',.07,.01);tone(2780,.08,'sine',.03,.01);noise(.012,2400,8,.35,.06)}],
+   ['Bright blip up',()=>{tone(880,.06,'sine',.1);tone(1760,.09,'sine',.09,.05)}],
+   ['Coin tap',()=>{tone(2600,.18,'sine',.07);tone(3900,.1,'sine',.03);noise(.01,7000,3,.2)}],
+   ['Vault clunk',()=>{noise(.05,700,2,.5);tone(330,.08,'triangle',.15,0,250);noise(.02,2600,6,.35,.07)}],
+   ['Two-note chime',()=>{bell(1319,0,.06,.25);bell(1976,.07,.06,.35)}]]},
+ {k:'unlock',name:'Unlock a letter',what:'Tap a locked letter again',o:[
+   ['Click',()=>{noise(.02,2000,5,.35);tone(520,.04,'square',.04)}],
+   ['Casino chip',()=>chip()],
+   ['Electronic click',()=>tone(1500,.05,'square',.05,0,900)],
+   ['Bell tick',()=>bell(1568,0,.04,.2)]]},
+ {k:'tile',name:'Move a tile',what:'Drag a tile to rearrange',o:[
+   ['Chip slide',()=>noise(.08,3500,2,.2)],
+   ['Pop',()=>tone(600,.05,'sine',.12,0,1100)],
+   ['Click',()=>noise(.015,2500,5,.3)],
+   ['Wood tick',()=>{noise(.02,1300,6,.35);tone(800,.03,'sine',.05)}]]},
+ {k:'pay',name:'Pay for a spin',what:'50¢ comes out of the bank',o:[
+   ['Coin in the slot',()=>{coin(0,.95);noise(.05,1400,2,.2,.12)}],
+   ['Chip toss',()=>chip()],
+   ['Ka-ching',()=>{noise(.06,3500,1,.25);bell(2637,.05,.06,.4)}],
+   ['Quiet tick',()=>noise(.02,4000,3,.15)]]},
+ {k:'win',name:'Find a word',what:'A word on your list is crossed off',o:[
+   ['Bell + coins',()=>{for(let k=0;k<8;k++)bell(2093,k*.08,.06,.25);coins(10,.4)}],
+   ['Jackpot arpeggio',()=>{arp([523,659,784,1047,1319,1568,2093],.06);arp([1047,1319,1568,2093],.06,'square',.04,.12,.45);coins(6,.5)}],
+   ['Ding ding ding',()=>{bell(1760,0,.09,.5);bell(1760,.22,.09,.5);bell(2349,.44,.1,.7);coins(8,.6)}],
+   ['Fanfare',()=>{arp([784,784,784,1047],.12,'square',.06,.12);tone(1319,.5,'square',.06,.5);coins(8,.6)}]]},
+ {k:'bonus',name:'Bonus word appears',what:'Cash in or pass?',o:[
+   ['Two chimes',()=>{bell(1319,0,.07,.4);bell(1760,.15,.07,.5)}],
+   ['Sparkle',()=>{for(let k=0;k<8;k++)tone(2000+k*250,.08,'sine',.05,k*.035)}],
+   ['Electronic bling',()=>arp([1047,1568,2093],.05,'square',.05,.1)],
+   ['Chip stack',()=>{for(let k=0;k<4;k++)chip(k*.08)}]]},
+ {k:'jack',name:'Jackpot',what:'A word with nothing locked pays double',o:[
+   ['Bells + siren + coins',()=>{for(let k=0;k<12;k++)bell(k%2?2349:1760,k*.07,.06,.3);for(let k=0;k<2;k++){tone(700,.3,'square',.035,.2+k*.6,1400);tone(1400,.3,'square',.035,.5+k*.6,700)}coins(20,.5,.05)}],
+   ['Ringing bell',()=>{for(let k=0;k<24;k++)bell(2093,k*.05,.05,.15);coins(16,.6)}],
+   ['Jackpot tune',()=>{arp([523,659,784,1047,784,1047,1319,1568],.09,'square',.05,.12);coins(16,.8)}],
+   ['Ka-ching x3',()=>{for(let k=0;k<3;k++){noise(.06,3500,1,.25,k*.3);bell(2637,k*.3+.05,.07,.4)}coins(16,.9)}]]},
+ {k:'all',name:'All 20 found',what:'You win the game',o:[
+   ['Jackpot bells + coins',()=>{for(let k=0;k<20;k++)bell(k%2?2349:2093,k*.07,.06,.3);coins(30,.3,.045);arp([523,659,784,1047,1319,1568,2093],.1,'square',.05,.2,1.5)}],
+   ['Big fanfare',()=>{arp([523,523,523,698,880,1047],.15,'square',.06,.16);tone(1047,.9,'square',.06,.95);tone(1319,.9,'square',.04,.95);coins(20,1.2)}],
+   ['Electronic jackpot',()=>{for(let r=0;r<4;r++)arp([523,659,784,1047,1319,1568],.045,'square',.05,.08,r*.3);coins(20,1.2)}],
+   ['Siren + coins',()=>{for(let k=0;k<4;k++){tone(600,.25,'square',.04,k*.5,1300);tone(1300,.25,'square',.04,k*.5+.25,600)}coins(30,.3,.06)}]]},
+ {k:'broke',name:'Out of money',what:'The game ends',o:[
+   ['Sad trombone',()=>{tone(466,.3,'sawtooth',.05,0,440);tone(440,.3,'sawtooth',.05,.32,415);tone(415,.8,'sawtooth',.05,.64,330)}],
+   ['Tilt buzzer',()=>{for(let k=0;k<3;k++)tone(330,.18,'square',.06,k*.25)}],
+   ['Falling tones',()=>arp([1047,880,698,587,440,349],.13,'square',.05,.14)],
+   ['Game over jingle',()=>{arp([784,659,523],.18,'triangle',.08,.2);tone(392,.6,'triangle',.08,.6)}]]}];
+const S=SOUNDS;
+const L='ABCDEF';
+let picks={};try{picks=JSON.parse(localStorage.getItem('rw_sb2')||'{}')||{}}catch(e){}
+const pick=k=>picks[k]||0,play=(s,j)=>{const f=s.o[j][1];s.demo?s.demo(f):f()};
+function draw(){const R=document.getElementById('rows');R.innerHTML='';
+  S.forEach(s=>{const d=document.createElement('div');d.className='row';d.innerHTML='<div class="top"><b></b><em></em></div><span></span><div class="opts"></div>';
+    d.querySelector('b').textContent=s.name;d.querySelector('em').textContent='Pick: '+L[pick(s.k)];d.querySelector('span').textContent=s.what;
+    s.o.forEach((o,j)=>{const b=document.createElement('button');b.className='opt'+(pick(s.k)===j?' on':'');b.innerHTML=L[j]+'<small></small>';b.querySelector('small').textContent=o[0];
+      b.onclick=()=>{picks[s.k]=j;try{localStorage.setItem('rw_sb2',JSON.stringify(picks))}catch(e){}play(s,j);draw()};d.querySelector('.opts').appendChild(b)});R.appendChild(d)});
+  document.getElementById('picks').textContent='Gramble sounds:\n'+S.map(s=>s.name+': '+L[pick(s.k)]+' ('+s.o[pick(s.k)][0]+')').join('\n')}
+const get=k=>S.find(s=>s.k===k);
+document.getElementById('demoSpin').onclick=()=>{const g=k=>get(k).o[pick(k)][1];g('pay')();g('lever')();
+  let tk=0;const t=setInterval(()=>g('tick')(tk++),70);for(let i=0;i<5;i++)setTimeout(()=>g('stop')(i),800+i*450);setTimeout(()=>clearInterval(t),800+4*450)};
+document.getElementById('demoWin').onclick=()=>get('win').o[pick('win')][1]();
+document.getElementById('copy').onclick=async()=>{const b=document.getElementById('copy');try{await navigator.clipboard.writeText(document.getElementById('picks').textContent);b.textContent='Copied!'}catch(e){b.textContent='Select the text above to copy'}setTimeout(()=>b.textContent='Copy my picks',1800)};
+document.getElementById('reset').onclick=()=>{picks={};try{localStorage.removeItem('rw_sb2')}catch(e){}draw()};
+draw();
+</script>
+</body>
+</html>

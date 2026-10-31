@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,hasTouch:true});
+ p.on('pageerror',e=>console.log('ERR',e.message));
+ await p.goto('file://'+require('path').resolve(__dirname,'../index-artifact.html'));await p.evaluate(()=>{store.set('seenHelp3','1');quick=true});
+ await p.click('#coverGo');
+ const st=()=>p.evaluate(()=>'pend='+pend+' bonus='+bonus.join()+' bank='+bank+' spun='+spun+' hold='+hold.join('')+' spinHidden='+$('spinBtn').hidden);
+ await p.evaluate(()=>{words=words.filter(w=>w!=='SCENE');line=['S','C','E','N','E'];spun=true;hold=[1,1,0,0,0];check()});console.log('offered',await st());await p.screenshot({path:'/tmp/rw3/bonus.png'});
+ await p.click('#bPass');console.log('passed',await st());
+ await p.evaluate(()=>{check()});await p.click('#bCash');console.log('cashed',await st());
+ await b.close()})();

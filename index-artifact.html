@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f4efe1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Gramble</title>
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="description" content="Gramble: a word slot machine. Find all 20 words before your $5 runs out.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800;900&display=swap">
+<style>
+/* The Daily 15's newspaper look, with a red-and-gold slot machine in the middle. */
+:root{--paper:#f4efe1;--ink:#1a1814;--ink2:#4a453b;--fade:#8c8574;--red:#b3261e;--hi:#ffd23f;--hiE:#e0a800;--gold:#e0a800;--cab:#9c1f18;--cab2:#6e130e;
+  --head:"Playfair Display",Georgia,serif;--body:"Libre Baskerville",Georgia,serif;--sans:"Libre Franklin","Helvetica Neue",Arial,sans-serif;--t:58px;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0;touch-action:manipulation}
+body{background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px;color:var(--ink);font-family:var(--body);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:var(--ink)}
+#app{height:100%;max-width:540px;margin:0 auto;display:flex;flex-direction:column;gap:6px;padding:6px max(2px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 14px) max(2px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;gap:7px;border-bottom:3px double var(--ink);padding:2px 0 6px;margin:0 10px}
+#pno{flex:1;font-family:var(--head);font-weight:900;font-size:20px;white-space:nowrap}
+.box{display:flex;align-items:center;gap:6px;border:2px solid var(--ink);padding:0 8px;background:#fffdf6;height:32px}
+.box small{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.box b{font-family:var(--head);font-weight:900;font-size:19px;font-variant-numeric:tabular-nums}
+#stars{min-width:12px;text-align:center;letter-spacing:-3px;font-size:11px}
+#menuBtn{width:34px;height:32px;padding:0;border-radius:4px;background:transparent;border:1.5px solid var(--ink);font-size:17px}
+#msg{min-height:38px;margin:0 10px;display:flex;align-items:center;justify-content:center;text-align:center;font-style:italic;font-size:14px;color:var(--ink2);line-height:1.25}
+#msg.good{color:var(--ink);font-style:normal;font-family:var(--sans);font-weight:800;font-size:15px}
+#msg.warn{color:var(--red);font-style:normal;font-family:var(--sans);font-weight:800}
+#stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+
+/* ---------- The machine ---------- */
+#cab{position:relative;background:linear-gradient(var(--cab),var(--cab2));border:3px solid var(--gold);border-radius:18px;padding:8px 10px 10px;box-shadow:0 5px 0 #4a0c09,0 8px 16px rgba(0,0,0,.3)}
+#marq{position:relative;margin:0 auto 8px;background:#2a0a08;border:2px solid var(--gold);border-radius:10px;padding:11px 14px;text-align:center;overflow:hidden}
+#marq b{display:block;font-family:var(--head);font-weight:900;font-size:22px;letter-spacing:.06em;color:var(--hi);text-shadow:0 0 6px rgba(255,210,63,.6);line-height:1.1}
+#marq small{display:block;font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#f3d9a0}
+#bulbs{position:absolute;inset:0;pointer-events:none}
+#bulbs i{position:absolute;width:6px;height:6px;border-radius:50%;background:#ffe9a8;box-shadow:0 0 4px #ffd23f}
+#bulbs i:nth-child(odd){animation:blink 1s steps(1) infinite}#bulbs i:nth-child(even){animation:blink 1s steps(1) infinite .5s}
+@keyframes blink{50%{background:#7a4b10;box-shadow:none}}
+#marq.jp{animation:jp .18s steps(1) 10}#marq.jp b{color:#fff}
+@keyframes jp{50%{background:var(--gold)}}
+#row{display:flex;align-items:center;gap:8px}
+#reels{position:relative;display:flex;gap:6px;background:#2a0a08;border-radius:10px;padding:8px;border:2px solid #c48a00}
+/* A reel window shows the letter on the line in full, with half of the letters above and below it. */
+.reel{position:relative;width:var(--t);height:calc(var(--t)*2.6);overflow:hidden;border-radius:6px;background:linear-gradient(#bdb39a,#f3ecd8 30%,#fffdf3 50%,#f3ecd8 70%,#bdb39a);cursor:pointer}
+.reel::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,0) 28%,rgba(0,0,0,0) 72%,rgba(0,0,0,.45))}
+.strip{position:absolute;left:0;right:0;top:0;will-change:transform}
+.sym{position:relative;height:var(--t);display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:calc(var(--t)*.6);line-height:1;color:var(--ink)}
+.sym sub{position:absolute;right:9%;bottom:12%;font-size:calc(var(--t)*.22);font-weight:800}
+.sym.qu{font-size:calc(var(--t)*.46)}
+.sym.wild{color:var(--red);font-size:calc(var(--t)*.62)}
+.reel.sel{box-shadow:inset 0 0 0 3px var(--gold)}
+.reel.sel .sym.on{background:linear-gradient(#ffe680,#ffcf2e)}
+.reel .num{position:absolute;left:4px;top:2px;z-index:2;font-family:var(--sans);font-weight:900;font-size:10px;color:#fffdf6;background:var(--ink);border-radius:8px;min-width:15px;height:15px;line-height:15px;text-align:center;pointer-events:none}
+.reel.spin .sym{filter:blur(1.2px)}
+.reel:not(.spin) .sym:not(.on){opacity:.4}
+#line{position:absolute;left:0;right:0;top:50%;height:0;pointer-events:none;z-index:3}
+#line::before,#line::after{content:'';position:absolute;top:-8px;border:7px solid transparent}
+#line::before{left:-1px;border-left-color:var(--red)}#line::after{right:-1px;border-right-color:var(--red)}
+#lever{position:relative;width:26px;height:calc(var(--t)*2.7);background:none;border:none;padding:0;flex:none}
+#lever .base{position:absolute;left:3px;bottom:0;width:20px;height:26px;border-radius:6px;background:linear-gradient(90deg,#8a8a8a,#e6e6e6,#8a8a8a);border:2px solid #4a453b}
+#lever .arm{position:absolute;left:10px;bottom:16px;width:6px;height:calc(100% - 30px);background:linear-gradient(90deg,#777,#ddd,#777);border-radius:3px;transform-origin:50% 100%;transition:transform .18s ease-in}
+#lever .ball{position:absolute;left:-7px;top:-14px;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff8a80,#c62828 60%,#7f1010);box-shadow:0 2px 3px rgba(0,0,0,.4)}
+#lever.pull .arm{transform:scaleY(-.55)}
+#lever:disabled{opacity:.55;cursor:default}
+
+/* ---------- Word, buttons, spin log ---------- */
+#word{display:flex;align-items:center;justify-content:center;gap:4px;min-height:46px;flex-wrap:wrap}
+#word .wt{position:relative;width:38px;height:42px;border-radius:5px;display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:22px;background:linear-gradient(#ffe680,#ffcf2e);box-shadow:0 2px 0 #c99a00,0 3px 4px rgba(0,0,0,.25);cursor:pointer}
+#word .wt.qu{font-size:16px}#word .wt.wild{color:var(--red)}
+#word .wt sub{position:absolute;right:3px;bottom:2px;font-size:10px;font-weight:800}
+#word .wt.bad{background:linear-gradient(#fffdf3,#f1e6c8);box-shadow:0 2px 0 #b9a77a,0 3px 4px rgba(0,0,0,.25)}
+#word .ph{font-style:italic;font-size:14px;color:var(--fade)}
+#word.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#wsum{min-height:20px;text-align:center;font-family:var(--sans);font-weight:800;font-size:14px;letter-spacing:.03em;color:var(--ink2)}
+#wsum b{color:var(--ink)}#wsum .jp{color:var(--red)}
+#bar{display:flex;gap:8px;width:100%;max-width:420px;padding:0 10px}
+#bar button{flex:1;height:54px;border:2px solid var(--ink);background:#fffdf6;font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;box-shadow:2px 3px 0 var(--ink);border-radius:3px;line-height:1.1}
+#bar button small{display:block;font-size:10px;letter-spacing:.08em;font-weight:700;margin-top:2px}
+#bar button:active:not(:disabled){transform:translate(2px,3px);box-shadow:none}
+#bar button:disabled{opacity:.4;cursor:default}
+#bar #cashBtn,#bar #spinBtn{background:var(--ink);color:#fffdf6}
+#bar #spinBtn{background:var(--red);border-color:#5a0f0b;box-shadow:2px 3px 0 #5a0f0b;font-size:18px;letter-spacing:.08em;white-space:nowrap}
+#bar #bCash{background:#2e7d32;border-color:#1b4d1e;color:#fffdf6}
+#word .wt.pick{outline:3px solid var(--red);outline-offset:2px;transform:translateY(-4px)}
+#word{touch-action:none}#word .wt{touch-action:none}
+#list{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:420px;padding:0 10px}
+#list span{position:relative;border:1.5px solid var(--ink);border-radius:3px;background:#fffdf6;text-align:center;font-family:var(--sans);font-weight:900;font-size:15px;letter-spacing:.12em;padding:4px 0 3px;line-height:1.1}
+#list span.fit{background:#fff3c4;border-color:var(--hiE)}
+#list span.got{background:#e6f2e1;border-color:#7cae6f;color:#5c8a50}
+#list span.got::after{content:'';position:absolute;left:8%;right:8%;top:50%;border-top:2.5px solid var(--red);transform:rotate(-4deg)}
+#list span.new{animation:pick .5s ease-out}
+@keyframes pick{50%{transform:scale(1.25)}}
+#bonusL{min-height:16px;text-align:center;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink2)}#bonusL b{color:#2e7d32;cursor:pointer;text-decoration:underline dotted}
+#list span.miss{color:var(--red);border-style:dashed}
+.reel .tag{position:absolute;left:0;right:0;bottom:3px;z-index:2;text-align:center;font-family:var(--sans);font-weight:900;font-size:9px;letter-spacing:.14em;color:#fffdf6;pointer-events:none}
+.reel .tag span{background:var(--ink);border-radius:8px;padding:1px 6px;font-size:12px;letter-spacing:0}
+.reel.unl .sym.on{opacity:.5}.reel.unl .tag span{background:#6b6355}
+.reel.gone .strip .sym.on{color:transparent}.reel.gone .strip .sym.on sub{display:none}
+#cab.win{animation:winb .25s steps(1) 8}
+@keyframes winb{50%{box-shadow:0 0 0 6px var(--hi),0 8px 16px rgba(0,0,0,.3)}}
+#logLbl{text-align:center;font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.box.bank b{color:#2e7d32}.box.bank.low b{color:var(--red)}
+.pop.cost{background:#fffdf6;color:var(--red);font-size:20px}
+.pop{position:fixed;z-index:12;font-family:var(--head);font-weight:900;font-size:30px;color:var(--ink);background:#fffdf6;border:2px solid var(--ink);padding:0 10px;pointer-events:none;animation:up 3s ease-out forwards;white-space:nowrap;transform:translateX(-50%)}
+.pop.jp{background:var(--hi);color:var(--red)}
+@keyframes up{0%{transform:translate(-50%,0)}15%{transform:translate(-50%,-20px);opacity:1}75%{transform:translate(-50%,-30px);opacity:1}100%{transform:translate(-50%,-50px);opacity:0}}
+
+/* ---------- Sheets (cover, menu, help, result, stats, archive) ---------- */
+.sheet{position:fixed;inset:0;display:grid;place-items:center;background:rgba(26,24,20,.55);z-index:20;padding:16px}
+.card{background:var(--paper);border:3px double var(--ink);padding:18px;width:100%;max-width:400px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:10px;box-shadow:6px 6px 0 rgba(0,0,0,.25)}
+.card h2{font-family:var(--head);font-weight:900;font-size:28px;margin:0;text-align:center;border-bottom:1px solid var(--ink);padding-bottom:6px}
+#menu h2{text-align:left}
+.card b{font-family:var(--sans);font-weight:800}
+#togs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:2px 0 4px}
+#mSound{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
+#mSound b{font-size:10px}#mSound.on{background:var(--ink);color:#fffdf6}
+.helpsec{border-top:1px solid var(--ink);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.helpsec h3{margin:0;text-align:center;font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.helpsec div{display:flex;gap:8px}.helpsec .go{flex:1;padding:9px 4px;font-size:12px;margin:0}
+.lsub{text-align:center;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink2);margin:0}
+.go{display:block;width:100%;padding:12px;border:2px solid var(--ink);border-radius:3px;background:var(--ink);color:#fffdf6;font-weight:800;font-size:16px;letter-spacing:.08em;text-transform:uppercase;margin-top:8px}
+.go.alt{background:#fffdf6;color:var(--ink)}
+.card .go{margin:0}
+.ver{text-align:center;font-family:var(--sans);font-size:11px;color:var(--fade);margin-top:10px}
+.stars{width:100%;border-collapse:collapse;margin-top:6px;text-align:center;background:#fff}
+.stars th,.stars td{border:2px solid var(--ink);padding:6px 4px}
+.stars th{font-family:var(--sans);font-size:13px;font-weight:800}
+.stars tr:first-child th{background:var(--ink);color:#fffdf6;font-size:15px}
+.stars td{font-size:18px;line-height:1;letter-spacing:-2px;white-space:nowrap}
+.rules{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+#help .rules li{font-family:var(--sans);font-weight:500;font-size:15px;line-height:1.42}
+#help .rules li b{font-weight:800}#help .rules li.fine{font-family:var(--body);font-size:11.5px;color:var(--ink2)}
+#cover{background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px;z-index:30}
+#cover .in{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:340px;text-align:center}
+#cover .mh{border-top:3px double var(--ink);border-bottom:3px double var(--ink);padding:8px 0;width:100%}
+#cover h1{font-family:var(--head);font-weight:900;font-size:clamp(40px,13vw,52px);line-height:1;margin:0}
+#cover .ln{display:flex;justify-content:space-between;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;color:var(--ink2)}
+#cover .tag{font-style:italic;font-size:15px}
+#cover .links{display:flex;gap:8px;align-items:center;font-family:var(--sans);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+#cover .links button{background:none;border:none;padding:6px 2px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);text-decoration:underline}
+#cvReels{display:flex;gap:5px;justify-content:center}
+#cvReels span{width:44px;height:50px;border-radius:6px;display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:28px;background:linear-gradient(#fffdf3,#f1e6c8);box-shadow:0 2px 0 #b9a77a,0 3px 4px rgba(0,0,0,.25);border:2px solid var(--gold)}
+#cvStreak{font-family:var(--sans);font-weight:800;font-size:14px;letter-spacing:.04em}
+#cvStats{display:flex;width:100%;background:none;border:none;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:6px 0;color:var(--ink)}
+#cvStats div{flex:1;display:flex;flex-direction:column}#cvStats div+div{border-left:1px solid var(--fade)}
+#cvStats b{font-family:var(--head);font-weight:900;font-size:22px}#cvStats span{font-family:var(--sans);font-weight:800;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.smline{display:flex;align-items:center;gap:8px;background:none;border:none;padding:6px;margin-top:6px;color:var(--ink);font-family:var(--sans);font-size:14px}
+.smline b{font-weight:800}.smline em{font-family:var(--body);color:var(--ink2);font-size:13px}
+.smico{display:inline-block;flex:none;width:24px;height:24px;background-size:cover;border-radius:22%;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAALn0lEQVR42u2c7ZNU1Z3HP+ece2/ffpgHGRgYJ8iDsJEBRJgFJIiUumZilmiUuAkPpcnmD9j3W7VPla19sVWp3df7Yh8qL6zV7CaWMdnspkiMETS6otFCBR9QllkFCUhPd9+nc86+uHeGxelGTJiehpxf1aluhunmcj6/p/M9515RGVhncTZvJt0UOAAOgDMHwAFw5gA4AM4cAAfAmQPgADhzABwAZw6AA+DMAXAAnDkA17R5V+NFCyERQjCzlyoAa7HGOABzO/ECEKRxE53GCFEEsDUoL8ArV7HWgrUOwFx4vdYJOk1YcuNGRtd+juriZRgB9TMnmHzlIKdffwGvFCKVj7VXRzSIq+FUhBCSLI0IK4Ps3PPnrNhyD6IsySRkCrQHUao5fvAHvPSP3yJtTqGC0lWRknoegBACozO8IGT3n3yHkZvWUm8kpMJgVAFAWLQn8YZKTP7qRQ7+1TcwOkNI1fPpSF4N3p8mLe7Y/RcsXb2WqXNNhBBIpRCyGMoDKWidaTB8yybGvvGnZK3GhRrhAPzmkx9HdZZ9djvrb72PRj1BeX7R9rT5z3g+8bmIZfc8yMIN28madYSUDsBvk36sMWze+ccoRZFOxKU/ZC1CSVbc/828I3IR8Ft4f9xgdPkmVq29nbhV5PRPMqXImgmLNu9gcM2mPBX1cBTIXvZ+nSWMb99PUPIwVl/e5wBrNCr0WbprHzbLQAgH4NN6f5K0WHz9TYxt+AJxpJFCXf7npSRrpgzfNkFt5Rp01IIeLciyV70/TVuMb91LpVZG6+wTU//H48BmKcFAhdEvfhUTtxBSOACXO/lZGjM0tIwN4/cRRwb5m+RwqciaGYvvuo/y6HJMHPdkKpK9mH7ipMHG33+QgcFBdJZ2vsxCG+q4gEsTSsPXsWTiK+geLcY9dkUCrVP6+xczvvmPSBJbTNrH28m8HTVZijWdiqzN9aOWZvE9XyFYtASTpj0XBT0FQEpJFNXZsOFehhctIU1TRJtLNEZTqnkcfepR3j70BKWqh9W6bYSYOKa89HoW3fUldGOq56Kgp67GGE25PMDWLftIM1vIz7MXX0Iqsthw9OeP8tbPv4vJbBvZQYAQCCExsWHxl/bg9Q/kbakD0M77FVF0nnVjE4yOriRJsrZajjUaP/SZfO0Fzp48xpm3X+XU0VfxwqCNBG1BCkwUUV29igW3T+RRoJQDMFtBMPh+mc9tfZiLVWQxa06FhKNPP4YxGh23ePup7yI90Ub5FDOpyGrL4vv3IcOwp2Rq2TveX+emVTtZuWw9cZy1bz2txSsFnJ08ybsvH8ALyqhSmRO//DFTH5xCBUF7/UdIdDOidvMGBm7diW7UeyYKZG94f57Dt299GCFon0qKKPECwZvPPU7z/GmU8pC+T+PMJO8dehIvVJfw7ryWLNq9v6f2CeYdQC66TXHjsq2sufFWolgj24luFqTyaNVbHH3ucbygnHu7sSg/5PhT3yNpxEjlFZNtZxVu3Yjo27KN2sYtPdMR9QAAgbGaHZsfwvdkR9HNWE0QKt595SnOnDxaADB5VIRlzr7zKh+89Axe2e8cBVYjA4+Fu/cXvyN+twFMr3pvGLmZm2+6i1bcTnSzRTmVGA1HDj6GQHzMwwUYyzsHHisyzfQK2c6SJ/RUTP/td1IZW49uNWCeo0DOt/enWcxt4/uohD7G6M4dUujx/vEjnHjjEH5YvcjLrdF4lRqnXv4FZ98+ilcqtfVwIQToDFULWfDAHmySFGuN30EAQgiSNGJk4Wo2j+0iik2x4SJmt5LWojzBkWf/jTSaalsjhFKkUx9x4qf/jgoEWNOm0No8ChoJ/Z//Q0orV2Oi1rzKE3I+00+SNrltw9cYqFXJtG6TWsBiUX7A+TNnOfbSjwnCvqJrEjOjaJ3wKjUmD/6I1ofnkH7QRkMSOc80xRvqZ/DLD2JarXktxvPyLwsEWZYw1D/KtvW7iZL/LyWIWSvfoCR47fnHOfvBWyBApzE6TWaGSRN0ksvN508c4+TTT+BVvI7FWEiJaaT077off/QzmCSZtyiYHwBSEiVTbFv3AMPXLSDNssL72y/S4ijl3TeeYXB4BbXBJdQWXE91aGRmVIZGqCwcobxgCbWRZZw+/AuyZtp5D1kIbJLgf2aY/l1fxs5jSzoPB7ME1mo8FfBnD/+AoaHriYxBewItIZOglUWr6feQCkOkmxil8r+bPhEnbfE6PSzaE6QYKIdoX+a/U3xP/p3FdwuLKftE//s/nNj7ADZOio7IXtsRIKWklUyx5bO7WLpwlCTVl+5EilVyWO7HDyv4YTUfpeqF92EVr1zFK9fwwgp+ta/DPsLFUWBaMf6q5VQnvohp1EHJaz8FGaMpBzXuvOUhMn05qTcvzEZnWK0vDNPufTbz2k7Gnp0KBcSavq/uRdb6QOtrG4CUilZSZ+PKP2DVktVEaXaZxweLTueiwYX3tPnz5axyhcQ0I0rrxijfcSdmqg5dFum6CsBagyd97t7wdXrmzJoAayy1PfsRQQBdlqq7BkCKPPevu+E21i7dSCvRyF44qyMlttEi2DJOadt27NRUV+WJrs/AxM1fR0kK3b79ZnouvhmM0Rir81dT5PpPM2ZqhPmEELAIpaju2991fc7rlvdHaYPfWzLOpuU7aCb5WR/dsU01hCUf4+et6HQbmU3fDyDzVK0lSK94nW5HFQiVO7FQ+c+xkCRR57ogJbbeIti5A3/TOOnhw4hqtSvpqDu3KAlBplMm1j9E6EtaSVbMTNtKgVIex44+x0eNDxGehxYWU/T6RlqMACPBiOmf5WuAWT9XAm1S1IIhapu2gs0uUQc0olymvHcv6fPPd21l7M393EvitMnyhWNsWzlBI7Edvd9ag+cpTp+b5Dv//E3i1nmk9HLtp02mEh2a1pkKLwRojVft45Z/+iHe6CjopG0kCKWw9Yhg4m7U2Br0m28hyuU5jwI59+lHkGYRnx/bR385QBvdMRVYawgCweHD3yNq1an1LaJU7iesDFD6+KgOELQZfnUAv1aMah/BdQvJGnVO/df3UWV16XqQpcjraoR7vgZR1JUomFMAAkGSxQz338COVffSSm3nzsfmqadeb3L4pe8TBCFap5++8F40DCZLUaWQD3/yBMmv60jP77xAVgo7FePfuwu5ckVXIMg5Tz9Zi3Ujt7Ko1k+amY6im7GGUkly5PUDnDp1DN8vX5k7XKxFhmVax49x9pkDyEqANbpzR5QkyJEhvDt2YlutOW9J5xgAYA2jgzcihe2cuAtYWWZ57oVHkFJd2duLrEVIxeknH8Om+hPuFSg2gMbWXDvrgMykcAlpTBtNOVQceeNp3nznEKVS7YreaG2NQVVr1F98lo9+eQhVK0PHew5sVwXROQVgrUWpgFdOPkNqBFKAMYYLx0YsxmiUlMRJyg8PfLv9kZQrcS1FSE7+w7excYzw/PycqC0m3FqwJi/SnkA//99dKcLKD4f/cs4AYAlUicmP3qHk97N5xThGSLQQWJmPoKTwQ8kjT36LX73+H5TD/rl5zIC1yFKJ+L3jpGc+ZODuL0A5wJCvHayS2JKPGK4Q/+hnRH/394gwnPMDXHMKYBqCpwJefO+nvH/+FIO14bzACmhlU7x3+jX+9T//lmdffpRyODC3z3goCnLzlcM0Xz6MGhhEVCtYT6LThOz9SRr/8giNv/6bXJrugjLatR0xIQSN+Dwlr8KC2jCeVyJOm5ybOk2WxXPn+R2kB9OYyleiC4eRfX3YLEP/+gz23DlErZZPfheOL3Z1S1IKhbGazKRYm68JPOXnZ/hNlzdDivbSpmnu7UIgPA88L1/9dunsaFcfVzN97NBXwUWF2tru70RNSwwzk16kqG7vis3L84J66hEC83wt7plx82wOgAPgADhzABwAZw6AA+DMAXAAnDkADoAzB8ABcOYAOADOHAAHwJkD4AA4cwAcAGcOgAPgzAFwAJxdYfs/kdtzaB+zUpcAAAAASUVORK5CYII=)}
+.qpic{display:flex;justify-content:center;gap:4px;margin:6px 0 12px;min-height:44px;flex-wrap:wrap}
+.qt{position:relative;width:40px;height:44px;border-radius:5px;display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:23px;background:linear-gradient(#fffdf3,#f1e6c8);box-shadow:0 2px 0 #b9a77a,0 3px 4px rgba(0,0,0,.25)}
+.qt sub{position:absolute;right:3px;bottom:2px;font-size:10px;font-weight:800}
+.qt.l{background:linear-gradient(#ffe680,#ffcf2e);box-shadow:0 2px 0 #c99a00,0 3px 4px rgba(0,0,0,.25)}
+.qt.w{color:var(--red)}
+#quick{z-index:40}
+#qText{font-size:15px;line-height:1.45;text-align:center;margin:0}
+#qDots{display:flex;justify-content:center;gap:6px;margin:14px 0 2px}#qDots span{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--ink)}#qDots span.on{background:var(--ink)}
+.qskip{display:block;margin:10px auto 0;background:none;border:0;font-weight:700;font-size:13px;color:var(--ink2);text-decoration:underline}
+.big{font-family:var(--head);font-weight:900;font-size:44px;text-align:center;margin:4px 0;line-height:1;letter-spacing:-2px}
+.dpts{font-family:var(--sans);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase}.dpts b{font-family:var(--head);font-size:30px;letter-spacing:0}
+#dStreak{margin:0;font-family:var(--sans);font-weight:800;font-size:14px;letter-spacing:.04em}
+.donegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.donegrid .go{padding:9px 4px;font-size:13px}
+.wl{text-align:center;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink2);line-height:1.5;margin:0}
+.dw{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.tapnote{margin:-6px 0 0;font-size:11px;font-style:italic;color:var(--ink2);text-align:center}
+#dTop{margin:0;font-family:var(--sans);font-size:15px}
+#def{z-index:45}#def .card{text-align:left}#defW{margin:0 0 6px;font-family:var(--sans);letter-spacing:.08em;font-size:22px}#defT p{margin:0 0 8px;font-size:15px;line-height:1.4}#defT i{color:var(--ink2)}#defT .dsm{font-size:13px}#defT a{color:var(--ink)}
+.sstreak{display:flex;flex-direction:column;gap:4px;font-family:var(--head);font-weight:900;font-size:20px;text-align:left}
+.sstreak div{display:flex;align-items:baseline}.sstreak em{font-style:normal;display:inline-block;width:1.4em}.card .sstreak b{margin-left:auto;font-family:var(--head);font-weight:900}
+.shead{margin:4px 0 0;text-align:left;font-family:var(--head);font-weight:900;font-size:16px;border-bottom:2px solid var(--ink);padding-bottom:3px}
+.sweek{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;border:2px solid var(--ink);border-radius:3px;padding:4px}
+.sweek div{border:1.5px solid var(--ink);border-radius:3px;background:#fffdf6;padding:4px 0;min-height:46px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;line-height:1.1}
+.sweek span{font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.04em}
+.sweek .off{opacity:.45;border-color:var(--fade)}.sweek .x{font-family:var(--sans);font-weight:700;color:var(--ink2)}
+.sweeksum{font-family:var(--sans);font-weight:700;font-size:13px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.statgrid div{border:2px solid var(--ink);border-radius:3px;background:#fffdf6;padding:7px 2px 6px;display:flex;flex-direction:column;gap:2px}
+.statgrid b{font-family:var(--sans);font-weight:900;font-size:22px;line-height:1.1}
+.statgrid span{font-family:var(--sans);font-weight:800;font-size:9.5px;text-transform:uppercase;letter-spacing:.05em}
+@media (max-width:420px){.top{gap:5px}.box{padding:0 6px;gap:4px}.box small{letter-spacing:.05em;font-size:9px}#pno{font-size:18px}}
+@media (max-height:700px){#marq{margin-bottom:5px;padding:8px 12px}#marq b{font-size:18px}#stage{gap:6px}#bar button{height:48px}}
+/* ---------- Machine looks (menu → Look). Each look restyles the cabinet; the game is the same. ---------- */
+/* Shared for the classy looks: no blinking bulbs, a fine inner hairline, a serif marquee, a brass lever. */
+body[class*="lk-"] #bulbs{display:none}
+body[class*="lk-"] #cab{border-width:1px;border-radius:14px}
+body[class*="lk-"] #cab::before{content:'';position:absolute;inset:4px;border:1px solid var(--trim);border-radius:10px;pointer-events:none}
+body[class*="lk-"] #marq{border-width:1px;border-color:var(--trim);padding:9px 14px}
+body[class*="lk-"] #marq b{font-family:var(--head);font-style:italic;font-weight:700;letter-spacing:.04em;text-shadow:none;color:var(--mq)}
+body[class*="lk-"] #marq small{color:var(--trim);font-weight:600;letter-spacing:.22em}
+body[class*="lk-"] #reels{border-width:1px;border-color:var(--trim)}
+body[class*="lk-"] #line::before{border-left-color:var(--trim)}body[class*="lk-"] #line::after{border-right-color:var(--trim)}
+body[class*="lk-"] #lever .ball{background:radial-gradient(circle at 35% 35%,#fff6d8,var(--trim) 55%,#5a4310)}
+body[class*="lk-"] #marq.jp{animation:jp2 .3s steps(1) 6}@keyframes jp2{50%{background:var(--trim)}}
+body.lk-navy{--trim:#c9a961;--mq:#f3e6c4}
+body.lk-navy #cab{background:linear-gradient(#1c2a44,#0f1829);border-color:#c9a961;box-shadow:0 5px 0 #070c16,0 8px 16px rgba(0,0,0,.3)}
+body.lk-navy #marq,body.lk-navy #reels{background:#0a111e}
+body.lk-navy #bar #spinBtn{background:#1c2a44;border-color:#0a111e;box-shadow:2px 3px 0 #0a111e}
+body.lk-walnut{--trim:#d8b46a;--mq:#fbefd2}
+body.lk-walnut #cab{background:repeating-linear-gradient(100deg,#5b3a22 0 7px,#6b4529 7px 11px,#553520 11px 19px,#62402a 19px 24px);border-color:#d8b46a;box-shadow:0 5px 0 #2a190d,0 8px 16px rgba(0,0,0,.3)}
+body.lk-walnut #marq,body.lk-walnut #reels{background:#24160c}
+body.lk-walnut #bar #spinBtn{background:#5b3a22;border-color:#24160c;box-shadow:2px 3px 0 #24160c}
+body.lk-ivory{--trim:#b08d3c;--mq:#3a2e14}
+body.lk-ivory #cab{background:linear-gradient(#fbf6e9,#ece2c8);border-color:#b08d3c;box-shadow:0 5px 0 #b9ab86,0 8px 16px rgba(0,0,0,.18)}
+body.lk-ivory #marq{background:#fffdf6}body.lk-ivory #reels{background:#d9ccaa}
+body.lk-ivory #bar #spinBtn{background:#1a1814;border-color:#b08d3c;box-shadow:2px 3px 0 #b08d3c}
+body.lk-oxblood{--trim:#d4b26a;--mq:#f6e4b8}
+body.lk-oxblood #cab{background:radial-gradient(circle at 50% 30%,#6a1420,#3e0a12);border-color:#d4b26a;box-shadow:0 5px 0 #1f0408,0 8px 16px rgba(0,0,0,.3)}
+body.lk-oxblood #marq,body.lk-oxblood #reels{background:#22050a}
+body.lk-oxblood #bar #spinBtn{background:#5a1019;border-color:#22050a;box-shadow:2px 3px 0 #22050a}
+body.lk-onyx{--trim:#c8c8c8;--mq:#f2f2f2}
+body.lk-onyx #cab{background:linear-gradient(#262626,#111);border-color:#8a8a8a;box-shadow:0 5px 0 #000,0 8px 16px rgba(0,0,0,.35)}
+body.lk-onyx #marq,body.lk-onyx #reels{background:#050505}
+body.lk-onyx #lever .ball{background:radial-gradient(circle at 35% 35%,#fff,#bdbdbd 55%,#444)}
+body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 0 #000}
+#mLook{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
+#mLook b{font-size:10px}
+#mCross{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
+#mCross b{font-size:10px}#mCross.on{background:var(--ink);color:#fffdf6}
+#list span i{font-style:normal}#list span i.x{color:#b5ad9a}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top"><div id="pno">Gramble</div>
+    <div class="box bank" id="bankBox"><small>Bank</small><b id="bank">$10.00</b></div>
+    <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
+    <button id="menuBtn" aria-label="Menu">☰</button></div>
+  <div id="msg"></div>
+  <div id="stage">
+    <div id="cab">
+      <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">50¢ a spin · 20¢ a point</small></div>
+      <div id="row"><div id="reels"><div id="line"></div></div>
+        <button id="lever" aria-label="Spin"><div class="base"></div><div class="arm"><div class="ball"></div></div></button></div>
+    </div>
+    <div id="word"></div>
+    <div id="wsum"></div>
+    <div id="bar"><button id="spinBtn">Spin<small>50¢</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Cash in<small id="bCashN"></small></button></div>
+    <div id="logLbl">Find all 20 words</div>
+    <div id="list"></div>
+    <div id="bonusL"></div>
+  </div>
+</div>
+
+<div class="sheet" id="cover"><div class="in">
+  <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
+  <div id="cvReels"><span>S</span><span>P</span><span>I</span><span>N</span><span>S</span></div>
+  <div class="tag">Spin the reels to spell all 20 words before your money runs out.</div>
+  <div id="cvStreak" hidden></div>
+  <button id="cvStats" hidden aria-label="Your stats"></button>
+  <button class="go" id="coverGo">Play today's game</button>
+  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">A fresh 20 words, as many as you like</small></button></div>
+  <div style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same 20 words each day. Your first game counts.</div>
+  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverHow">How to play</button></div>
+  <button id="coverSm" class="smline"><i class="smico"></i><b>smAisle</b><em>See our other games ›</em></button>
+  <div class="ver" id="cvVer" style="margin-top:0"></div>
+</div></div>
+
+<div class="sheet" id="help" hidden><div class="card">
+  <h2>How to Play</h2>
+  <ul class="rules">
+    <li><b>Daily game:</b> everyone gets the same 20 words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus.</li>
+    <li><b>Goal:</b> find all <b>20 words</b> on your list before your money runs out. You start with <b>$10</b>, and every spin costs <b>50¢</b>.</li>
+    <li><b>Spin:</b> tap <b>Spin</b> (or pull the lever). Five reels land on letters.</li>
+    <li><b>Lock:</b> tap a reel (or its tile) to lock its letter 🔒. Locked letters stay put when you spin again. Tap again to unlock it.</li>
+    <li><b>Hints:</b> words that still fit your locked letters light up, and the letters you already have turn gray.</li>
+    <li><b>Tiles:</b> the letters you lock show as tiles under the machine. Drag a tile left or right to rearrange them and try spelling your words. Tap a tile to unlock it.</li>
+    <li><b>Find a word:</b> when the five letters on the line can spell a word on your list, in any order, it's found! It's crossed off and pays <b>20¢ a point</b> (Scrabble values). STONE pays $1.00.</li>
+    <li><b>Jackpot:</b> spell a list word on a spin with nothing locked and it pays double. It is rare, maybe once in 10 games.</li>
+    <li><b>Bonus words:</b> if the letters spell a real word that isn't on your list, you can cash it in for half pay (once per game), or pass and keep your letters. It doesn't count toward your 20.</li>
+    <li><b>The machine helps:</b> the reels only carry letters from words still on your list, and they lean toward words that fit what you're holding. Words that fit your held letters light up yellow.</li>
+    <li><b>Win</b> by finding all 20. The game ends if you can't afford a spin. You can also <b>cash out</b> from the menu.</li>
+    <li class="fine">The website version sends an anonymous check-in so we can count players: the day, how many games you played and the game version. Never your name, contacts or location. No real money is involved.</li>
+  </ul>
+  <button class="go" id="helpGo">Let's play</button>
+  <div class="ver" id="ver"></div>
+</div></div>
+
+<div class="sheet" id="quick" hidden><div class="card">
+  <div class="qpic" id="qPic"></div>
+  <h2 id="qTitle"></h2>
+  <p id="qText"></p>
+  <div id="qDots"></div>
+  <button class="go" id="quickGo">Next</button>
+  <button class="qskip" id="qSkip">Skip intro</button>
+</div></div>
+
+<div class="sheet" id="menu" hidden><div class="card" style="position:relative">
+  <h2>Menu</h2>
+  <p class="lsub" id="lTot"></p>
+  <div id="togs"><button id="mSound" aria-label="Sound"></button><button id="mLook" aria-label="Machine look"></button></div>
+  <button class="go" id="mClose">Back to game</button>
+  <button class="go alt" id="mNew">New game</button>
+  <button class="go alt" id="mCashOut">Cash out</button>
+  <button class="go alt" id="mStats">Stats</button>
+  <button class="go alt" id="mCover">Home screen</button>
+  <button class="go alt" id="mHow">How to play</button>
+  <div class="ver" id="menuVer"></div>
+</div></div>
+
+<div class="sheet" id="done" hidden><div class="card" style="text-align:center">
+  <h2 id="dTitle">Game over</h2>
+  <div class="big" id="dFound"></div>
+  <p id="dRes" style="margin:0;font-weight:700"></p>
+  <p id="dTop" hidden></p>
+  <p class="wl" id="dWords"></p>
+  <p id="dTap" class="tapnote" hidden>Tap a word to see what it means</p>
+  <p id="dBest" style="margin:0;font-style:italic;font-size:14px"></p>
+  <button class="go" id="dAgain">Replay today's list</button>
+  <button class="go alt" id="dPlus">New list ⭐ Plus</button>
+  <div class="donegrid"><button class="go alt" id="dShare">Share</button><button class="go alt" id="dStats">Stats</button></div>
+  <button class="go alt" id="dClose" style="padding:9px 4px;font-size:13px">See the machine</button>
+</div></div>
+
+<div class="sheet" id="def" hidden><div class="card"><h3 id="defW"></h3><div id="defT"></div><button class="go" id="defOk">Close</button></div></div>
+<div class="sheet" id="stats" hidden><div class="card" style="text-align:center">
+  <h2>Your Stats</h2>
+  <div id="statGrid" class="statgrid"></div>
+  <p style="margin:0;font-size:12px;font-style:italic;color:var(--ink2)">Days and streaks count your first game each day. Games counts every game.</p>
+  <button class="go alt" id="statsBack">Back</button>
+</div></div>
+
+<script>
+const VERSION='5.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
+// No pinch or double-tap zoom (iOS Safari ignores user-scalable=no, so block its gesture events too).
+for(const ev of['gesturestart','gesturechange'])document.addEventListener(ev,e=>e.preventDefault(),{passive:false});
+let lastTouch=0;document.addEventListener('touchend',e=>{const t=Date.now();if(t-lastTouch<350)e.preventDefault();lastTouch=t},{passive:false});
+
+// The word list: The Daily 15's everyday five-letter puzzle words. Each game draws 20 of them.
+const POOL='DREAM GREEN EXTRA STAFF ENJOY IMPLY HURRY NINTH SEVEN AGREE GLOVE UPSET ADMIT CHESS BROAD SHOCK CRISP TRACK BUNCH SPEND POUND MIXED ERROR RATIO SWEET TIGER COUNT CRAFT FORTH SIXTY RADIO HAPPY FIBER FLOOR TIGHT STOVE YIELD ALLOW TUTOR PHASE BEACH WHEEL FETCH MOVIE IMAGE SWELL PIECE BATHE REACH STATE IDEAL FORTY ALARM SOLAR SMASH THUMB SALAD FLEET OPERA TRASH GUILT SKILL ENTRY WORTH LEVEL SHIFT HUMAN SMELL SCARY PROUD FRIED ANNOY LAUGH THEFT WORLD SPACE FINAL SEIZE NOVEL ORGAN SPOON TWIST BRAIN SHORE STILL BLACK BUILD PIANO CHILL CLOUD STONE BLUSH SHOOT CHOIR TRULY TREND CHEEK SPORT SHADE COMMA MANGO PANEL PEACE ALTER LOOSE ALONE SPICY REBEL PRESS STAGE CLAIM TOWER MEDAL BLOCK PANIC FOUND GUIDE TRACE FIGHT CROWN CABIN FRUIT APPLE CRIME GRIND VIRUS CHASE SPICE CABLE VERSE CLOAK WAIST PROOF USUAL STRAP JUDGE LUCKY BREAK BOOST AHEAD MERCY JUICE WRECK WIDTH FULLY EMPTY FRESH INDEX STORM TRUCK CRAZY MOUNT GRAPE ADAPT SMOKE AWFUL EARTH BEARD COURT BACON READY FAULT PILOT SHEET RELAX COVER PASTA THING EQUAL PRIZE ARISE EQUIP SUPER HARSH SIGHT TENTH POWER MONEY SQUAD JUICY STRIP TRAIN STUFF RANGE FIFTH SWEAT YOUNG APART GRILL PROVE MINUS BLIND CANDY SWEAR BRIEF JOINT GRAVE SHIRT REFER GREET PAPER INPUT GRASS SHINY SHELF HEDGE MATCH LOGIC LOVER NERVE NAVAL OCEAN THREE VALID WATER MAYOR CREAM SPITE SHINE DECAY MAGIC SPLIT VISIT AWAKE SPOIL WOUND FLUID COACH SHEEP LARGE HORSE NEWLY TRUNK IDIOM SLOPE LEASE LEAVE OFTEN BREAD GUARD FAINT RULER KNOWN ENTER ESSAY AGENT EIGHT STING PUPIL DRAMA WATCH CRUEL EVENT FIXED CLIFF CLIMB RURAL BIRTH FLOOD RECUR SMART STEAL CYCLE SNAKE SCENT BROWN TOTAL THIRD HELLO DRINK MINOR TEASE WORST QUERY WRONG BLAME ELECT CHAIN BASIS INNER THANK RAISE PARTY OWNER GRADE PUPPY CHIEF TOAST GLASS PEACH SMILE BRAKE SCORE WRIST DAILY DUSTY SUNNY SLICE CAUSE STAKE GLORY ALERT ALIVE PIZZA NIECE HEART YOUTH MINER GRAPH HOBBY PRIDE SENSE FLASH TOWEL UNITY STICK BAKER LIMIT STOCK SUGAR EXIST STEER MEANS FRAME EARLY STAIR TENSE BOAST NIGHT NOISY ALOUD CHEAP COUGH FOCUS STOOL BURST YACHT METAL WEIRD NOISE SOUND CRACK CLOTH EAGER PLANE MEDIA ASIDE SALTY LUNCH FLESH SPARE ADULT PHOTO BLEED GROUP DEBUT BLOOD SOLVE FIELD TRIAL DEPTH STEAM CARRY PUNCH RAPID BREED ANKLE RIGHT MAYBE CANAL FLOAT ROUND TOUCH URBAN AMAZE DENSE AWARE BRAND THIGH CLICK SHARE STAND GUESS WIDOW CROWD CRASH SHELL HOTEL STEAK TITLE PANTS TRAIL SOLID PLATE CLASS LEMON OFFER SHARP ELDER PLANT FORCE UNCLE WHALE ARMED NORTH RALLY STORE VOTER PURSE COAST BASIC OTHER DRESS MESSY NEVER HATCH TREAT MOTOR BORED KNOCK LIGHT CLEAR GRAND FLAME ROYAL SHORT HOUSE GUEST WEAVE OLIVE RENEW FRONT LASER TASTY DOUBT LAYER SIXTH UNITE CLERK VITAL TRUST CLEAN SHAKE CHILD CHARM SLEEP MAKER FIFTY UNDER LEGAL TWICE SILLY REACT SCALE CRUSH DOZEN BONUS SCENE VENUE EAGLE BEGIN FATAL BADLY EXILE ANGRY FROST SPEED ADOPT TOOTH SPRAY UNFIT EXACT FAIRY TRIBE MARCH CATCH DIRTY NURSE WEIGH LATER ALBUM GOODS BOARD QUITE QUEEN BLADE RHYME WINDY RUSTY GIVEN ARROW WIDEN CROSS THICK BLAST VIVID ELBOW GIANT FUNNY TOXIC WRITE STYLE TASTE FIRST LABEL AWAIT MIGHT PATCH KNEEL BEING SPILL TRADE ALIKE STUDY BUYER HONEY MOUTH SHOUT COLON WORSE CLOCK THEME ONION SLIDE GROSS CHAIR SWING OUTER SHAPE ROBOT RIDER ENEMY ROUTE BRING ASSET GRAIN POINT SCREW HUMID ACTOR AMUSE AVOID WORRY VIDEO MAJOR ORDER CHOKE PLAIN TEACH TOPIC MODEL SKIRT REPAY VOICE FENCE WASTE GREAT ARGUE ROUGH DROWN SHAME WHITE STEEL QUOTE TEMPT CURLY PAUSE CHEER CURVE DRAIN LOWER CLOSE STIFF WITTY BLEND GHOST FLOUR TODAY WHEAT SPELL SHAVE GRIEF VALUE PENNY LIVER KNIFE PHONE CEASE ERASE DRIVE DANCE START VOWEL SPARK FEVER SWORD GROWL RIVER TIRED SMALL LOBBY QUICK FANCY PRIOR HABIT SERVE SCARF ANGER MUSIC PEDAL THIEF DISCO CIVIL JEWEL LEARN HEAVY AWARD OCCUR UNION STEEP STARE STAIN BASED REPLY PASTE SANDY BADGE RIVAL SOUTH SWEEP JEANS RAZOR LOYAL BRAVE TROOP DELAY MOUSE CHEAT TABLE FALSE SCARE DIARY TOUGH PLACE PITCH TRUTH LEAST SADLY PRINT SORRY BOUND PRICE SPEAK RISKY CHEST BRUSH UPPER UNTIE BRIDE WOMAN MORAL LOCAL ANGLE THINK MARRY STAMP THROW PAINT CHAOS BLANK MONTH GRANT APPLY CHART TRICK ISSUE OUNCE QUIET SAUCE WHOLE UNTIL WHOSE THEIR THERE OUGHT ALONG WOULD WHICH SINCE EVERY HENCE COULD SHALL AFTER AGAIN THOSE BELOW AMONG ABOVE ABOUT YOURS THESE WHERE SOFAS ITEMS HOMES SWANS USERS HANGS SLIPS MELTS RULES LANDS NOUNS HARMS RAGES PLUGS GIVES CORNS TAILS BOATS MODES FINES MENUS TICKS CHOPS FEARS LENDS CENTS PESTS SEALS TALKS WELLS TOOLS PEAKS MASKS HINTS HATES LAMPS HELPS HOLDS WORMS ROADS TELLS KINDS GEARS TONES FARES MAKES PACKS COMES GLOWS TENDS GRABS TENTS MARKS GOALS FIXES BLUES BITES SPIES SLAPS CALLS SINGS VISAS HEATS TOMBS FINDS FEELS FROGS FLIES WINES CREWS MATES EARNS LISTS MALES FLAGS CURES SLAMS WORDS EUROS RISKS FAILS NOTES REARS BANGS MINDS SHOTS CURLS SALES BARNS SAVES WARNS BONES DISKS FADES ROCKS RINGS ZONES PICKS FILLS DARES BASES FIRES PACES PASTS CRIES FLOWS HEELS MAILS EXITS WAGES CARTS AUTOS GAZES CALMS MINES DRAWS COALS JAILS IDEAS LUNGS OVENS EASES QUITS MILES RAIDS FLATS LUMPS FATES HUNTS FACES DRIES FIRMS HOURS SEATS POEMS EXAMS SWIMS LOANS BENDS PULLS TYPES MEALS SORTS JOKES BUMPS BOXES FOODS SPURS SIGHS PARTS SELLS LINES PINTS BANKS STARS LACKS WEEDS DESKS VOTES YELLS PAGES SIDES BARKS BILLS HOSTS COSTS SOUPS MISTS TESTS KNEES GAMES TALES TUNES WAKES SILKS BALLS SOLOS STIRS RAINS DUMPS WEARS KNOTS BURNS PACTS CHEFS HEARS ACIDS LOVES FILMS LAKES RAILS GLUES SKIES WAITS FALLS'.split(/\s+/);
+// Bonus words: any other everyday five-letter word (The Daily 15's accepted list). They pay half. Keyed by sorted letters.
+const BONUS=new Map();for(const w of 'ABOUT ABOVE ABUSE ACIDS ACORN ACRES ACTED ACTOR ACUTE ADAPT ADMIT ADOPT ADORE ADULT AFTER AGAIN AGENT AGILE AGING AGREE AHEAD AIDED AIMED AISLE ALARM ALBUM ALERT ALGAE ALIAS ALIBI ALIEN ALIGN ALIKE ALIVE ALLEY ALLOW ALLOY ALOHA ALONE ALONG ALOUD ALTAR ALTER AMAZE AMBER AMEND AMONG AMPLE AMUSE ANGER ANGLE ANGRY ANKLE ANNEX ANNOY ANVIL APART APPLE APPLY APRON AREAS ARENA ARGUE ARISE ARMED ARMOR AROMA ARRAY ARROW ASHES ASIDE ASPEN ASSET ATLAS ATOMS ATTIC AUDIO AUDIT AUNTS AUTOS AVAIL AVOID AWAIT AWAKE AWARD AWARE AWFUL AWOKE BACKS BACON BADGE BADLY BAGEL BAGGY BAILS BAKER BAKES BALLS BALMY BANDS BANGS BANJO BANKS BARGE BARKS BARNS BARON BASED BASES BASIC BASIN BASIS BATCH BATHE BATHS BATON BAYOU BEACH BEADS BEADY BEAMS BEANS BEARD BEARS BEAST BEATS BEECH BEEFY BEERS BEGAN BEGIN BEGUN BEIGE BEING BELLS BELLY BELOW BELTS BENCH BENDS BERET BERRY BIKER BIKES BILLS BINDS BINGO BIRCH BIRDS BIRTH BISON BITES BLACK BLADE BLAME BLAND BLANK BLARE BLAST BLAZE BLEAK BLEED BLEND BLESS BLIMP BLIND BLINK BLISS BLITZ BLOCK BLOND BLOOD BLOOM BLOWN BLOWS BLUES BLUFF BLUNT BLURT BLUSH BOARD BOAST BOATS BOILS BONDS BONES BONGO BONUS BOOKS BOOST BOOTH BOOTS BOOTY BORED BORES BOSSY BOUND BOWLS BOXER BOXES BRACE BRAID BRAIN BRAKE BRAND BRASS BRAVE BRAVO BRAWL BREAD BREAK BREED BRIBE BRICK BRIDE BRIEF BRINE BRING BRINK BRISK BROAD BROIL BROKE BROOK BROOM BROTH BROWN BRUSH BUDDY BUDGE BUGGY BUGLE BUILD BUILT BULKY BULLS BULLY BUMPS BUMPY BUNCH BUNNY BURNS BURNT BURST BUSES BUSHY BUYER CABIN CABLE CADET CAGES CAKES CALLS CALMS CAMEL CAMEO CAMPS CANAL CANDY CANOE CARDS CARES CARGO CAROL CARRY CARTE CARTS CARVE CASES CASTS CATCH CATER CAUSE CAVES CEASE CEDAR CELLO CELLS CENTS CHAIN CHAIR CHALK CHAMP CHANT CHAOS CHARM CHARS CHART CHASE CHATS CHEAP CHEAT CHECK CHEEK CHEER CHEFS CHESS CHEST CHEWS CHEWY CHICK CHIEF CHILD CHILI CHILL CHIME CHIMP CHINA CHINS CHIPS CHIRP CHOIR CHOKE CHOPS CHORD CHORE CHOSE CHUCK CHUNK CHURN CHUTE CIDER CITES CIVIC CIVIL CLAIM CLAMP CLANG CLASH CLASP CLASS CLEAN CLEAR CLERK CLICK CLIFF CLIMB CLING CLINK CLOAK CLOCK CLONE CLOSE CLOTH CLOUD CLOWN CLUBS CLUES CLUMP CLUNG COACH COALS COAST COATS COBRA COCOA CODES COINS COLON COLOR COMBS COMES COMET COMFY COMIC COMMA CONDO COOKS COPES CORAL CORES CORNS CORNY CORPS COSTS COUCH COUGH COULD COUNT COUPS COURT COVER CRACK CRAFT CRAMP CRANE CRANK CRASH CRATE CRAVE CRAWL CRAZY CREAK CREAM CREEK CREEP CREPT CREST CREWS CRIES CRIME CRISP CROAK CROOK CROPS CROSS CROWD CROWN CRUDE CRUEL CRUMB CRUSH CRUST CUBIC CUPID CURED CURES CURLS CURLY CURRY CURVE CURVY CYCLE DAILY DAIRY DAISY DAMPS DANCE DANDY DARES DARTS DATED DATES DAWNS DEALS DEALT DEBTS DEBUG DEBUT DECAF DECAL DECAY DECKS DECOR DECOY DEFER DELAY DELTA DENIM DENSE DEPOT DEPTH DERBY DESKS DEVIL DIALS DIARY DIETS DIGIT DIMLY DINER DIRTY DISCO DISCS DISKS DITCH DITTO DIVER DIVES DIZZY DODGE DOLLS DOLLY DONOR DOORS DOUBT DOUGH DOWNS DOZEN DRAFT DRAGS DRAIN DRAMA DRANK DRAPE DRAWN DRAWS DREAD DREAM DRESS DRIED DRIER DRIES DRIFT DRILL DRINK DRIVE DRONE DROOL DROOP DROPS DROVE DROWN DRUMS DRUNK DRYER DUCKS DUMMY DUMPS DUSTY DWARF DWELL DYING EAGER EAGLE EARLY EARNS EARTH EASEL EASES EATEN EBONY EDGES EDITS EERIE EIGHT EJECT ELBOW ELDER ELECT ELITE ELVES EMPTY ENACT ENDED ENEMY ENJOY ENTER ENTRY EQUAL EQUIP ERASE ERODE ERROR ERUPT ESSAY EUROS EVADE EVENT EVERY EVICT EVILS EVOKE EXACT EXAMS EXCEL EXERT EXILE EXIST EXITS EXPEL EXTRA FABLE FACED FACES FACET FACTS FADES FAILS FAINT FAIRS FAIRY FALLS FALSE FAMED FANCY FARES FARMS FATAL FATES FATTY FAULT FAVOR FEARS FEAST FEEDS FEELS FENCE FERRY FETCH FEVER FIBER FIELD FIERY FIFTH FIFTY FIGHT FILED FILES FILLS FILMS FINAL FINCH FINDS FINES FIRES FIRMS FIRST FISHY FIXED FIXES FLAGS FLAIR FLAKE FLAKY FLAME FLARE FLASH FLASK FLATS FLEES FLEET FLESH FLICK FLIER FLIES FLING FLOAT FLOCK FLOOD FLOOR FLOSS FLOUR FLOWN FLOWS FLUFF FLUID FLUKE FLUNG FLUSH FLUTE FOAMY FOCUS FOGGY FOLDS FOLKS FOODS FOOLS FORCE FORGE FORKS FORMS FORTH FORTY FORUM FOUND FOYER FRAIL FRAME FRANK FRAUD FREAK FRESH FRIED FRIES FROGS FRONT FROST FROTH FROWN FROZE FRUIT FUDGE FUELS FULLY FUMES FUNDS FUNKY FUNNY FURRY FUSES FUSSY FUZZY GAFFE GAINS GAMES GANGS GASES GATES GAUGE GAZES GEARS GEESE GENES GENRE GHOST GIANT GIDDY GIFTS GIRLS GIVEN GIVES GIZMO GLAND GLARE GLASS GLAZE GLEAM GLIDE GLINT GLOAT GLOBE GLOOM GLORY GLOSS GLOVE GLOWS GLUES GNOME GOALS GOATS GOING GOODS GOOEY GOOFY GOOSE GORGE GOURD GRABS GRACE GRADE GRAFT GRAIN GRAMS GRAND GRANT GRAPE GRAPH GRASP GRASS GRATE GRAVE GRAVY GRAZE GREAT GREED GREEN GREET GRIEF GRILL GRIME GRIMY GRIND GRIPE GRIPS GROAN GROOM GROSS GROUP GROVE GROWL GROWN GROWS GRUFF GRUNT GUARD GUESS GUEST GUIDE GUILD GUILT GULLY GUMBO GUMMY GUSTO GUSTY HABIT HAIRS HAIRY HALLS HALTS HALVE HANDS HANDY HANGS HAPPY HARDY HARMS HARSH HASTE HASTY HATCH HATES HAUNT HAVEN HAVOC HAZEL HEADS HEALS HEARD HEARS HEART HEATS HEAVE HEAVY HEDGE HEELS HEFTY HEIST HELLO HELPS HENCE HERBS HERON HIDES HIGHS HIKER HILLS HILLY HINGE HINTS HIPPO HIRES HITCH HOARD HOBBY HOIST HOLDS HOLES HOLLY HOMES HONEY HONOR HOOKS HOPES HORDE HORNS HORSE HOSTS HOTEL HOTLY HOUND HOURS HOUSE HOVER HOWDY HUMAN HUMID HUMOR HUNCH HUNTS HURRY HURTS HUSKY HUTCH HYENA ICING IDEAL IDEAS IDIOM IGLOO IMAGE IMPLY INDEX INLET INNER INPUT IRONS IRONY ISLES ISSUE ITCHY ITEMS IVORY JAILS JAZZY JEANS JELLY JETTY JEWEL JIFFY JOINS JOINT JOKER JOKES JOLLY JUDGE JUICE JUICY JUMBO JUMPS JUMPY JUROR KARMA KAYAK KEEPS KHAKI KICKS KINDS KINGS KIOSK KITES KITTY KNACK KNEAD KNEEL KNEES KNELT KNIFE KNITS KNOCK KNOTS KNOWN KNOWS KOALA LABEL LABOR LACKS LADLE LAKES LAMBS LAMPS LANCE LANDS LANES LANKY LAPEL LAPSE LARGE LARVA LASER LASSO LASTS LATCH LATER LAUGH LAYER LEADS LEAFY LEAKS LEAKY LEANS LEAPT LEARN LEASE LEASH LEAST LEAVE LEDGE LEGAL LEMON LENDS LEVEL LEVER LIFTS LIGHT LIKES LILAC LIMBO LIMIT LINED LINEN LINER LINES LINGO LINKS LISTS LITER LIVER LIVES LIVID LLAMA LOADS LOANS LOBBY LOCAL LOCKS LODGE LOFTY LOGIC LOGOS LONER LOOKS LOOPS LOOSE LORDS LOSER LOSES LOTUS LOUSY LOVER LOVES LOWER LOWLY LOYAL LUCKY LUMPS LUMPY LUNAR LUNCH LUNGE LUNGS LYING LYRIC MACHO MACRO MADAM MADLY MAFIA MAGIC MAILS MAINS MAJOR MAKER MAKES MALES MALLS MANGO MANIA MANOR MAPLE MARCH MARKS MARRY MARSH MASKS MASON MATCH MATES MAXIM MAYBE MAYOR MEALS MEANS MEANT MEATS MEATY MEDAL MEDIA MEETS MELON MELTS MENUS MERCY MERGE MERIT MERRY MESSY METAL METER METRO MICRO MIDST MIGHT MILES MILKY MILLS MIMIC MINCE MINDS MINER MINES MINOR MINTY MINUS MIRTH MISER MISTS MISTY MIXED MIXER MIXES MODEL MODEM MODES MOIST MOLAR MOLDY MOMMY MONEY MONTH MOODS MOODY MOONS MOOSE MOPED MORAL MOSSY MOTEL MOTIF MOTOR MOTTO MOUND MOUNT MOURN MOUSE MOUTH MOVER MOVES MOVIE MOWER MUDDY MUGGY MULCH MUMMY MUNCH MURAL MURKY MUSHY MUSIC MUSTY MYTHS NAILS NAIVE NAMES NANNY NASAL NASTY NAVAL NECKS NEEDS NEEDY NERDY NERVE NESTS NEVER NEWLY NICHE NIECE NIFTY NIGHT NINES NINTH NOBLE NOISE NOISY NOMAD NOONS NORTH NOSES NOTCH NOTED NOTES NOUNS NOVEL NUDGE NURSE NUTTY NYLON OASIS OBEYS OCCUR OCEAN ODDLY OFFER OFTEN OLDEN OLDIE OLIVE ONION ONSET OPENS OPERA OPTIC ORBIT ORDER ORGAN OTHER OTTER OUGHT OUNCE OUTDO OUTER OVENS OWNED OWNER OXIDE OZONE PACES PACKS PACTS PAGER PAGES PAINS PAINT PAIRS PANDA PANEL PANIC PANSY PANTS PAPER PARKA PARKS PARTS PARTY PASTA PASTE PASTS PATCH PATHS PATIO PATTY PAUSE PEACE PEACH PEAKS PEARL PECAN PEDAL PEELS PEERS PENNY PERCH PERIL PERKY PESKY PESOS PESTS PETAL PETTY PHASE PHONE PHONY PHOTO PIANO PICKS PICKY PIECE PIGGY PILES PILLS PILOT PINCH PINES PINTS PIPES PITCH PIVOT PIXEL PIXIE PIZZA PLACE PLAID PLAIN PLANE PLANK PLANS PLANT PLATE PLAYS PLAZA PLEAD PLEAT PLOTS PLUCK PLUGS PLUME PLUMP PLUSH POACH POEMS POETS POINT POISE POKER POLAR POLES POLKA POLLS PONDS POOLS POPPY PORCH PORTS POSED POSES POSTS POUCH POUND POURS POWER PRANK PRESS PRICE PRIDE PRIME PRINT PRIOR PRISM PRIZE PROBE PRONE PRONG PROOF PROSE PROUD PROVE PROWL PROXY PRUNE PSYCH PUDGY PUFFY PULLS PULSE PUMPS PUNCH PUPIL PUPPY PUREE PURGE PURSE PUSHY PUTTY QUACK QUAIL QUAKE QUART QUASH QUEEN QUERY QUEST QUICK QUIET QUILL QUILT QUIRK QUITE QUITS QUOTA QUOTE RACES RADAR RADIO RAGES RAIDS RAILS RAINS RAINY RAISE RALLY RANCH RANGE RANKS RAPID RATES RATIO RAVEN RAZOR REACH REACT READS READY REALM REARS REBEL RECAP RECUR REFER REGAL REHAB REIGN RELAX RELAY RELIC RENEW RENTS REPAY REPEL REPLY RERUN RESTS RETRO REVEL RHINO RHYME RIDER RIDES RIDGE RIGHT RIGID RINGS RINSE RIPEN RISEN RISER RISES RISKS RISKY RIVAL RIVER RIVET ROACH ROADS ROAST ROBIN ROBOT ROCKS ROCKY RODEO ROGUE ROLES ROLLS ROOFS ROOMS ROOMY ROOST ROOTS ROPES ROSES ROTOR ROUGH ROUND ROUTE ROVER ROWDY ROYAL RUGBY RUINS RULER RULES RUMOR RUNNY RURAL RUSTY SACKS SADLY SAILS SALAD SALES SALON SALSA SALTS SALTY SANDS SANDY SASSY SATIN SAUCE SAUCY SAUNA SAVED SAVER SAVES SAVOR SAVVY SCALE SCALP SCALY SCARE SCARF SCARS SCARY SCENE SCENT SCOLD SCOOP SCOOT SCOPE SCORE SCOUR SCOUT SCOWL SCRAP SCREW SCRUB SCUFF SEALS SEATS SEDAN SEEDS SEEDY SEEKS SEEMS SEIZE SELLS SENDS SENSE SERUM SERVE SETUP SEVEN SEVER SEWER SHACK SHADE SHADY SHAFT SHAKE SHAKY SHALL SHAME SHAPE SHARE SHARK SHARP SHAVE SHAWL SHEAR SHEDS SHEEN SHEEP SHEER SHEET SHELF SHELL SHIFT SHINE SHINY SHIPS SHIRT SHOCK SHOES SHONE SHOOK SHOOT SHOPS SHORE SHORT SHOTS SHOUT SHOVE SHOWN SHOWS SHOWY SHRED SHRUB SHRUG SHUTS SHYLY SIDED SIDES SIEGE SIEVE SIGHS SIGHT SIGNS SILKS SILKY SILLY SINCE SINGS SINKS SINUS SIREN SITES SIXES SIXTH SIXTY SIZED SIZES SKATE SKIER SKIES SKILL SKIMP SKINS SKIPS SKIRT SKULL SKUNK SLACK SLAMS SLANG SLANT SLAPS SLASH SLATE SLEEK SLEEP SLEET SLEPT SLICE SLICK SLIDE SLIME SLIMY SLING SLIPS SLOPE SLOSH SLOTH SLUMP SLUNG SLURP SLUSH SLYLY SMACK SMALL SMART SMASH SMEAR SMELL SMILE SMIRK SMITH SMOCK SMOKE SMOKY SNACK SNAIL SNAKE SNAPS SNARE SNARL SNEAK SNEER SNIFF SNOOP SNORE SNORT SNOUT SNOWS SNOWY SNUCK SOAKS SOAPS SOAPY SOBER SOCKS SOFAS SOGGY SOILS SOLAR SOLID SOLOS SOLVE SONGS SONIC SORES SORRY SORTS SOULS SOUND SOUPS SOUTH SPACE SPADE SPARE SPARK SPASM SPAWN SPEAK SPEAR SPECK SPEED SPELL SPEND SPENT SPICE SPICY SPIES SPIKE SPILL SPINE SPINS SPIRE SPITE SPLAT SPLIT SPOIL SPOKE SPOOF SPOOK SPOOL SPOON SPORT SPOTS SPOUT SPRAY SPREE SPRIG SPURS SPURT SQUAD SQUAT SQUID STACK STAFF STAGE STAIN STAIR STAKE STALE STALK STALL STAMP STAND STARE STARK STARS START STASH STATE STAYS STEAK STEAL STEAM STEEL STEEP STEER STEMS STEPS STERN STICK STIFF STILL STILT STING STINK STIRS STOCK STOKE STOLE STOMP STONE STONY STOOD STOOL STOOP STOPS STORE STORK STORM STORY STOUT STOVE STRAP STRAW STRAY STRIP STRUM STRUT STUCK STUDY STUFF STUMP STUNG STUNK STUNT STYLE SUAVE SUEDE SUGAR SUITE SUITS SULKY SUNNY SUPER SURFS SURGE SWAMP SWANS SWARM SWEAR SWEAT SWEEP SWEET SWELL SWEPT SWIFT SWIMS SWING SWIPE SWIRL SWISH SWOOP SWORD SWORE SWORN SWUNG SYRUP TABBY TABLE TABOO TACKY TAFFY TAILS TAKEN TAKES TALES TALKS TALLY TALON TANGO TANGY TANKS TAPES TARDY TASKS TASTE TASTY TAUNT TAWNY TAXES TAXIS TEACH TEAMS TEARS TEASE TEENS TEETH TELLS TEMPO TEMPT TENDS TENOR TENSE TENTH TENTS TEPID TERMS TERSE TESTS TESTY TEXTS THANK THEFT THEIR THEME THERE THESE THICK THIEF THIGH THING THINK THIRD THORN THOSE THREE THREW THROB THROW THUMB THUMP TIARA TICKS TIDAL TIDES TIGER TIGHT TILLS TIMER TIMES TIMID TIRED TITLE TOAST TODAY TOKEN TOMBS TONES TONGS TONIC TOOLS TOOTH TOPIC TORCH TORSO TOTAL TOUCH TOUGH TOURS TOWEL TOWER TOWNS TOXIC TRACE TRACK TRADE TRAIL TRAIN TRAIT TRAMP TRAPS TRASH TREAD TREAT TREES TREND TRIAL TRIBE TRICK TRIED TRIES TRIPS TROLL TROOP TROUT TRUCE TRUCK TRULY TRUMP TRUNK TRUST TRUTH TUBBY TUBES TULIP TUMMY TUNER TUNES TUNIC TURBO TURNS TUTOR TWANG TWEAK TWEED TWEET TWICE TWINE TWINS TWIRL TWIST TYPES UNCLE UNCUT UNDER UNDID UNFIT UNIFY UNION UNITE UNITS UNITY UNTIE UNTIL UNZIP UPPER UPSET URBAN URGES USAGE USERS USHER USUAL UTTER VAGUE VALET VALID VALOR VALUE VALVE VAPOR VASES VAULT VEGAN VEINS VENOM VENUE VERBS VERGE VERSE VERVE VESTS VIBES VIDEO VIEWS VIGOR VILLA VINYL VIOLA VIPER VIRAL VIRUS VISAS VISIT VISOR VISTA VITAL VIVID VOCAL VOGUE VOICE VOTED VOTER VOTES VOUCH VOWEL WACKY WAFER WAGER WAGES WAGON WAIST WAITS WAIVE WAKES WALKS WALLS WALTZ WANTS WARDS WARNS WASTE WATCH WATER WAVER WAVES WEARS WEARY WEAVE WEDGE WEEDS WEEKS WEIGH WEIRD WELLS WHACK WHALE WHARF WHEAT WHEEL WHERE WHICH WHIFF WHILE WHINE WHIPS WHIRL WHISK WHITE WHOLE WHOOP WHOSE WIDEN WIDER WIDOW WIDTH WIELD WILLS WINCE WINCH WINDS WINDY WINES WINGS WIPER WIPES WIRED WIRES WISPY WITCH WITTY WIVES WOKEN WOMAN WOMEN WOODS WOODY WOOLS WOOZY WORDS WORDY WORKS WORLD WORMS WORRY WORSE WORST WORTH WOULD WOUND WOVEN WRAPS WRATH WRECK WRING WRIST WRITE WRONG WROTE WRUNG YACHT YARDS YEARN YEARS YEAST YELLS YIELD YODEL YOUNG YOURS YOUTH YUCKY YUMMY ZEBRA ZEROS ZONES'.split(/\s+/)){const k=[...w].sort().join('');if(!BONUS.has(k))BONUS.set(k,w)}
+// Scrabble letter points.
+const PTS={A:1,B:3,C:3,D:2,E:1,F:4,G:2,H:4,I:1,J:8,K:5,L:1,M:3,N:1,O:1,P:3,Q:10,R:1,S:1,T:1,U:1,V:4,W:4,X:8,Y:4,Z:10};
+const REELS=5,STRIP=24;let NWORDS=20;
+// Money is kept in cents. LOAD is how often a spinning reel lands on a letter that fits a word you could still make
+// with what you're holding (the rest of the time it's any letter from the words still on the list).
+// Robot tests over 300 games each: careful play finds all 20 about half the time; sloppy play about one game in five.
+let START=1000,LOAD=.4,NOHELP_FULL=true;const COST=50,PER_PT=20;   // let: the balance sims change START and LOAD
+const money=c=>'$'+(c/100).toFixed(2),cents=c=>c<100?c+'¢':money(c);
+const wordPts=w=>[...w].reduce((a,c)=>a+PTS[c],0);
+// R is the random source: seeded by the date for the daily game and its replays (so everyone gets the same words and
+// the same spins for the same choices), and truly random for Plus lists.
+let R=Math.random;
+const rnd=a=>a[Math.floor(R()*a.length)];
+function rngFrom(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
+const LAUNCH=new Date(2026,9,31);
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function dayAt(off){const d=new Date();d.setDate(d.getDate()-off);d.setHours(0,0,0,0);
+  return{k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),n:Math.round((d-LAUNCH)/864e5)+1,d}}
+const dayNo=()=>dayAt(0).n;
+// Plus (new lists all day) will be a paid upgrade. While testing it's open to everyone.
+const hasPlus=()=>true;
+// mode: 'daily' (counts), 'replay' (today's list again, free, doesn't count) or 'plus' (a fresh random list).
+let mode='daily',playDay=today();
+const progKey=()=>'prog_'+mode+(mode==='plus'?'':'_'+playDay);
+function result(k){try{return JSON.parse(store.get('day_'+k,''))}catch(e){return null}}
+
+// ---------- State ----------
+// line: the five letters on the line. strips: what each reel shows above and below (just for looks).
+let pend='',bonus=[],order=[0,1,2,3,4],words=[],found=[],line=[],hold=[0,0,0,0,0],bank=START,spins=0,peak=START,spun=false,over=false,spinning=false,strips=[];
+const left=()=>words.filter(w=>!found.includes(w));
+// Does word w contain all these letters (counting repeats)? Returns the letters of w still needed, or null.
+function needs(w,letters){const a=[...w];for(const c of letters){const j=a.indexOf(c);if(j<0)return null;a.splice(j,1)}return a}
+// hold: 0 normal (spins), 1 locked 🔒 (stays put).
+const locked=i=>hold[i]===1,nLocked=()=>hold.filter(h=>h===1).length;
+const heldLetters=()=>line.filter((c,i)=>locked(i)&&c);
+const fits=()=>{const h=heldLetters();return h.length&&spun&&!spinning?left().filter(w=>needs(w,h)):[]};
+
+// ---------- The machine ----------
+function landLetter(fixed){const lw=left();if(!(fullSpin&&NOHELP_FULL)&&R()<LOAD){const fit=lw.map(w=>needs(w,fixed)).filter(Boolean);if(fit.length)return rnd(rnd(fit))}
+  return rnd(rnd(lw).split(''))}
+function stripAround(c){const lw=left(),pool=(lw.length?lw:words).join('').split(''),s=[];for(let j=0;j<STRIP;j++)s.push(rnd(pool));return s}
+
+// ---------- Drawing ----------
+const reelEls=[];
+function buildReels(){const R=$('reels');R.querySelectorAll('.reel').forEach(e=>e.remove());reelEls.length=0;
+  for(let i=0;i<REELS;i++){const d=document.createElement('div');d.className='reel';d.innerHTML='<div class="strip"></div><div class="tag" hidden><span></span></div>';
+    d.onclick=()=>tapReel(i);R.insertBefore(d,$('line'));reelEls.push(d)}
+  const B=$('bulbs');B.innerHTML='';for(let i=0;i<14;i++){const b=document.createElement('i');const x=i<7?(i+.5)/7*100:(i-6.5)/7*100;b.style.left='calc('+x+'% - 3px)';b.style.top=i<7?'2px':'calc(100% - 8px)';B.appendChild(b)}}
+const symHTML=(s,on)=>'<div class="sym'+(on?' on':'')+'">'+s+'<sub>'+PTS[s]+'</sub></div>';
+// A resting reel: the letter above, the one on the line, and the one below. Strip slot 1 is always the line.
+function drawReel(i){const s=strips[i],el=reelEls[i],strip=el.querySelector('.strip');
+  strip.style.transition='none';strip.style.transform='translateY(calc(var(--t)*-.2))';
+  strip.innerHTML=symHTML(s[0])+symHTML(line[i],true)+symHTML(s[2]);el.classList.remove('spin')}
+function paint(){const lit=spun&&!over;
+  reelEls.forEach((el,i)=>{const h=lit?hold[i]:0;el.classList.toggle('sel',h===1);
+    el.querySelector('.tag').hidden=h!==1;el.querySelector('.tag span').textContent='🔒'});
+  $('bank').textContent=money(bank);$('bankBox').classList.toggle('low',bank<COST*3);$('nFound').textContent=found.length+'/'+NWORDS;
+  const nh=lit?nLocked():0,F=fits();
+  $('wsum').innerHTML=!lit||spinning?'':nh?'Locked <b>'+heldLetters().join(' ')+'</b> · '+(F.length?F.length+(F.length>1?' words still fit':' word still fits'):'<span style="color:var(--red)">no word on your list fits</span>'):'Tap a reel or tile to lock it. Drag tiles to rearrange them.';
+  drawTray();
+  $('spinBtn').firstChild.textContent=nh?'Spin again':'Spin';$('spinBtn').querySelector('small').textContent=bank<COST?'Not enough money':nh===REELS?'Let go of a letter to spin':'50¢'+(nh?' · '+(REELS-nh)+' reel'+(REELS-nh>1?'s':''):'');
+  $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
+  $('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(wordPts(pend)*PER_PT/2);$('lever').disabled=$('spinBtn').disabled||!!pend;
+  const fs=new Set(F);$('bonusL').innerHTML=bonus.length?'Bonus words: '+bonus.map(w=>'<b data-w="'+w+'">'+w+'</b>').join(' · '):'';
+  const hl=heldLetters(),xo=crossOn()&&lit&&!spinning;
+  $('list').innerHTML=words.map(w=>'<span data-w="'+w+'" class="'+(found.includes(w)?'got':over?'miss':fs.has(w)?'fit':'')+'">'+(xo&&fs.has(w)?crossed(w,hl):w)+'</span>').join('')}
+// Gray out the letters of a word you already have locked (each locked letter crosses off one letter).
+const crossOn=()=>true;
+function crossed(w,hl){const h=hl.slice();return [...w].map(c=>{const j=h.indexOf(c);if(j<0)return '<i>'+c+'</i>';h.splice(j,1);return '<i class="x">'+c+'</i>'}).join('')}
+// Your letters: the five on the line, in an order you choose. Tap a tile to lock it (same as tapping its reel);
+// drag a tile left or right to move it.
+// Only locked letters show below the machine; drag them to rearrange, tap one to unlock it.
+function drawTray(){const W=$('word');W.innerHTML='';if(!line.length)return;const vis=spun&&!over?order.filter(i=>locked(i)):[];
+  if(!vis.length){W.innerHTML='<span class="ph">'+(spun&&!over?'Tap a reel to lock a letter':'')+'</span>';return}
+  vis.forEach((i,k)=>{const d=document.createElement('div');d.className='wt';d.innerHTML=line[i]+'<sub>'+PTS[line[i]]+'</sub>';d.dataset.k=k;d.dataset.i=i;W.appendChild(d)})}
+let drag=null;
+$('word').addEventListener('pointerdown',e=>{const d=e.target.closest('.wt');if(!d||spinning)return;drag={k:+d.dataset.k,i:+d.dataset.i,x:e.clientX,el:d,moved:false,w:d.offsetWidth+4};d.setPointerCapture(e.pointerId)});
+$('word').addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>8)drag.moved=true;
+  if(drag.moved){drag.el.style.transform='translate('+dx+'px,-6px)';drag.el.style.zIndex=5;drag.el.classList.add('pick')}});
+function dropTile(e){if(!drag)return;const g=drag;drag=null;
+  if(!g.moved){tapReel(g.i);return}
+  const vis=order.filter(i=>locked(i)),to=Math.max(0,Math.min(vis.length-1,g.k+Math.round((e.clientX-g.x)/g.w)));const [m]=vis.splice(g.k,1);vis.splice(to,0,m);
+  order=vis.concat(order.filter(i=>!locked(i)));sfx.tile();save();drawTray()}
+$('word').addEventListener('pointerup',dropTile);$('word').addEventListener('pointercancel',e=>{drag=null;drawTray()});
+$('bonusL').onclick=e=>{const s=e.target.closest('[data-w]');if(s)showDef(s.dataset.w)};
+$('list').onclick=e=>{const s=e.target.closest('.got,.miss');if(s)showDef(s.dataset.w)};
+function msg(t,cls=''){const m=$('msg');m.textContent=t;m.className=cls}
+function tip(){if(over)return msg(found.length===NWORDS?'You found them all!':'Game over. Tap Play again for a new list.');
+  if(!spun)return msg(found.length?'Spin for new letters.':'Tap Spin or pull the lever. Each spin is 50¢.');
+  if(!nLocked())return msg('Tap reels to lock letters that could spell a word on your list, then spin the rest.');
+  if(nLocked()===REELS)return msg('All five are locked. Tap a reel to unlock one, then spin.','warn');
+  msg('Spin again, or tap a locked letter to unlock it.')}
+
+// ---------- Spinning ----------
+// The reel scrolls down through its strip a few times and stops on the new letter, left to right.
+function animReel(i,to,dur){return new Promise(res=>{const s=strips[i],n=STRIP,el=reelEls[i],strip=el.querySelector('.strip');
+  const L=3+n*(2+i);let h='';for(let j=0;j<L;j++)h+=symHTML(j===1?to:s[j%n],j===1);
+  strip.innerHTML=h;strip.style.transition='none';strip.style.transform='translateY(calc(var(--t)*'+(-(L-2)+.8)+'))';el.classList.add('spin');
+  strip.offsetHeight;strip.style.transition='transform '+dur+'ms cubic-bezier(.2,.6,.3,1.04)';strip.style.transform='translateY(calc(var(--t)*-.2))';
+  let tk=0,ticks=setInterval(()=>sfx.tick(tk++),70);
+  setTimeout(()=>{clearInterval(ticks);el.classList.remove('spin');drawReel(i);rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
+async function spin(){if(over||spinning||bank<COST||pend)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
+  bank-=COST;spins++;spinning=true;popUp('−50¢','cost');sfx.pay();
+  const which=[0,1,2,3,4].filter(i=>!locked(i));fullSpin=which.length===REELS;const fixed=line.filter((c,i)=>locked(i)&&spun);hold=hold.map(h=>h===1?1:0);
+  // With nothing locked the machine gives no help, so a whole word (a Jackpot) is pure luck.
+  // Each reel lands in turn; a letter that lands counts as fixed for the reels after it, so the loaded letters fit together.
+  R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+':'+spins));
+  for(const i of which){const c=landLetter(fixed);line[i]=c;fixed.push(c);strips[i]=stripAround(c)}
+  which.forEach(i=>rolling.add(i));spun=true;save();
+  $('lever').classList.add('pull');setTimeout(()=>$('lever').classList.remove('pull'),350);sfx.lever();
+  paint();msg('Spinning…');
+  await Promise.all(which.map((i,k)=>animReel(i,line[i],quick?60:800+k*450)));
+  spinning=false;check()}
+let rolling=new Set(),fullSpin=false,nJack=0;   // fullSpin: no letters were locked for this spin (a word then is a Jackpot)
+let _r0;   // rolling: reels still spinning, whose tiles stay blank until they stop
+// Tap a reel (or its tile) to lock it 🔒; tap again to unlock it.
+function tapReel(i){if(over||!spun||spinning||pend)return;hold[i]=hold[i]?0:1;
+  (hold[i]?sfx.lock:sfx.unlock)();save();paint();tip()}
+// After a spin: do the five letters spell a word still on the list, in any order? Then it's found and paid.
+function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].sort().join('')===key);
+  if(w){const jp=fullSpin;if(jp)nJack++;const c=wordPts(w)*PER_PT*(jp?2:1);bank+=c;peak=Math.max(peak,bank);found.push(w);hold=[0,0,0,0,0];spun=false;
+    reelEls.forEach(el=>el.classList.add('sel'));setTimeout(()=>reelEls.forEach(el=>el.classList.remove('sel')),900);
+    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?'🎰 JACKPOT! No locks, double pay. ':'')+'Found '+w+'! +'+cents(c),'good');
+    const el=$('list').querySelector('[data-w="'+w+'"]');if(el)el.classList.add('new');
+    if(found.length===NWORDS)return end('win');if(bank<COST)return end('broke');return}
+  // Not on the list but still an everyday word: it pays half, once per game, and isn't crossed off.
+  const b=BONUS.get(key);if(b&&!bonus.includes(b)&&!words.includes(b)){pend=b;sfx.bonus();save();paint();
+    msg('Bonus word '+b+'! It isn\'t on your list. Cash it in, or pass and keep your letters.','good');return}
+  save();paint();tip();if(bank<COST)end('broke')}
+// A bonus word waits for your choice. Cash in: it pays half and a new round starts. Pass: keep your letters and locks and keep going.
+function bonusCash(){if(!pend)return;const b=pend,c=wordPts(b)*PER_PT/2;pend='';bank+=c;peak=Math.max(peak,bank);bonus.push(b);hold=[0,0,0,0,0];spun=false;
+  popUp('Bonus '+b+' +'+cents(c),'jp');jackpot();sfx.win();save();paint();msg('Bonus word '+b+'! +'+cents(c),'good');if(bank<COST)end('broke')}
+function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
+$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
+function popUp(t,cls){const r=$('reels').getBoundingClientRect(),d=document.createElement('div');d.className='pop '+(cls||'');d.textContent=t;
+  d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.top-10)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
+function jackpot(){const m=$('marq');m.classList.remove('jp');m.offsetWidth;m.classList.add('jp');
+}
+$('spinBtn').onclick=$('lever').onclick=()=>spin();
+
+// ---------- Game over ----------
+// why: 'win' (all 20 found), 'broke' (can't afford a spin) or 'cashout' (from the menu).
+function end(why){if(over)return;over=true;pend='';spun=false;hold=[0,0,0,0,0];paint();tip();
+  const best=found.reduce((a,w)=>!a||wordPts(w)>wordPts(a)?w:a,null);
+  const r={why,found:found.length,bank,spins,peak,list:found.slice(),missed:left(),bonus:bonus.slice()};if(best)r.best=best;
+  store.set('games',+store.get('games',0)+1);if(why==='win')store.set('wins',+store.get('wins',0)+1);
+  store.set('mostFound',Math.max(found.length,+store.get('mostFound',0)));store.set('nwords',+store.get('nwords',0)+found.length);
+  if(why==='win')store.set('bestWin',Math.max(bank,+store.get('bestWin',0)));if(why==='win'&&(!+store.get('fewest',0)||spins<+store.get('fewest',0)))store.set('fewest',spins);
+  try{localStorage.removeItem(CODE+'_'+progKey())}catch(e){}
+  r.mode=mode;if(mode==='daily'){r.n=dayNo();store.set('day_'+playDay,JSON.stringify(r));checkIn(true)}
+  if(why==='win'){$('cab').classList.remove('win');$('cab').offsetWidth;$('cab').classList.add('win');sfx.allFound()}
+  else if(why==='broke')sfx.broke();
+  setTimeout(()=>showDone(r),quick?0:why==='win'?1400:700)}
+function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?'All 20 found!':r.why==='broke'?'Out of money':'Cashed out');
+  $('dAgain').hidden=r.mode==='plus';$('dPlus').textContent=r.mode==='plus'?'Another new list ⭐':'New list ⭐ Plus';
+  $('dFound').textContent=r.found+' of '+NWORDS;
+  $('dRes').textContent=r.spins+' spin'+(r.spins===1?'':'s')+' · '+(r.why==='broke'?'most in the bank: '+money(r.peak):money(r.bank)+' left');
+  $('dTop').hidden=!r.best;if(r.best){$('dTop').innerHTML='Best word: <b></b> +'+cents(wordPts(r.best)*PER_PT);$('dTop').querySelector('b').textContent=r.best}
+  const WL=$('dWords');WL.innerHTML='';const add=(w,miss)=>{if(WL.childNodes.length)WL.append(' · ');const b=document.createElement('span');b.className='dw';if(miss)b.style.color='var(--red)';b.textContent=w;b.onclick=()=>showDef(w);WL.appendChild(b)};
+  r.list.forEach(w=>add(w));if(r.missed.length){WL.append(document.createElement('br'));WL.append('Missed: ');r.missed.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--red)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
+  if(r.bonus&&r.bonus.length){WL.append(document.createElement('br'));WL.append('Bonus: ');r.bonus.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='#2e7d32';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
+  $('dTap').hidden=false;
+  const sk=streak();$('dBest').textContent=r.mode==='daily'?(sk.n?'🔥 Streak: '+sk.n+' day'+(sk.n>1?'s':'')+' · New list tomorrow':'New list tomorrow'):r.mode==='replay'?'Replays don\'t change today\'s score ('+((result(playDay)||{}).found??'–')+' of '+NWORDS+').':'Plus games don\'t change your daily score.';
+  const first=r.mode==='replay'?(result(playDay)||r):r;r=first;
+  $('done').dataset.share='🎰 Gramble'+(r.mode==='plus'?'':' No. '+(r.n||dayNo()))+'\n'+(r.why==='win'?'Found all 20 words in '+r.spins+' spins with '+money(r.bank)+' left':'Found '+r.found+' of '+NWORDS+' words in '+r.spins+' spins')+'\n'+(r.best?'Best word: '+r.best+'\n':'')+location.href.split('?')[0].split('#')[0];
+  $('done').hidden=false}
+$('dShare').onclick=async()=>{const t=$('done').dataset.share;try{if(navigator.share){await navigator.share({text:t});return}}catch(e){return}
+  try{await navigator.clipboard.writeText(t);$('dShare').textContent='Copied!'}catch(e){$('dShare').textContent='Could not copy'}setTimeout(()=>$('dShare').textContent='Share',1500)};
+// Meanings come from the free dictionary at dictionaryapi.dev (only the word is sent). If it can't be reached
+// or doesn't know the word, there's a link to look it up instead.
+const defCache={};
+async function showDef(w){if(!w)return;$('defW').textContent=w;const T=$('defT');T.textContent='Looking it up…';$('def').hidden=false;
+  const look=()=>{T.innerHTML+='<p class="dsm"><a target="_blank" rel="noopener">Look up '+w+' online</a></p>';T.querySelector('a').href='https://www.google.com/search?q=define+'+encodeURIComponent(w.toLowerCase())};
+  try{const d=defCache[w]||(defCache[w]=await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/'+encodeURIComponent(w.toLowerCase())).then(r=>r.ok?r.json():null));
+    if($('defW').textContent!==w)return;const ms=d&&d[0]&&d[0].meanings||[];T.innerHTML='';
+    ms.slice(0,3).forEach(m=>{const p=document.createElement('p');p.innerHTML='<i></i> ';p.firstChild.textContent=m.partOfSpeech;p.append(m.definitions[0].definition);T.appendChild(p)});
+    if(!ms.length){T.textContent="The dictionary doesn't have a meaning for it.";look()}}
+  catch(e){if($('defW').textContent!==w)return;T.textContent="Couldn't reach the dictionary.";look()}}
+$('defOk').onclick=()=>{$('def').hidden=true};$('def').onclick=e=>{if(e.target.id==='def')$('def').hidden=true};
+$('dAgain').onclick=()=>{$('done').hidden=true;startMode('replay',true)};
+$('dPlus').onclick=()=>{$('done').hidden=true;startMode('plus',true)};
+$('dClose').onclick=()=>$('done').hidden=true;
+$('dStats').onclick=()=>{backTo='done';showStats()};
+
+// ---------- Stats ----------
+function dailyStats(){const rs=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^rw_day_\d{4}-\d\d-\d\d$/.test(k))continue;const r=result(k.slice(7));if(r)rs.push(r)}
+  return{played:rs.length,wins:rs.filter(r=>r.why==='win').length,avg:rs.length?(rs.reduce((a,r)=>a+r.found,0)/rs.length).toFixed(1):'–'}}
+// Streak: days in a row with the daily game finished. Today still open doesn't break it.
+function streak(){const on=d=>!!result(d.k);let n=0;for(let i=on(dayAt(0))?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
+  const best=Math.max(n,+store.get('streakBest',0));store.set('streakBest',String(best));return{n,best,today:on(dayAt(0))}}
+function showStats(){$('done').hidden=true;$('menu').hidden=true;$('cover').hidden=true;const g=+store.get('games',0),w=+store.get('wins',0),fw=+store.get('fewest',0);
+  const d=dailyStats(),sk=streak();const T=[[d.played,'Days played'],[sk.n,'Streak'],[sk.best,'Best streak'],[d.wins,'All-20 days'],[d.avg,'Avg found'],[g,'Games (all)']];
+  $('statGrid').innerHTML=T.map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');$('stats').hidden=false}
+let backTo=null;
+function goBack(){const b=backTo;backTo=null;if(b==='cover')cover();else if(b==='menu')$('menu').hidden=false;else if(b==='done')$('done').hidden=false}
+$('statsBack').onclick=()=>{$('stats').hidden=true;goBack()};
+
+// ---------- Save and start ----------
+function save(){if(over)return;store.set(progKey(),JSON.stringify({v:3,pend,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
+let quick=false;   // tests only: no spin animation
+function newGame(){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+'#list'));words=[];while(words.length<NWORDS){const w=rnd(POOL);if(!words.includes(w))words.push(w)}words.sort();
+  pend='';bonus=[];order=[0,1,2,3,4];found=[];hold=[0,0,0,0,0];bank=START;spins=0;peak=START;spun=false;over=false;spinning=false;
+  line=[0,1,2,3,4].map(()=>rnd(rnd(words).split('')));strips=line.map(c=>stripAround(c));
+  $('pno').textContent=mode==='daily'?'No. '+dayNo():mode==='replay'?'Replay':'⭐ Plus';$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip()}
+// Start (or pick up) a game in a mode. The daily game, once finished, just shows its result.
+function startMode(m,fresh){mode=m;playDay=today();if(m==='plus'&&!hasPlus())return;
+  if(m==='daily'&&result(playDay)){newGame();over=true;const r=result(playDay);found=r.list||[];paint();tip();showDone(r);return}
+  if(fresh)try{localStorage.removeItem(CODE+'_'+progKey())}catch(e){}
+  resumeGame()}
+function resumeGame(){let p=null;try{p=JSON.parse(store.get(progKey(),''))}catch(e){}
+  if(!p||p.v!==3)return newGame();
+  $('pno').textContent=mode==='daily'?'No. '+dayNo():mode==='replay'?'Replay':'⭐ Plus';
+  ({words,found,line,hold,bank,spins,peak,spun,strips}=p);order=p.order||[0,1,2,3,4];bonus=p.bonus||[];pend=p.pend||'';over=false;spinning=false;$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);paint();tip();
+  if(bank<COST&&!pend)end('broke')}
+function cover(){const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
+  $('cvDate').textContent=t.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});$('cvNo').textContent='Game No. '+t.n;
+  $('coverGo').textContent=r?"See today's result ("+r.found+' of '+NWORDS+')':p&&p.spins?'Keep playing ('+p.found.length+' of '+NWORDS+')':"Play today's game";
+  $('cvMore').hidden=!r;
+  const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it');
+  const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[d.played,'Days played'],[d.wins,'All-20 days'],[sk.best,'Best streak']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
+  $('cover').hidden=false}
+const play=()=>{if(!store.get('seenHelp3','')){store.set('seenHelp3','1');return qOpen()}startMode('daily')};
+$('coverGo').onclick=play;
+$('coverReplay').onclick=()=>startMode('replay');
+$('coverPlus').onclick=()=>startMode('plus');
+$('cvStats').onclick=$('coverStats').onclick=()=>{backTo='cover';showStats()};
+$('coverHow').onclick=()=>{$('help').hidden=false};
+$('coverSm').onclick=()=>window.open('https://smaisle.app/','_blank','noopener');
+$('helpGo').onclick=()=>{$('help').hidden=true;if(!$('cover').hidden)startMode('daily')};
+const sndLabel=()=>{const on=store.get('sound','on')==='on';$('mSound').innerHTML='<span>'+(on?'🔊':'🔇')+'</span>Sound: <b>'+(on?'On':'Off')+'</b>';$('mSound').classList.toggle('on',on)};
+$('menuBtn').onclick=()=>{sndLabel();$('lTot').textContent=over?'Game over':'Bank: '+money(bank)+' · found '+found.length+' of '+NWORDS;
+  $('mCashOut').hidden=over;$('mCashOut').textContent='Cash out '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
+$('mClose').onclick=()=>{$('menu').hidden=true};
+// Cash out and New game end the game. Tap twice so they can't happen by accident.
+$('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1'){$('mCashOut').dataset.sure='1';$('mCashOut').textContent='Tap again to cash out '+money(bank);return}
+  $('menu').hidden=true;end('cashout')};
+$('mNew').onclick=()=>{if(spinning)return;if(!over&&$('mNew').dataset.sure!=='1'){$('mNew').dataset.sure='1';$('mNew').textContent='Tap again to start over';return}
+  $('menu').hidden=true;$('done').hidden=true;startMode(mode,true)};
+$('mStats').onclick=()=>{backTo='menu';showStats()};
+$('mHow').onclick=()=>{$('menu').hidden=true;$('help').hidden=false};
+$('mCover').onclick=()=>{$('menu').hidden=true;cover()};
+
+// Machine looks: tap Look in the menu to cycle through them. ?look=neon in the address also works (for previews).
+const LOOKS=[['classic','Classic red'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx']];
+function setLook(k){if(!LOOKS.some(l=>l[0]===k))k='onyx';store.set('look2',k);LOOKS.forEach(l=>document.body.classList.toggle('lk-'+l[0],l[0]===k&&k!=='classic'));
+  const n=LOOKS.find(l=>l[0]===k)[1];$('mLook').innerHTML='<span>🎰</span>Look: <b>'+n+'</b>'}
+$('mLook').onclick=()=>{const i=LOOKS.findIndex(l=>l[0]===store.get('look2','onyx'));setLook(LOOKS[(i+1)%LOOKS.length][0]);sfx.lock()};
+setLook((location.search.match(/look=(\w+)/)||[])[1]||store.get('look2','onyx'));
+$('mSound').onclick=()=>{store.set('sound',store.get('sound','on')==='on'?'off':'on');sndLabel();tone(660,.08)};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkIn(false)});
+
+// ---------- First-time intro ----------
+const T=(s,c='')=>'<div class="qt '+c+'">'+s+'<sub>'+PTS[s]+'</sub></div>';
+const QS=[
+  [T('S')+T('T')+T('O')+T('N')+T('E'),'20 words to find','You get a list of <b>20 words</b> and <b>$10</b>. Find them all on the slot machine before your money runs out.'],
+  [T('R')+T('E')+T('Z')+T('D')+T('A'),'Spin','Each spin costs <b>50¢</b>. Five reels land on letters.'],
+  [T('R','l')+T('E','l')+T('Z')+T('D','l')+T('A','l'),'Lock','Tap reels to <b>lock</b> 🔒 letters that could spell a word on your list (READY?). Words that still fit light up. Spin again for the rest. Tap a locked letter again to unlock it.'],
+  [T('R','l')+T('E','l')+T('Y','l')+T('D','l')+T('A','l'),'Found it!','When the five letters spell a list word, <b>in any order</b>, it\'s crossed off and pays <b>20¢ a point</b>.']];
+let qStep=0;
+function qShow(){const q=QS[qStep];$('qPic').innerHTML=q[0];$('qTitle').textContent=q[1];$('qText').innerHTML=q[2];
+  $('qDots').innerHTML=QS.map((_,i)=>'<span class="'+(i===qStep?'on':'')+'"></span>').join('');$('quickGo').textContent=qStep<QS.length-1?'Next':'Play'}
+function qOpen(){qStep=0;qShow();$('quick').hidden=false}
+$('quickGo').onclick=()=>{if(qStep<QS.length-1){qStep++;return qShow()}$('quick').hidden=true;startMode('daily')};
+$('qSkip').onclick=()=>{$('quick').hidden=true;startMode('daily')};
+
+// ---------- Sound ----------
+// The shared sound engine (source/sounds.js, also used by the sound board) goes here at build time.
+const soundOn=()=>!quick&&store.get('sound','on')==='on';
+// ---------- Sound engine (shared by the game and the sound board) ----------
+// Everything is made in the browser, no sound files. Phone speakers can't play deep bass, so every sound sits
+// above about 250 Hz. All sound goes through one compressor so quiet and loud sounds even out.
+let ac=null,noiseBuf=null,master=null,unlocked=false;
+function actx(){if(typeof soundOn==='function'&&!soundOn())return null;try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();
+    const comp=ac.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=4;master=ac.createGain();master.gain.value=1.6;master.connect(comp).connect(ac.destination)}
+  if(ac.state!=='running')ac.resume();
+  if(!noiseBuf){noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return ac}catch(e){return null}}
+// iPhones: the first tap unlocks sound, and a silent looping audio element lets sound play even with the ringer switch on silent.
+function unlockAudio(){if(unlocked)return;unlocked=true;try{const a=actx();if(a){const b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}
+  const el=document.createElement('audio');el.setAttribute('playsinline','');el.loop=true;
+  el.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';el.play().catch(()=>{})}catch(e){}}
+['touchstart','pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,unlockAudio,{once:false,passive:true}));
+function tone(f,dur=.08,type='sine',vol=.1,delay=0,f2){const a=actx();if(!a)return;
+  const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(master);o.start(t);o.stop(t+dur+.02)}
+function noise(dur,freq,q=1,vol=.2,delay=0,type='bandpass'){const a=actx();if(!a)return;const s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain(),t=a.currentTime+delay;
+  s.buffer=noiseBuf;f.type=type;f.frequency.value=freq;f.Q.value=q;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+dur+.02)}
+// Casino bell: a bright strike with inharmonic overtones.
+function bell(f,delay=0,vol=.08,dur=.6){tone(f,dur,'sine',vol,delay);tone(f*2.76,dur*.5,'sine',vol*.4,delay);tone(f*5.4,dur*.25,'sine',vol*.2,delay);noise(.02,f*3,4,vol*.8,delay)}
+function coin(delay=0,pitch=1){const f=2100*pitch;tone(f,.25,'sine',.09,delay);tone(f*1.47,.18,'sine',.05,delay);noise(.025,6500,2,.12,delay)}
+const coins=(n,d0=0,gap=.05)=>{for(let k=0;k<n;k++)coin(d0+k*gap+Math.random()*.025,.85+Math.random()*.35)};
+const chip=(d=0)=>{noise(.012,4200,6,.35,d);noise(.015,3000,6,.3,d+.035)};
+const arp=(notes,gap,type='square',vol=.06,dur=.12,d0=0)=>notes.forEach((f,k)=>tone(f,dur,type,vol,d0+k*gap));
+// Each moment: four options [name, play]. The first is the game's default.
+const SOUNDS=[
+ {k:'lever',name:'Pull the lever',what:'When you tap Spin',o:[
+   ['Metal crank',()=>{for(let k=0;k<4;k++)noise(.02,1800,5,.35,k*.035);noise(.1,900,1.5,.4,.15);tone(420,.12,'triangle',.12,.15,260)}],
+   ['Coin in + crank',()=>{coin(0,.9);noise(.05,1200,2,.35,.18);for(let k=0;k<3;k++)noise(.02,2000,5,.3,.25+k*.035)}],
+   ['Electronic',()=>{tone(300,.25,'square',.06,0,1200);tone(600,.25,'square',.03,0,2400)}],
+   ['Bell + crank',()=>{bell(1568,0,.07,.4);noise(.08,1000,2,.35,.08)}]]},
+ {k:'tick',name:'Reels spinning',what:'Plays while the reels turn',demo:f=>{for(let k=0;k<14;k++)setTimeout(()=>f(k),k*70)},o:[
+   ['Rattle',()=>noise(.02,2400,3,.22)],
+   ['Electronic beeps',k=>tone((k||0)%2?1175:880,.04,'square',.035)],
+   ['Melody',k=>tone([523,659,784,880,784,659][(k||0)%6],.06,'square',.035)],
+   ['Whir',k=>{noise(.05,1500+((k||0)%3)*300,1,.12);tone(440,.06,'sawtooth',.02)}]]},
+ {k:'stop',name:'Reel stops',what:'Each reel, left to right',demo:f=>{for(let i=0;i<5;i++)setTimeout(()=>f(i),i*450)},o:[
+   ['Chunk',i=>{noise(.06,800,1.5,.45);tone(330,.1,'triangle',.18,0,200)}],
+   ['Bell ding',i=>bell(1047+(i||0)*131,0,.07,.4)],
+   ['Rising blips',i=>tone(523*Math.pow(1.19,(i||0)),.09,'square',.06)],
+   ['Heavy clack',i=>{tone(260,.05,'square',.1);noise(.04,2200,3,.4)}]]},
+ {k:'lock',name:'Lock a letter',what:'Tap a reel or tile to padlock it (A = your pick now)',o:[
+   ['Electronic click',()=>tone(1500,.05,'square',.05,0,2200)],
+   ['Padlock snap',()=>{noise(.015,3200,8,.45);tone(1850,.12,'sine',.07,.01);tone(2780,.08,'sine',.03,.01);noise(.012,2400,8,.35,.06)}],
+   ['Bright blip up',()=>{tone(880,.06,'sine',.1);tone(1760,.09,'sine',.09,.05)}],
+   ['Coin tap',()=>{tone(2600,.18,'sine',.07);tone(3900,.1,'sine',.03);noise(.01,7000,3,.2)}],
+   ['Vault clunk',()=>{noise(.05,700,2,.5);tone(330,.08,'triangle',.15,0,250);noise(.02,2600,6,.35,.07)}],
+   ['Two-note chime',()=>{bell(1319,0,.06,.25);bell(1976,.07,.06,.35)}]]},
+ {k:'unlock',name:'Unlock a letter',what:'Tap a locked letter again',o:[
+   ['Click',()=>{noise(.02,2000,5,.35);tone(520,.04,'square',.04)}],
+   ['Casino chip',()=>chip()],
+   ['Electronic click',()=>tone(1500,.05,'square',.05,0,900)],
+   ['Bell tick',()=>bell(1568,0,.04,.2)]]},
+ {k:'tile',name:'Move a tile',what:'Drag a tile to rearrange',o:[
+   ['Chip slide',()=>noise(.08,3500,2,.2)],
+   ['Pop',()=>tone(600,.05,'sine',.12,0,1100)],
+   ['Click',()=>noise(.015,2500,5,.3)],
+   ['Wood tick',()=>{noise(.02,1300,6,.35);tone(800,.03,'sine',.05)}]]},
+ {k:'pay',name:'Pay for a spin',what:'50¢ comes out of the bank',o:[
+   ['Coin in the slot',()=>{coin(0,.95);noise(.05,1400,2,.2,.12)}],
+   ['Chip toss',()=>chip()],
+   ['Ka-ching',()=>{noise(.06,3500,1,.25);bell(2637,.05,.06,.4)}],
+   ['Quiet tick',()=>noise(.02,4000,3,.15)]]},
+ {k:'win',name:'Find a word',what:'A word on your list is crossed off',o:[
+   ['Bell + coins',()=>{for(let k=0;k<8;k++)bell(2093,k*.08,.06,.25);coins(10,.4)}],
+   ['Jackpot arpeggio',()=>{arp([523,659,784,1047,1319,1568,2093],.06);arp([1047,1319,1568,2093],.06,'square',.04,.12,.45);coins(6,.5)}],
+   ['Ding ding ding',()=>{bell(1760,0,.09,.5);bell(1760,.22,.09,.5);bell(2349,.44,.1,.7);coins(8,.6)}],
+   ['Fanfare',()=>{arp([784,784,784,1047],.12,'square',.06,.12);tone(1319,.5,'square',.06,.5);coins(8,.6)}]]},
+ {k:'bonus',name:'Bonus word appears',what:'Cash in or pass?',o:[
+   ['Two chimes',()=>{bell(1319,0,.07,.4);bell(1760,.15,.07,.5)}],
+   ['Sparkle',()=>{for(let k=0;k<8;k++)tone(2000+k*250,.08,'sine',.05,k*.035)}],
+   ['Electronic bling',()=>arp([1047,1568,2093],.05,'square',.05,.1)],
+   ['Chip stack',()=>{for(let k=0;k<4;k++)chip(k*.08)}]]},
+ {k:'jack',name:'Jackpot',what:'A word with nothing locked pays double',o:[
+   ['Bells + siren + coins',()=>{for(let k=0;k<12;k++)bell(k%2?2349:1760,k*.07,.06,.3);for(let k=0;k<2;k++){tone(700,.3,'square',.035,.2+k*.6,1400);tone(1400,.3,'square',.035,.5+k*.6,700)}coins(20,.5,.05)}],
+   ['Ringing bell',()=>{for(let k=0;k<24;k++)bell(2093,k*.05,.05,.15);coins(16,.6)}],
+   ['Jackpot tune',()=>{arp([523,659,784,1047,784,1047,1319,1568],.09,'square',.05,.12);coins(16,.8)}],
+   ['Ka-ching x3',()=>{for(let k=0;k<3;k++){noise(.06,3500,1,.25,k*.3);bell(2637,k*.3+.05,.07,.4)}coins(16,.9)}]]},
+ {k:'all',name:'All 20 found',what:'You win the game',o:[
+   ['Jackpot bells + coins',()=>{for(let k=0;k<20;k++)bell(k%2?2349:2093,k*.07,.06,.3);coins(30,.3,.045);arp([523,659,784,1047,1319,1568,2093],.1,'square',.05,.2,1.5)}],
+   ['Big fanfare',()=>{arp([523,523,523,698,880,1047],.15,'square',.06,.16);tone(1047,.9,'square',.06,.95);tone(1319,.9,'square',.04,.95);coins(20,1.2)}],
+   ['Electronic jackpot',()=>{for(let r=0;r<4;r++)arp([523,659,784,1047,1319,1568],.045,'square',.05,.08,r*.3);coins(20,1.2)}],
+   ['Siren + coins',()=>{for(let k=0;k<4;k++){tone(600,.25,'square',.04,k*.5,1300);tone(1300,.25,'square',.04,k*.5+.25,600)}coins(30,.3,.06)}]]},
+ {k:'broke',name:'Out of money',what:'The game ends',o:[
+   ['Sad trombone',()=>{tone(466,.3,'sawtooth',.05,0,440);tone(440,.3,'sawtooth',.05,.32,415);tone(415,.8,'sawtooth',.05,.64,330)}],
+   ['Tilt buzzer',()=>{for(let k=0;k<3;k++)tone(330,.18,'square',.06,k*.25)}],
+   ['Falling tones',()=>arp([1047,880,698,587,440,349],.13,'square',.05,.14)],
+   ['Game over jingle',()=>{arp([784,659,523],.18,'triangle',.08,.2);tone(392,.6,'triangle',.08,.6)}]]}];
+// Jeff's picks from the sound board (0=A, 1=B, 2=C, 3=D).
+const PICK={lever:0,tick:2,stop:2,lock:4,unlock:2,tile:2,pay:2,win:2,bonus:2,jack:3,all:1,broke:3};
+const SND=Object.fromEntries(SOUNDS.map(m=>[m.k,m.o[PICK[m.k]||0][1]]));
+const sfx={lever:()=>SND.lever(),tick:k=>SND.tick(k),stop:i=>SND.stop(i),lock:()=>SND.lock(),unlock:()=>SND.unlock(),tile:()=>SND.tile(),
+  pay:()=>SND.pay(),win:()=>SND.win(),bonus:()=>SND.bonus(),jack:()=>SND.jack(),allFound:()=>SND.all(),broke:()=>SND.broke()};
+
+// ---------- Usage check-in (website only), Firebase rw_devices ----------
+// Once a day on open, again when a game ends. h maps each day to games finished that day (-1 = opened, none finished), last 60 days.
+function devId(){let id=store.get('dev','');if(!id){id=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>'abcdefghijklmnopqrstuvwxyz0123456789'[b%36]).join('');store.set('dev',id)}return id}
+async function checkIn(ended){if(!/github\.io$|smaisle\.app$/.test(location.hostname))return;
+  const day=today(),newDay=store.get('seen','')!==day;if(!ended&&!newDay)return;
+  const h={};for(let i=0;i<60;i++){const d=dayAt(i).k,r=result(d);if(r)h[d]=r.found}if(!(day in h))h[day]=-1;
+  const first=store.get('first','')||day,days=+store.get('days',0)+(newDay?1:0),I=v=>({integerValue:String(Math.round(v)||0)}),S=s=>({stringValue:s});
+  const hm={};for(const k of Object.keys(h).sort().slice(-60))hm[k]=I(h[k]);
+  const body={fields:{first:S(first),last:S(day),days:I(days),v:S(VERSION),games:I(+store.get('games',0)),wins:I(+store.get('wins',0)),most:I(+store.get('mostFound',0)),desk:{booleanValue:innerWidth>=820},t:I(Date.now()),h:{mapValue:{fields:hm}}}};
+  try{const r=await fetch(`https://firestore.googleapis.com/v1/projects/${FB_PROJ}/databases/(default)/documents/${CODE}_devices/${devId()}?key=${FB_KEY}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.ok){store.set('seen',day);store.set('first',first);store.set('days',String(days))}}catch(e){}}
+
+// Reel size: five reels and the lever across the screen, and the machine plus the word list fit the height.
+function layout(){const w=Math.min(innerWidth,540),t=Math.max(38,Math.min(Math.floor((w-24-26-8-16-6*4-26)/REELS),Math.floor((innerHeight-560)/2.6),72));
+  document.documentElement.style.setProperty('--t',t+'px')}
+addEventListener('resize',layout);
+const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' · '+vline+' · smAisle';
+buildReels();words=POOL.slice(0,NWORDS);line=['S','P','I','N','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);cover();checkIn(false);
+</script>
+</body>
+</html>
