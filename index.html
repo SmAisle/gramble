@@ -411,7 +411,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='7.7',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='7.8',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -525,7 +525,7 @@ function bestHint(){if(!hintLive()||!spun||spinning||over||pend||ride||mode==='d
     const m=h.reduce((x,y)=>x+y,0);if(!best||m>best.m)best={w,h,m}}
   return best&&best.m>=2?best:null}
 // Right after a spin with nothing locked: a plain 'Step 2' message and a white 'Pick letters' Spin button (it still spins if tapped).
-const pickCue=()=>spun&&!spinning&&!over&&!pend&&!ride&&!spinCue&&nLocked()===0&&mode!=='demo'&&bank>=COST;
+const pickCue=()=>spun&&!spinning&&!over&&!pend&&!ride&&!spinCue&&nLocked()===0&&mode!=='demo'&&bank>=COST&&!(hintLive()&&!bestHint());   // not when the hint says there's nothing worth keeping
 const step=(h,t)=>{const m=$('msg');m.className='step';m.innerHTML='<b></b><span></span>';m.firstChild.textContent=h;m.lastChild.textContent=t};
 function tip(){const H=bestHint();
   if(H){const add=H.h.map((v,i)=>v&&!locked(i)?i:-1).filter(i=>i>=0);
