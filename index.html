@@ -411,6 +411,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div>
 
 <div class="sheet" id="cover"><div class="in">
+  <a id="cvBar" href="/daily/" style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;height:32px;padding:0 12px;padding-top:env(safe-area-inset-top,0px);background:#fffdf6;border-bottom:2px solid #1a1814;font:800 12px 'Libre Franklin','Helvetica Neue',Arial,sans-serif;color:#1a1814;text-decoration:none;letter-spacing:.02em;z-index:2">&lsaquo; smAisle Daily</a><!--SITEONLY-->
   <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
   <div id="cvReels"><span>D</span><span>E</span><span>A</span><span>L</span><span>S</span></div>
   <div class="tag">Clear 10 words with 50 coins. Then bank it, or keep going.</div>
@@ -466,7 +467,6 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <button class="go alt" id="mHow">How to Play</button>
   <button class="go alt" id="mStats">Stats</button>
   <button class="go alt" id="mDaily" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
-  <button class="go alt" id="mHome" onclick="location.href='https://smaisle.app/'">&lsaquo; smAisle Home</button><!--SITEONLY-->
   <div class="ver" id="menuVer"></div>
 </div></div>
 
@@ -507,7 +507,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.9',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.10',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
