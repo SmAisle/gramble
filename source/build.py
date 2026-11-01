@@ -10,4 +10,4 @@ bw=' '.join(x for x in open(os.path.join(here,'bonus.txt')).read().split() if le
 open(os.path.join(root,'index.html'),'w').write(s.replace('__POOL__',w).replace('__BONUS__',bw))
 # The Claude artifact copy (and the tests) use the same page without the invite gate.
 out=open(os.path.join(root,'index.html')).read()
-open(os.path.join(root,'index-artifact.html'),'w').write(''.join(l for l in out.splitlines(True) if 'gate.js' not in l))
+open(os.path.join(root,'index-artifact.html'),'w').write(''.join(l for l in out.splitlines(True) if 'gate.js' not in l and 'SITEONLY' not in l))

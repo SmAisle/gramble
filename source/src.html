@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script src="https://smaisle.github.io/gate.js" data-game="gramble" data-name="Gramble"></script>
+<script src="/gate.js" data-game="gramble" data-name="Gramble"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#f4efe1">
@@ -388,6 +388,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </head>
 <body class="cards">
 <div id="app">
+  <a id="smBar" href="/daily/" style="flex:none;display:flex;align-items:center;height:30px;margin:-6px -2px 0;padding:0 12px;background:#fffdf6;border-bottom:2px solid #1a1814;font:800 12px 'Libre Franklin','Helvetica Neue',Arial,sans-serif;color:#1a1814;text-decoration:none;letter-spacing:.02em">&lsaquo; smAisle Daily</a><!--SITEONLY-->
   <div class="top"><div id="pno">Gramble</div>
     <div class="box bank" id="bankBox"><small>Credits</small><b id="bank">50</b></div>
     <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
@@ -460,10 +461,12 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <button class="go" id="mClose">Back to game</button>
   <button class="go alt" id="mNew">New game</button>
   <button class="go alt" id="mCashOut">Cash out</button>
-  <button class="go alt" id="mStats">Stats</button>
-  <button class="go alt" id="mCover">Home screen</button>
-  <button class="go alt" id="mHow">How to play</button>
   <button class="go alt" id="mDemo">Watch the demo</button>
+  <button class="go alt" id="mCover">Home screen</button>
+  <button class="go alt" id="mHow">How to Play</button>
+  <button class="go alt" id="mStats">Stats</button>
+  <button class="go alt" id="mDaily" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
+  <button class="go alt" id="mHome" onclick="location.href='https://smaisle.app/'">&lsaquo; smAisle Home</button><!--SITEONLY-->
   <div class="ver" id="menuVer"></div>
 </div></div>
 
@@ -504,7 +507,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.4',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.8',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -717,6 +720,10 @@ $('spinBtn').onclick=$('lever').onclick=()=>spin(ddArm);$('ddYes').onclick=()=>{
 
 // ---------- Game over ----------
 // why: 'win' (all 20 found), 'broke' (can't afford a spin) or 'cashout' (from the menu).
+// smAisle Daily hub: mark today's Gramble as finished (same as SMAISLE.markDone in daily/games.js; device-local date, last 60 days).
+function markSmDone(){try{const d=new Date(),day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  let s={};try{s=JSON.parse(localStorage.getItem('smaisle_done')||'{}')||{}}catch(e){}s[day]=s[day]||[];if(s[day].indexOf('gr')<0)s[day].push('gr');
+  const ks=Object.keys(s).sort();while(ks.length>60)delete s[ks.shift()];localStorage.setItem('smaisle_done',JSON.stringify(s))}catch(e){}}
 function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=Math.max(peak,bank);popUp('High Roller bonus +100 credits','jp')}over=true;ride=false;$('ride').hidden=true;pend='';$('bCard').classList.remove('show');spun=false;hold=[0,0,0,0,0];paint();tip();
   const best=found.reduce((a,w)=>!a||wordPts(w)>wordPts(a)?w:a,null);
   const r={why,round,banked:why==='broke'?0:bank,found:found.length,bank,spins,peak,list:found.slice(),missed:left(),bonus:bonus.slice()};if(best)r.best=best;
@@ -724,7 +731,7 @@ function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=
   store.set('mostFound',Math.max(found.length+(round===2?N1:0),+store.get('mostFound',0)));store.set('nwords',+store.get('nwords',0)+found.length);
   store.set('life',+store.get('life',0)+r.banked);store.set('bestBank',Math.max(r.banked,+store.get('bestBank',0)));if(why==='win'&&(!+store.get('fewest',0)||spins<+store.get('fewest',0)))store.set('fewest',spins);
   try{localStorage.removeItem(CODE+'_'+progKey())}catch(e){}
-  r.mode=mode;if(mode==='daily'){r.n=dayNo();store.set('day_'+playDay,JSON.stringify(r));checkIn(true)}
+  r.mode=mode;if(mode==='daily'){r.n=dayNo();store.set('day_'+playDay,JSON.stringify(r));checkIn(true);markSmDone()}
   if(why==='win'){$('cab').classList.remove('win');$('cab').offsetWidth;$('cab').classList.add('win');sfx.allFound()}
   else if(why==='broke')sfx.broke();
   setTimeout(()=>showDone(r),quick?0:why==='win'?1400:700)}
@@ -980,7 +987,7 @@ function fitStage(){const st=$('stage'),root=document.documentElement;let t=pars
     const need=kids.reduce((a,c)=>a+c.offsetHeight,0)+gap*(kids.length-1);if(need<=st.clientHeight||t<=30)break;t-=2;root.style.setProperty('--t',t+'px')}}
 const paint0=paint;paint=function(){paint0.apply(this,arguments);if(vegas&&!spinning&&!rolling.size){layout();fitStage()}};
 addEventListener('resize',()=>{layout();if(vegas)fitStage()});
-const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' · '+vline+' · smAisle';
+const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' '+vline;
 buildReels();roundUI();words=POOL.slice(0,NWORDS);setStyle(store.get('style','classic')==='vegas',true);line=vegas?['S','P','I','N','S']:['D','E','A','L','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);cover();checkIn(false);
 </script>
 </body>
