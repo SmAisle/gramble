@@ -177,6 +177,9 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 .big{font-family:var(--head);font-weight:900;font-size:44px;text-align:center;margin:4px 0;line-height:1;letter-spacing:-2px}
 .dpts{font-family:var(--sans);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase}.dpts b{font-family:var(--head);font-size:30px;letter-spacing:0}
 #dStreak{margin:0;font-family:var(--sans);font-weight:800;font-size:14px;letter-spacing:.04em}
+.lrow{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;font-family:var(--sans);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.lrow button{background:none;border:none;padding:6px 2px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);text-decoration:underline}
+.lrow button[hidden]{display:none}
 .donegrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.donegrid .go{padding:9px 4px;font-size:13px}
 .wl{text-align:center;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink2);line-height:1.5;margin:0}
 .dw{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}.tapnote{margin:-6px 0 0;font-size:11px;font-style:italic;color:var(--ink2);text-align:center}
@@ -418,9 +421,10 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <div id="cvStreak" hidden></div>
   <button id="cvStats" hidden aria-label="Your stats"></button>
   <button class="go" id="coverGo">Play today's game</button>
-  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists · part of smAisle Daily Plus</small></button></div>
-  <div style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
+  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay" hidden>Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists · part of smAisle Daily Plus</small></button></div>
+  <div id="cvNote" style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
   <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverDemo">Watch the demo</button><span>·</span><button id="coverHow">How to play</button></div>
+  <style>#cvBar~#coverSm,#cvBar~* #coverSm{display:none}</style><!--SITEONLY-->
   <button id="coverSm" class="smline"><i class="smico"></i><b>smAisle</b><em>See our other games ›</em></button>
   <div class="ver" id="cvVer" style="margin-top:0"></div>
 </div></div>
@@ -460,14 +464,12 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <p class="lsub" id="lTot"></p>
   <div id="togs"><button id="mSound" aria-label="Sound"></button><button id="mHints" aria-label="Hints"></button><button id="mLook" aria-label="Deck look"></button><button id="mStyle" aria-label="Game style"></button></div>
   <button class="go" id="mClose">Back to game</button>
-  <button class="go alt" id="mNew">New game</button>
   <button class="go alt" id="mCashOut">Bank it</button>
-  <button class="go alt" id="mPlus">New list ⭐ Plus</button>
-  <button class="go alt" id="mDemo">Watch the demo</button>
-  <button class="go alt" id="mCover">Home screen</button>
   <button class="go alt" id="mHow">How to Play</button>
   <button class="go alt" id="mStats">Stats</button>
+  <button class="go alt" id="mPlus">New list ⭐ Plus</button>
   <button class="go alt" id="mDaily" style="background:#fbe38a;text-transform:none;letter-spacing:.02em" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
+  <div class="lrow"><button id="mCover">Home screen</button><button id="mNew">New game</button><button id="mDemo">Demo</button></div>
   <div class="ver" id="menuVer"></div>
 </div></div>
 
@@ -480,10 +482,9 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <p id="dTap" class="tapnote" hidden>Tap a word to see what it means</p>
   <p id="dBest" style="margin:0;font-style:italic;font-size:14px"></p>
   <button class="mp" id="dMach" hidden></button><div class="cd" id="dCd" hidden></div>
-  <button class="go" id="dAgain">Replay today's list</button>
+  <button class="go" id="dShare">Share</button>
   <button class="go alt" id="dPlus">New list ⭐ Plus</button>
-  <div class="donegrid"><button class="go alt" id="dShare">Share</button><button class="go alt" id="dStats">Stats</button></div>
-  <button class="go alt" id="dClose" style="padding:9px 4px;font-size:13px">See the table</button>
+  <div class="lrow"><button id="dAgain">Replay today</button><button id="dStats">Stats</button><button id="dClose">See the table</button></div>
 </div></div>
 
 <div id="demoCap" hidden><div class="st" id="dcStep"></div><p id="dcText"></p><div class="row"><button class="sk" id="dcSkip">Skip</button><button id="dcNext">Next</button></div></div>
@@ -508,7 +509,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.14',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.15',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -589,7 +590,7 @@ const HH=bestHint();reelEls.forEach((el,i)=>el.classList.toggle('hint',!!HH&&HH.
   $('wsum').innerHTML=!lit||spinning?'':nh?V('Holding','Locked')+' <b>'+heldLetters().join(' ')+'</b> · '+(F.length?F.length+(F.length>1?' words still fit':' word still fits'):'<span style="color:var(--red)">no word on your list fits</span>'):V('Tap the cards you want to keep.','Tap a reel or tile to lock it. Drag tiles to rearrange them.');
   drawTray();
   $('spinBtn').firstChild.textContent=vegas?(nh||spinCue?'Spin again':'Spin'):(nh?'Hit':'Deal');const cue=spinCue&&!over&&!pend&&!ride;$('spinBtn').classList.toggle('cue',cue);document.body.classList.toggle('cue',cue);$('marqSub').textContent=cue?V('★ DEAL AGAIN ★','★ SPIN AGAIN ★'):(round===1?'Quick 10':'Bonus 10')+' · 5 coins a '+V('deal','spin');$('spinBtn').querySelector('small').textContent=bank<COST?'Not enough coins':nh===REELS?V('Let go of a card to hit','Let go of a letter to spin'):'5 coins'+(nh?' · '+(REELS-nh)+V(' new card',' reel')+(REELS-nh>1?'s':''):'');
-  if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent=V('Deal again ▸','Spin again ▸');$('spinBtn').querySelector('small').textContent=V('Word cashed in · next hand','Word cashed in · next round')}
+  if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent=V('Deal again ▸','Spin again ▸');$('spinBtn').querySelector('small').textContent=V('Word banked · next hand','Word banked · next round')}
   const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent=V('Keep some cards ↑','Pick letters ↑');$('spinBtn').querySelector('small').textContent=V('or tap here for a new hand · 5 coins','then spin · 5 coins')}
   $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
   const ddOK=spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo';if(!ddOK)ddArm=false;$('bDD').hidden=true;$('ddX').hidden=!ddOK;if(ddOK){const fw=fits().filter(w=>!found.includes(w)).sort((a,b)=>wordPts(b)-wordPts(a))[0],v=fw?cr(wordPts(fw)*PER_PT):0;   // show what the word they're going for pays, plain vs doubled
@@ -738,7 +739,7 @@ function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=
   setTimeout(()=>showDone(r),quick?0:why==='win'?1400:700)}
 const banked=r=>r.banked!=null?r.banked:(r.why==='broke'?0:r.bank);
 const rLine=r=>r.round===2?'Quick 10 ✓ · Bonus 10 '+r.found+' of 10':r.round===1?'Quick 10: '+r.found+' of 10':r.found+' of 20';
-function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?(r.round===2?'Bonus 10 cleared!':'All 20 found!'):r.why==='broke'?'Out of coins':'Cashed out');
+function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?(r.round===2?'Bonus 10 cleared!':'All 20 found!'):r.why==='broke'?'Out of coins':'Done for today');
   $('dAgain').hidden=r.mode==='plus';$('dPlus').textContent=r.mode==='plus'?'Another new list ⭐':'New list ⭐ Plus';
   $('dFound').textContent='Banked '+money(banked(r));
   $('dRes').textContent=rLine(r)+' · '+r.spins+V(' deal',' spin')+(r.spins===1?'':'s');
@@ -747,7 +748,7 @@ function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mod
   r.list.forEach(w=>add(w));if(r.missed.length){WL.append(document.createElement('br'));WL.append('Missed: ');r.missed.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--fade)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   if(r.bonus&&r.bonus.length){WL.append(document.createElement('br'));WL.append('Bonus: ');r.bonus.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--ink)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   $('dTap').hidden=false;
-  const sk=streak(),ds=dailyStats();$('dBest').textContent=r.mode==='daily'?'Lifetime winnings: '+money(ds.life):r.mode==='replay'?'Replays don\'t change today\'s score ('+(result(playDay)?money(banked(result(playDay))):'–')+' banked).':'Plus games don\'t change your daily score.';
+  const sk=streak(),ds=dailyStats();$('dBest').textContent=r.mode==='daily'?'':r.mode==='replay'?'Replays don\'t change today\'s score ('+(result(playDay)?money(banked(result(playDay))):'–')+' banked).':'Plus games don\'t change your daily score.';
   const first=r.mode==='replay'?(result(playDay)||r):r;r=first;
   $('done').dataset.share=V('🃏','🎰')+' Gramble'+(r.mode==='plus'?'':' No. '+(r.n||dayNo()))+'\n'+'💰 Banked '+money(banked(r))+' today\n'+rLine(r)+' · '+r.spins+V(' deals',' spins')+'\n'+'🏆 Lifetime winnings: '+money(dailyStats().life)+'\n'+(r.best?'Best word: '+r.best+'\n':'')+location.href.split('?')[0].split('#')[0];
   machBox(r.mode==='daily'?banked(r):0);cdBox();$('done').hidden=false;if(r.mode==='daily')setTimeout(checkUnlock,quick?0:700)}
@@ -803,8 +804,8 @@ function resumeGame(){let p=null;try{p=JSON.parse(store.get(progKey(),''))}catch
   if(ride)return showRide();if(pend)showBonusCard();if(bank<COST&&!pend)end('broke')}
 function cover(){saverCheck();const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
   $('cvDate').textContent=t.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});$('cvNo').textContent='Game No. '+t.n;
-  $('coverGo').textContent=r?"See today's result (banked "+money(banked(r))+')':p&&p.spins?'Keep playing ('+(p.round===2?'Bonus 10':'Quick 10')+')':"Play today's game";
-  $('cvMore').hidden=!r;
+  $('coverGo').textContent=r?"See today's result":p&&p.spins?'Keep playing ('+(p.round===2?'Bonus 10':'Quick 10')+')':"Play today's game";
+  $('cvMore').hidden=!r;$('cvNote').hidden=!!r;
   const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it')+(+store.get('saver',0)?' · 🛡 saver ready':'');
   const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[money(d.life),'Lifetime'],[money(d.best),'Best day'],[d.played,'Days played']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
   $('cover').hidden=false}
