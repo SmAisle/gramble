@@ -1,0 +1,12 @@
+const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});p.on('pageerror',e=>console.log('ERR',e.message));
+await p.goto('file://'+require('path').resolve(__dirname,'../index-artifact.html'));await p.evaluate(()=>{store.set('seenHelp3','1');store.set('hints','0');quick=true});await p.reload();if(await p.isVisible('#coverGo'))await p.click('#coverGo');await p.waitForTimeout(300);
+await p.evaluate(async()=>{const w=left()[0];forced=[w[0],w[1],w[2],w[3],'Q'];await spin();forced=null});await p.waitForFunction(()=>!spinning);await p.waitForTimeout(300);
+console.log('box before lock',await p.isVisible('#ddX'));
+await p.evaluate(()=>{for(let i=0;i<4;i++)tapReel(i)});await p.waitForTimeout(300);
+console.log('box after 4 locks',await p.isVisible('#ddX'));await p.screenshot({path:'/tmp/dd/r0.png'});
+await p.click('#ddYes');await p.waitForTimeout(200);console.log('armed',await p.evaluate(()=>[ddArm,$('spinBtn').firstChild.textContent]));await p.screenshot({path:'/tmp/dd/r1.png'});
+await p.click('#ddNo');console.log('no',await p.evaluate(()=>[ddArm,$('spinBtn').firstChild.textContent]));await p.click('#ddYes');
+const b0=await p.evaluate(()=>bank);await p.evaluate(()=>{forced=[...line.slice(0,4),'Q']});await p.click('#spinBtn');await p.waitForFunction(()=>!spinning);await p.waitForTimeout(300);await p.evaluate(()=>forced=null);
+console.log('cost',b0-await p.evaluate(()=>bank),'armed after',await p.evaluate(()=>ddArm),'box',await p.isVisible('#ddX'));
+await p.evaluate(()=>tapReel(3));await p.waitForTimeout(200);console.log('box after unlock',await p.isVisible('#ddX'));
+await b.close()})();
