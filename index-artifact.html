@@ -503,7 +503,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.10',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.11',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -855,7 +855,7 @@ $('mHow').onclick=()=>{$('menu').hidden=true;$('help').hidden=false};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
 
 // Machine looks: tap Look in the menu to cycle through them. ?look=neon in the address also works (for previews).
-const LOOKS=[['paper','Daily 15'],['classic','Classic red'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx'],['gold','Gold Rush',250],['neon','Neon',750],['chrome','Chrome',1500],['diamond','Diamond',3000],['jackpot','Jackpot',6000]];
+const LOOKS=[['paper','smAisle'],['classic','Classic'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx'],['gold','Gold Rush',250],['neon','Neon',750],['chrome','Chrome',1500],['diamond','Diamond',3000],['jackpot','Jackpot',6000]];
 const LOOKSW={paper:['#f4efe1','#1a1814'],classic:['#9c1f18','#e0a800'],navy:['#1c2a44','#c9a961'],walnut:['#5b3a22','#d8b46a'],ivory:['#f3ecd8','#b08d3c'],oxblood:['#5a1019','#d4b26a'],onyx:['#1a1a1a','#8a8a8a'],gold:['#d9a92a','#fff2b0'],neon:['#140a2a','#ff3fb4'],chrome:['#c9c9c9','#555'],diamond:['#9fd6f0','#2f7fb0'],jackpot:['#b3141a','#ffd23f']};
 function setLook(k){if(!LOOKS.some(l=>l[0]===k)||!lookOwned(k))k='paper';store.set('look3',k);LOOKS.forEach(l=>document.body.classList.toggle('lk-'+l[0],l[0]===k&&k!=='classic'&&!(vegas&&k==='paper')));
   const n=LOOKS.find(l=>l[0]===k)[1];$('mLook').innerHTML=V('<span>🃏</span>Deck: <b>','<span>🎰</span>Look: <b>')+n+'</b>'}
