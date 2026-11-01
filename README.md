@@ -4,7 +4,7 @@
 
 A word slot machine from smAisle, in The Daily 15's newspaper style. Daily: everyone gets the same 20 words (and the same spins for the same choices) each day, and the first game counts. Replays of today's list are free and don't count; ⭐ Plus (paid later, open while testing) gives fresh random lists. No real money.
 
-Play: https://smaisle.github.io/gramble/ (once GitHub Pages is on)
+Play: https://smaisle.app/gramble/
 
 ## Rules
 - **Quick 10:** each day everyone gets the same **10 words** (from The Daily 15's everyday five-letter puzzle words, `source/tray.txt`) and **$5**. Every spin costs **50¢**.
@@ -47,5 +47,5 @@ Shown on the cover, in the menu and How to Play. Bump `VERSION`/`VDATE` in `sour
 Website only (github.io / smaisle.app): an anonymous check-in to Firebase project `aislerun-88e79`, collection `rw_devices`, once a day on open and when a game ends. Fields: `first`, `last`, `days`, `v`, `games`, `wins`, `most` (most words found), `desk`, `t`, `life` (lifetime winnings in cents), `h` (day → words found in that day's game, counting the Quick 10 as 10 once cleared; -1 = opened only, last 60 days).
 
 ## Invite gate
-On smaisle.github.io the page loads `https://smaisle.github.io/gate.js` with `data-game="gramble"`. The gate needs a `gramble` entry (the existing one) before it lets anyone in.
+On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate needs a `gramble` entry (the existing one) before it lets anyone in.
 
