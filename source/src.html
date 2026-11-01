@@ -418,7 +418,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <div id="cvStreak" hidden></div>
   <button id="cvStats" hidden aria-label="Your stats"></button>
   <button class="go" id="coverGo">Play today's game</button>
-  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists, as many as you like</small></button></div>
+  <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay">Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists · part of smAisle Daily Plus</small></button></div>
   <div style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
   <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverDemo">Watch the demo</button><span>·</span><button id="coverHow">How to play</button></div>
   <button id="coverSm" class="smline"><i class="smico"></i><b>smAisle</b><em>See our other games ›</em></button>
@@ -428,7 +428,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 <div class="sheet" id="help" hidden><div class="card">
   <h2>How to Play</h2>
   <ul class="rules">
-    <li><b>Daily game:</b> everyone gets the same words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus.</li>
+    <li><b>Daily game:</b> everyone gets the same words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus. Plus comes with <b>smAisle Daily Plus</b>, one purchase that covers The Daily 15, A, B, C, Deal and Gramble. It's free while we test.</li>
     <li><b>Quick 10:</b> you start with <b>50 coins</b> and a list of <b>10 words</b>. Find them all before your coins run out. Every deal or hit costs <b>5 coins</b>.</li>
     <li><b>Clear bonus:</b> clear all 10 and you get <b>+50 coins</b>. Then choose: <b>Bank it</b> to keep your coins, or <b>Keep going</b> into the <b>Bonus 10</b>, 10 more words, played with the coins you have. The deck helps less, so they're harder. Find all 10 for a <b>+100 coin bonus</b>. Go broke and you bank nothing today. You can bank it any time during the Bonus 10.</li>
     <li><b>Lifetime winnings:</b> what you bank each day adds up. It's just for bragging rights.</li>
@@ -462,11 +462,12 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <button class="go" id="mClose">Back to game</button>
   <button class="go alt" id="mNew">New game</button>
   <button class="go alt" id="mCashOut">Bank it</button>
+  <button class="go alt" id="mPlus">New list ⭐ Plus</button>
   <button class="go alt" id="mDemo">Watch the demo</button>
   <button class="go alt" id="mCover">Home screen</button>
   <button class="go alt" id="mHow">How to Play</button>
   <button class="go alt" id="mStats">Stats</button>
-  <button class="go alt" id="mDaily" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
+  <button class="go alt" id="mDaily" style="background:#fbe38a;text-transform:none;letter-spacing:.02em" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
   <div class="ver" id="menuVer"></div>
 </div></div>
 
@@ -507,7 +508,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.11',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.14',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -544,7 +545,7 @@ function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
 function dayAt(off){const d=new Date();d.setDate(d.getDate()-off);d.setHours(0,0,0,0);
   return{k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),n:Math.round((d-LAUNCH)/864e5)+1,d}}
 const dayNo=()=>dayAt(0).n;
-// Plus (new lists all day) will be a paid upgrade. While testing it's open to everyone.
+// Plus (new lists all day) comes with smAisle Daily Plus: one purchase covering The Daily 15, A, B, C, Deal and Gramble. No charges are set up; while testing it's open to everyone.
 const hasPlus=()=>true;
 // mode: 'daily' (counts), 'replay' (today's list again, free, doesn't count) or 'plus' (a fresh random list).
 let mode='daily',playDay=today();
@@ -854,6 +855,7 @@ $('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1
 $('mNew').onclick=()=>{if(spinning)return;if(!over&&$('mNew').dataset.sure!=='1'){$('mNew').dataset.sure='1';$('mNew').textContent='Tap again to start over';return}
   $('menu').hidden=true;$('done').hidden=true;startMode(mode,true)};
 $('mStats').onclick=()=>{backTo='menu';showStats()};
+$('mPlus').onclick=()=>{$('menu').hidden=true;startMode('plus',true)};   // always-there extra games (daily progress is saved separately)
 $('mDemo').onclick=()=>{$('menu').hidden=true;startDemo()};
 $('mHow').onclick=()=>{$('menu').hidden=true;$('help').hidden=false};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
