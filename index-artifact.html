@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.json">
-<meta name="description" content="Gramble: a word card game. Hold and hit to find all 20 words before your 50 credits run out.">
+<meta name="description" content="Gramble: a word card game. Hold and hit to find all 20 words before your 50 coins run out.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800;900&family=Courier+Prime:wght@700&display=swap">
 <style>
 /* The Daily 15's newspaper look, with a red-and-gold slot machine in the middle. */
@@ -388,20 +388,20 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 <body class="cards">
 <div id="app">
   <div class="top"><div id="pno">Gramble</div>
-    <div class="box bank" id="bankBox"><small>Credits</small><b id="bank">50</b></div>
+    <div class="box bank" id="bankBox"><small>Coins</small><b id="bank">50</b></div>
     <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
     <button id="menuBtn" aria-label="Menu">☰</button></div>
   <div id="msg"></div><div id="bCard"><div><div class="st">⭐ BONUS WORD ⭐</div><div class="w" id="bcW"></div><p>That's a real word, but it's not on your list. Bonus words pay half.</p><div class="math" id="bcM"></div><button id="bcTake" class="g"></button><button id="bcKeep" class="w2"></button></div></div><div id="mpSheet"><div><h4>Your decks</h4><p class="s">Lifetime winnings unlock new decks. Tap one you own to use it.</p><div id="mpList"></div><button id="mpDone">Done</button></div></div><div id="svCard"><div><div class="ic">🛡</div><b>Streak saved!</b><p id="svT"></p><p class="sm">You get a new saver every Monday.</p><button id="svOk">Keep it going</button></div></div><div id="unCard"><div><div class="ic">🃏</div><b>New deck!</b><div class="sw" id="unSw"></div><p id="unT"></p><button id="unUse">Use it now</button><button class="l" id="unLater">Later</button></div></div><div id="lkSheet"><div><b>Pick a deck</b><p>Tap one to try it on the table.</p><div id="lkList"></div><button id="lkDone">Done</button></div></div><div id="hintDone"><div><div class="ic">💡</div><b>Hints are done</b><p>You found your first 2 words.<br>From here, you're on your own.<br>Good luck!</p><button id="hintOk">Got it</button></div></div>
   <div id="stage">
     <div id="cab">
-      <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">Quick 10 · 5 credits a deal</small></div>
+      <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">Quick 10 · 5 coins a deal</small></div>
       <div id="row"><div id="reels"><div id="line"></div><div class="strike"></div><div class="bbadge">★ BONUS WORD ★</div></div>
         <button id="lever" aria-label="Deal"><div class="base"></div><div class="arm"><div class="ball"></div></div></button></div>
     </div>
     <div id="word"></div>
     <div id="wsum"></div>
-    <div id="ddX" hidden><div class="q">Double down?<small id="ddInfo">10 credits · win pays ×2</small></div><div class="seg"><button id="ddNo" class="on">No<small id="ddN1"></small></button><button id="ddYes">Yes<small id="ddN2"></small></button></div></div>
-    <div id="bar"><button id="spinBtn">Deal<small>5 credits</small></button><button id="bDD" hidden>Double down<small>10 credits · pays ×2</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Cash in<small id="bCashN"></small></button></div>
+    <div id="ddX" hidden><div class="q">Power play?<small id="ddInfo">10 coins · win pays ×2</small></div><div class="seg"><button id="ddNo" class="on">No<small id="ddN1"></small></button><button id="ddYes">Yes<small id="ddN2"></small></button></div></div>
+    <div id="bar"><button id="spinBtn">Deal<small>5 coins</small></button><button id="bDD" hidden>Power play<small>10 coins · pays ×2</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Collect<small id="bCashN"></small></button></div>
     <div id="logLbl">Find all 10 words</div>
     <div id="list"></div>
     <div id="bonusL"></div>
@@ -411,7 +411,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 <div class="sheet" id="cover"><div class="in">
   <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
   <div id="cvReels"><span>D</span><span>E</span><span>A</span><span>L</span><span>S</span></div>
-  <div class="tag">Clear 10 words with 50 credits. Then cash out, or let it ride.</div>
+  <div class="tag">Clear 10 words with 50 coins. Then bank it, or keep going.</div>
   <div id="cvStreak" hidden></div>
   <button id="cvStats" hidden aria-label="Your stats"></button>
   <button class="go" id="coverGo">Play today's game</button>
@@ -426,17 +426,17 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <h2>How to Play</h2>
   <ul class="rules">
     <li><b>Daily game:</b> everyone gets the same words each day, and your first game counts. After that you can replay today's list for free (it doesn't change your score), or play new lists with ⭐ Plus.</li>
-    <li><b>Quick 10:</b> you start with <b>50 credits</b> and a list of <b>10 words</b>. Find them all before your money runs out. Every deal or hit costs <b>5 credits</b>.</li>
-    <li><b>Clear bonus:</b> clear all 10 and you get <b>+50 credits</b>. Then choose: <b>Cash out</b> and bank your money, or <b>Let it ride</b> into the <b>High Roller 10</b>, 10 more words, played with the money you have. The deck helps less, so they're harder. Find all 10 for a <b>+100 credit bonus</b>. Go broke and you bank nothing today. You can cash out any time during the High Roller.</li>
+    <li><b>Quick 10:</b> you start with <b>50 coins</b> and a list of <b>10 words</b>. Find them all before your coins run out. Every deal or hit costs <b>5 coins</b>.</li>
+    <li><b>Clear bonus:</b> clear all 10 and you get <b>+50 coins</b>. Then choose: <b>Bank it</b> to keep your coins, or <b>Keep going</b> into the <b>Bonus 10</b>, 10 more words, played with the coins you have. The deck helps less, so they're harder. Find all 10 for a <b>+100 coin bonus</b>. Go broke and you bank nothing today. You can bank it any time during the Bonus 10.</li>
     <li><b>Lifetime winnings:</b> what you bank each day adds up. It's just for bragging rights.</li>
     <li><b>Deal:</b> tap <b>Deal</b> and you get five letter cards.</li>
     <li><b>Hold and hit:</b> tap a card to <b>hold</b> it. Then tap <b>Hit</b>: held cards stay, and the others are replaced with new cards. Tap a held card again to let it go.</li>
-    <li><b>Double down:</b> with four cards held and one to go, a Double down? box appears above Hit. Tap Yes and your next hit costs 10 credits instead of 5. If the word lands on that hit, it pays double, and so does a bonus word. It's riskier, though: on a double down hit the deck helps a little less.</li><li><b>Hints:</b> words that still fit your held cards light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the cards worth holding glow after each deal, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
-        <li><b>Find a word:</b> when your five cards can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 credits a point</b> (letter values shown on each card). STONE pays 10 credits.</li>
+    <li><b>Power play:</b> with four cards held and one to go, a Power play? box appears above Hit. Tap Yes and your next hit costs 10 coins instead of 5. If the word lands on that hit, it pays double, and so does a bonus word. It's riskier, though: on a power play hit the deck helps a little less.</li><li><b>Hints:</b> words that still fit your held cards light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the cards worth holding glow after each deal, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
+        <li><b>Find a word:</b> when your five cards can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 coins a point</b> (letter values shown on each card). STONE pays 10 coins.</li>
     <li><b>Jackpot:</b> get dealt a list word with nothing held and it pays double. It is rare, maybe once in 10 games.</li>
     <li><b>Bonus words:</b> if the letters spell a real word that isn't on your list, you can cash it in for half pay (once per game), or pass and keep your letters. It doesn't count toward your 20.</li>
     <li><b>The deck helps:</b> it only carries letters from words still on your list, and it leans toward words that fit what you're holding. In the Quick 10, every deal without a word makes it help a little more, so bad luck never lasts long. Words that fit your held letters light up yellow.</li>
-    <li><b>Win</b> by finding all 20. The game ends if you can't afford a deal. You can also <b>cash out</b> from the menu.</li>
+    <li><b>Win</b> by finding all 20. The game ends if you can't afford a deal. You can also <b>bank it</b> from the menu.</li>
     <li class="fine">The website version sends an anonymous check-in so we can count players: the day, how many games you played and the game version. Never your name, contacts or location. No real money is involved.</li>
   </ul>
   <button class="go" id="helpGo">Let's play</button>
@@ -458,7 +458,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <div id="togs"><button id="mSound" aria-label="Sound"></button><button id="mHints" aria-label="Hints"></button><button id="mLook" aria-label="Deck look"></button><button id="mStyle" aria-label="Game style"></button></div>
   <button class="go" id="mClose">Back to game</button>
   <button class="go alt" id="mNew">New game</button>
-  <button class="go alt" id="mCashOut">Cash out</button>
+  <button class="go alt" id="mCashOut">Bank it</button>
   <button class="go alt" id="mDemo">Watch the demo</button>
   <button class="go alt" id="mCover">Home screen</button>
   <button class="go alt" id="mHow">How to Play</button>
@@ -488,9 +488,9 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
   <h2 class="rh">You cleared all 10!</h2>
   <p class="rsub">You have <b id="rBank"></b>. What now?</p>
   <p class="rwin"><span id="rWin"></span> won + 50 clear bonus</p>
-  <div class="rchs"><div class="rch" id="rchSafe"><div class="t">Play it safe</div><div class="n" id="rSafeN"></div><div class="d">Bank it now. It counts toward your lifetime winnings.</div></div>
-  <div class="rch rd" id="rchRide"><div class="t">Let it ride 🎲</div><div class="n" id="rRideN"></div><div class="d">10 harder words. Clear them for a +100 bonus. Go broke and you get 0.</div></div></div>
-  <button class="go" id="rRide">Let it ride 🎲</button>
+  <div class="rchs"><div class="rch" id="rchSafe"><div class="t">Bank it</div><div class="n" id="rSafeN"></div><div class="d">Bank it now. It counts toward your lifetime winnings.</div></div>
+  <div class="rch rd" id="rchRide"><div class="t">Keep going ➜</div><div class="n" id="rRideN"></div><div class="d">10 harder words. Clear them for a +100 bonus. Go broke and you get 0.</div></div></div>
+  <button class="go" id="rRide">Keep going ➜</button>
   <button class="go alt" id="rCash">Bank <span id="rCashN"></span></button>
 </div></div>
 
@@ -503,7 +503,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.8',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.9',VDATE='Nov 1',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -523,12 +523,12 @@ const REELS=5,STRIP=24;let NWORDS=10;
 // with what you're holding (the rest of the time it's any letter from the words still on the list).
 // Robot tests over 300 games each: careful play finds all 20 about half the time; sloppy play about one game in five.
 let START=500,LOAD=.35,NOHELP_FULL=true,PITY=.08,PITY_MAX=.5,dry=0;   // dry: deals since your last word. Each dry deal makes the deck help a little more (PITY per deal, up to PITY_MAX), so a run of bad luck can't last long
-const COST=50,PER_PT=20,CLEAR_BONUS=500,HR_BONUS=1000,N1=10,N2=10;let LOAD2=.3;   // the High Roller 10 helps less (LOAD2), so it's harder   // Quick 10 with 50 credits; clear it for +50 credits, then cash out or let it ride into the High Roller 10   // let: the balance sims change START and LOAD
-// Credits: 1 credit = 10 of the old cents (start 50 credits, 5 a spin, 2 a point).
-const cr=c=>Math.round(c/10),money=c=>cr(c).toLocaleString()+' credits',cents=money;
+const COST=50,PER_PT=20,CLEAR_BONUS=500,HR_BONUS=1000,N1=10,N2=10;let LOAD2=.3;   // the Bonus 10 helps less (LOAD2), so it's harder   // Quick 10 with 50 coins; clear it for +50 coins, then cash out or let it ride into the Bonus 10   // let: the balance sims change START and LOAD
+// Credits: 1 coin = 10 of the old cents (start 50 coins, 5 a spin, 2 a point).
+const cr=c=>Math.round(c/10),money=c=>cr(c).toLocaleString()+' coins',cents=money;
 const wordPts=w=>[...w].reduce((a,c)=>a+PTS[c],0);
-const BONUS_MIN=0,bonusPay=w=>Math.max(wordPts(w)*PER_PT/2,BONUS_MIN)*(w===pend&&pendDD?2:1);   // a bonus word that lands on a double down spin pays double
-   // bonus words pay half (a 10-credit minimum was tried in v7.3: clear rate 42%→63%, too easy)
+const BONUS_MIN=0,bonusPay=w=>Math.max(wordPts(w)*PER_PT/2,BONUS_MIN)*(w===pend&&pendDD?2:1);   // a bonus word that lands on a power play spin pays double
+   // bonus words pay half (a 10-coin minimum was tried in v7.3: clear rate 42%→63%, too easy)
 // R is the random source: seeded by the date for the daily game and its replays (so everyone gets the same words and
 // the same spins for the same choices), and truly random for Plus lists.
 let R=Math.random;
@@ -583,12 +583,12 @@ const HH=bestHint();reelEls.forEach((el,i)=>el.classList.toggle('hint',!!HH&&HH.
   const nh=lit?nLocked():0,F=fits();
   $('wsum').innerHTML=!lit||spinning?'':nh?V('Holding','Locked')+' <b>'+heldLetters().join(' ')+'</b> · '+(F.length?F.length+(F.length>1?' words still fit':' word still fits'):'<span style="color:var(--red)">no word on your list fits</span>'):V('Tap the cards you want to keep.','Tap a reel or tile to lock it. Drag tiles to rearrange them.');
   drawTray();
-  $('spinBtn').firstChild.textContent=vegas?(nh||spinCue?'Spin again':'Spin'):(nh?'Hit':'Deal');const cue=spinCue&&!over&&!pend&&!ride;$('spinBtn').classList.toggle('cue',cue);document.body.classList.toggle('cue',cue);$('marqSub').textContent=cue?V('★ DEAL AGAIN ★','★ SPIN AGAIN ★'):(round===1?'Quick 10':'High Roller 10')+' · 5 credits a '+V('deal','spin');$('spinBtn').querySelector('small').textContent=bank<COST?'Not enough money':nh===REELS?V('Let go of a card to hit','Let go of a letter to spin'):'5 credits'+(nh?' · '+(REELS-nh)+V(' new card',' reel')+(REELS-nh>1?'s':''):'');
+  $('spinBtn').firstChild.textContent=vegas?(nh||spinCue?'Spin again':'Spin'):(nh?'Hit':'Deal');const cue=spinCue&&!over&&!pend&&!ride;$('spinBtn').classList.toggle('cue',cue);document.body.classList.toggle('cue',cue);$('marqSub').textContent=cue?V('★ DEAL AGAIN ★','★ SPIN AGAIN ★'):(round===1?'Quick 10':'Bonus 10')+' · 5 coins a '+V('deal','spin');$('spinBtn').querySelector('small').textContent=bank<COST?'Not enough coins':nh===REELS?V('Let go of a card to hit','Let go of a letter to spin'):'5 coins'+(nh?' · '+(REELS-nh)+V(' new card',' reel')+(REELS-nh>1?'s':''):'');
   if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent=V('Deal again ▸','Spin again ▸');$('spinBtn').querySelector('small').textContent=V('Word cashed in · next hand','Word cashed in · next round')}
-  const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent=V('Keep some cards ↑','Pick letters ↑');$('spinBtn').querySelector('small').textContent=V('or tap here for a new hand · 5 credits','then spin · 5 credits')}
+  const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent=V('Keep some cards ↑','Pick letters ↑');$('spinBtn').querySelector('small').textContent=V('or tap here for a new hand · 5 coins','then spin · 5 coins')}
   $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
   const ddOK=spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo';if(!ddOK)ddArm=false;$('bDD').hidden=true;$('ddX').hidden=!ddOK;if(ddOK){const fw=fits().filter(w=>!found.includes(w)).sort((a,b)=>wordPts(b)-wordPts(a))[0],v=fw?cr(wordPts(fw)*PER_PT):0;   // show what the word they're going for pays, plain vs doubled
-    $('ddInfo').textContent=fw?fw+' pays '+v+' · ×2 = '+(2*v):'10 credits · win pays ×2';$('ddN1').textContent=fw?'win '+v:'';$('ddN2').textContent=fw?'win '+(2*v):''}$('ddX').classList.toggle('on',ddArm);$('ddNo').classList.toggle('on',!ddArm);$('ddYes').classList.toggle('on',ddArm);document.body.classList.toggle('dd2',ddArm);if(ddArm){$('spinBtn').firstChild.textContent=V('Hit ×2','Spin ×2');$('spinBtn').querySelector('small').textContent='10 credits · pays double'}$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
+    $('ddInfo').textContent=fw?fw+' pays '+v+' · ×2 = '+(2*v):'10 coins · win pays ×2';$('ddN1').textContent=fw?'win '+v:'';$('ddN2').textContent=fw?'win '+(2*v):''}$('ddX').classList.toggle('on',ddArm);$('ddNo').classList.toggle('on',!ddArm);$('ddYes').classList.toggle('on',ddArm);document.body.classList.toggle('dd2',ddArm);if(ddArm){$('spinBtn').firstChild.textContent=V('Hit ×2','Spin ×2');$('spinBtn').querySelector('small').textContent='10 coins · pays double'}$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
   const fs=new Set(F);$('bonusL').innerHTML=bonus.length?'Bonus words: '+bonus.map(w=>'<b data-w="'+w+'">'+w+'</b>').join(' · '):'';
   const hl=heldLetters(),xo=crossOn()&&lit&&!spinning;
   $('list').innerHTML=words.map(w=>'<span data-w="'+w+'" class="'+(found.includes(w)?'got':over?'miss':fs.has(w)?'fit':'')+(HH&&HH.w===w?' tgt':'')+'">'+(xo&&fs.has(w)?crossed(w,hl):w)+'</span>').join('')}
@@ -630,10 +630,10 @@ function tip(){const H=bestHint();
     if(add.length)return msg('💡 '+add.map(i=>line[i]).join(', ')+(add.length>1?' are':' is')+' in '+H.w+'. Tap the glowing letter'+(add.length>1?'s':'')+' to keep '+(add.length>1?'them':'it')+', then tap '+V('Hit','Spin')+'.','good');
     return msg('💡 Good. Now tap '+V('Hit','Spin')+' to fill in the rest of '+H.w+'.','good')}
   if(hintLive()&&spun&&!spinning&&!over&&!pend&&!ride&&mode!=='demo'&&!nLocked())return msg(V('💡 No good cards this time. Just tap Deal again.','💡 No good letters this time. Just tap Spin again.'),'good');if(over)return msg(found.length===NWORDS?'You found them all!':'Game over. Tap Play again for a new list.');
-  if(!spun&&!found.length&&mode!=='demo')return step(V('Step 1: Tap Deal','Step 1: Tap Spin'),V('Each deal costs 5 credits.','Each spin costs 5 credits.'));
-  if(!spun)return msg(found.length?(hintsOn()&&round===1&&found.length===HINT_WORDS?'Nice! Hints are done for this game. You\'re on your own now. '+V('Deal for new cards.','Spin for new letters.'):V('Deal for new cards.','Spin for new letters.')):V('Tap Deal for 5 cards. Each deal is 5 credits.','Tap Spin or pull the lever. Each spin is 5 credits.'));
+  if(!spun&&!found.length&&mode!=='demo')return step(V('Step 1: Tap Deal','Step 1: Tap Spin'),V('Each deal costs 5 coins.','Each spin costs 5 coins.'));
+  if(!spun)return msg(found.length?(hintsOn()&&round===1&&found.length===HINT_WORDS?'Nice! Hints are done for this game. You\'re on your own now. '+V('Deal for new cards.','Spin for new letters.'):V('Deal for new cards.','Spin for new letters.')):V('Tap Deal for 5 cards. Each deal is 5 coins.','Tap Spin or pull the lever. Each spin is 5 coins.'));
   if(!nLocked())return step(V('Step 2: Hold some cards','Step 2: Keep some letters'),V('Tap any cards that are in a word on your list.','Tap any letters that are in a word on your list.'));
-  if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg(V('One card to go!','One letter to go!')+' Double down? Tap Yes to bet 10 credits. It\'s riskier, but a word pays double.');
+  if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg(V('One card to go!','One letter to go!')+' Power play? Tap Yes to play 10 coins. It\'s riskier, but a word pays double.');
   if(nLocked()===REELS)return msg(V('All five are held. Tap a card to let it go, then hit.','All five are locked. Tap a reel to unlock one, then spin.'),'warn');
   msg(V('Hit for new cards, or tap a held card to let it go.','Spin again, or tap a locked letter to unlock it.'))}
 
@@ -648,7 +648,7 @@ function animSlot(i,to,dur){return new Promise(res=>{const s=strips[i],n=STRIP,e
   setTimeout(()=>{clearInterval(ticks);el.classList.remove('spin');drawReel(i);rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
 function animReel(i,to,dur){if(vegas)return animSlot(i,to,dur);return new Promise(res=>{const el=reelEls[i];el.classList.remove('flip');el.classList.add('down');
   setTimeout(()=>{drawReel(i);el.classList.remove('flip');el.offsetWidth;el.classList.add('flip');rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
-let ddOn=false,ddArm=false,DD_HELP=.8;   // Double down: with one reel left, the spin costs double and a word on it pays double
+let ddOn=false,ddArm=false,DD_HELP=.8;   // Power play: with one reel left, the spin costs double and a word on it pays double
 async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
   $('reels').classList.remove('struck');spinCue=false;ddArm=false;ddOn=!!dd&&spun&&nLocked()===REELS-1&&bank>=2*COST;bank-=ddOn?2*COST:COST;spins++;spinning=true;coinDrop(ddOn?10:5);sfx.pay();
   const which=[0,1,2,3,4].filter(i=>!locked(i));fullSpin=which.length===REELS;const fixed=line.filter((c,i)=>locked(i)&&spun);hold=hold.map(h=>h===1?1:0);
@@ -664,7 +664,7 @@ async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun
 let rolling=new Set(),fullSpin=false,nJack=0;   // fullSpin: no letters were locked for this spin (a word then is a Jackpot)
 let _r0;   // rolling: reels still spinning, whose tiles stay blank until they stop
 // Tap a reel (or its tile) to lock it 🔒; tap again to unlock it.
-// Paying for a spin: a gold coin drops from the credits box into the top of the machine.
+// Paying for a spin: a gold coin drops from the coins box into the top of the machine.
 function coinDrop(n){if(quick)return;const a=$('bankBox').getBoundingClientRect(),m=$(vegas?'marq':'reels').getBoundingClientRect(),c=document.createElement('div');c.className='coin';c.textContent=n;
   const x=a.left+a.width/2-17,y1=a.bottom-4,y2=m.top+4;c.style.left=x+'px';c.style.top=y1+'px';document.body.appendChild(c);
   const dx=(m.left+m.width/2-17)-x;c.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+dx*.6+'px,'+(y2-y1)*.7+'px) scale(1)',opacity:1,offset:.75},{transform:'translate('+dx+'px,'+(y2-y1)+'px) scale(.55)',opacity:0}],{duration:650,easing:'cubic-bezier(.5,0,.9,.6)'}).onfinish=()=>c.remove()}
@@ -675,12 +675,12 @@ function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].
   if(w){const jp=fullSpin;if(jp)nJack++;const c=wordPts(w)*PER_PT*(jp?2:1)*(ddOn?2:1);bank+=c;peak=Math.max(peak,bank);found.push(w);hold=[0,0,0,0,0];spun=false;
     strike('Found '+w);
     reelEls.forEach(el=>el.classList.add('sel'));setTimeout(()=>reelEls.forEach(el=>el.classList.remove('sel')),900);
-    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS||round===1)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?V('🎰 JACKPOT! Dealt a word, double pay. ','🎰 JACKPOT! No locks, double pay. '):'')+(ddOn?'⏫ Double down paid! ':'')+'Found '+w+'! +'+cents(c)+' · '+V('Deal','Spin')+' again.','good');if(hintsOn()&&round===1&&found.length===HINT_WORDS&&mode!=='demo')setTimeout(()=>$('hintDone').classList.add('show'),1400);
+    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS||round===1)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?V('🎰 JACKPOT! Dealt a word, double pay. ','🎰 JACKPOT! No locks, double pay. '):'')+(ddOn?'⏫ Power play paid! ':'')+'Found '+w+'! +'+cents(c)+' · '+V('Deal','Spin')+' again.','good');if(hintsOn()&&round===1&&found.length===HINT_WORDS&&mode!=='demo')setTimeout(()=>$('hintDone').classList.add('show'),1400);
     const el=$('list').querySelector('[data-w="'+w+'"]');if(el)el.classList.add('new');
     if(found.length===NWORDS)return round===1?clearRound():end('win');if(bank<COST)return end('broke');return}
   // Not on the list but still an everyday word: it pays half, once per game, and isn't crossed off.
   const b=BONUS.get(key);if(b&&!bonus.includes(b)&&!words.includes(b)){pend=b;pendDD=ddOn;sfx.bonus();save();paint();showBonusCard();
-    msg('Bonus word '+b+'! It isn\'t on your list. Cash it in, or pass and keep your letters.','good');return}
+    msg('Bonus word '+b+'! It isn\'t on your list. Collect it, or pass and keep your letters.','good');return}
   save();paint();tip();if(bank<COST)end('broke')}
 // A bonus word waits for your choice. Cash in: it pays half and a new round starts. Pass: keep your letters and locks and keep going.
 // After cashing in a word: a red line through the letters, a stamp on the reels and a pulsing Spin again button, until the next spin.
@@ -688,22 +688,22 @@ function strike(label){const RE=$('reels');RE.classList.remove('struck');RE.offs
 let spinCue=false;
 function bonusCash(){if(!pend)return;const b=pend,c=bonusPay(b);pend='';bank+=c;peak=Math.max(peak,bank);bonus.push(b);hold=[0,0,0,0,0];spun=false;strike('Bonus '+b);
   popUp('Bonus '+b+' +'+cents(c),'jp');jackpot();sfx.win();save();paint();msg('Bonus word '+b+'! +'+cents(c)+' · '+V('Deal','Spin')+' again.','good');if(bank<COST)end('broke')}
-// Clearing the Quick 10: +50 credits, then Cash out or Let it ride.
+// Clearing the Quick 10: +50 coins, then Cash out or Let it ride.
 function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=false;hold=[0,0,0,0,0];save();paint();
-  popUp('Clear bonus +50 credits','jp');jackpot();msg('Quick 10 cleared! +50 credit clear bonus.','good');setTimeout(showRide,quick?0:1200)}
+  popUp('Clear bonus +50 coins','jp');jackpot();msg('Quick 10 cleared! +50 coin clear bonus.','good');setTimeout(showRide,quick?0:1200)}
 function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('rSafeN').textContent=cr(bank);$('rRideN').textContent=(cr(bank)+cr(HR_BONUS))+'+';$('rWin').textContent=money(bank-CLEAR_BONUS);$('rCashN').textContent=money(bank);
   const C=$('confetti');C.innerHTML='';const cols=['#ffd23f','#e0a800','#fff3c4','#1a1814','#fff'];
   if(!quick)for(let k=0;k<70;k++){const i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.background=cols[k%cols.length];i.style.animationDuration=(2.2+Math.random()*2)+'s';i.style.animationDelay=(Math.random()*1.2)+'s';i.style.transform='rotate('+Math.random()*180+'deg)';C.appendChild(i)}
   $('ride').hidden=false;if(mode!=='demo'||true)sfx.allFound()}
 function letItRide(){if(!ride)return;ride=false;$('ride').hidden=true;round=2;roundUI();words=pickWords(N2,'#hr',found);found=[];spun=false;hold=[0,0,0,0,0];order=[0,1,2,3,4];
-  strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('High Roller 10! You have '+money(bank)+'. Good luck.','good')}
+  strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('Bonus 10! You have '+money(bank)+'. Good luck.','good')}
 $('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if(!ride||mode==='demo')return;ride=false;$('ride').hidden=true;end('cashout')};
 function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
 $('rchSafe').onclick=()=>$('rCash').click();$('rchRide').onclick=()=>$('rRide').click();
 $('bDD').onclick=()=>spin(true);$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 // The bonus card: what a bonus word is, why it pays what it pays, and what each choice does.
 function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
-  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' credit'+(pendDD?' × 2 (double down)':'')+' = <b>'+cents(c)+'</b>');
+  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' coin'+(pendDD?' × 2 (power play)':'')+' = <b>'+cents(c)+'</b>');
   $('bcTake').innerHTML='Take '+cents(c)+'<small>'+V('Your held cards reset','Your locked letters reset')+'</small>';
   $('bcKeep').innerHTML=V('Keep my cards','Keep my letters')+'<small>'+(hl.length?'Keep '+hl.join(' ')+(f.length?' and go for '+f[0]:''):V('Skip it and keep playing','Skip it and keep spinning'))+'</small>';
   $('bCard').classList.add('show')}
@@ -720,7 +720,7 @@ $('spinBtn').onclick=$('lever').onclick=()=>spin(ddArm);$('ddYes').onclick=()=>{
 function markSmDone(){try{const d=new Date(),day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   let s={};try{s=JSON.parse(localStorage.getItem('smaisle_done')||'{}')||{}}catch(e){}s[day]=s[day]||[];if(s[day].indexOf('gr')<0)s[day].push('gr');
   const ks=Object.keys(s).sort();while(ks.length>60)delete s[ks.shift()];localStorage.setItem('smaisle_done',JSON.stringify(s))}catch(e){}}
-function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=Math.max(peak,bank);popUp('High Roller bonus +100 credits','jp')}over=true;ride=false;$('ride').hidden=true;pend='';$('bCard').classList.remove('show');spun=false;hold=[0,0,0,0,0];paint();tip();
+function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=Math.max(peak,bank);popUp('Bonus 10 prize +100 coins','jp')}over=true;ride=false;$('ride').hidden=true;pend='';$('bCard').classList.remove('show');spun=false;hold=[0,0,0,0,0];paint();tip();
   const best=found.reduce((a,w)=>!a||wordPts(w)>wordPts(a)?w:a,null);
   const r={why,round,banked:why==='broke'?0:bank,found:found.length,bank,spins,peak,list:found.slice(),missed:left(),bonus:bonus.slice()};if(best)r.best=best;
   store.set('games',+store.get('games',0)+1);if(why==='win')store.set('wins',+store.get('wins',0)+1);
@@ -732,8 +732,8 @@ function end(why){if(over)return;if(why==='win'&&round===2){bank+=HR_BONUS;peak=
   else if(why==='broke')sfx.broke();
   setTimeout(()=>showDone(r),quick?0:why==='win'?1400:700)}
 const banked=r=>r.banked!=null?r.banked:(r.why==='broke'?0:r.bank);
-const rLine=r=>r.round===2?'Quick 10 ✓ · High Roller '+r.found+' of 10':r.round===1?'Quick 10: '+r.found+' of 10':r.found+' of 20';
-function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?(r.round===2?'High Roller cleared!':'All 20 found!'):r.why==='broke'?'Out of money':'Cashed out');
+const rLine=r=>r.round===2?'Quick 10 ✓ · Bonus 10 '+r.found+' of 10':r.round===1?'Quick 10: '+r.found+' of 10':r.found+' of 20';
+function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mode==='plus'?'Plus: ':'')+(r.why==='win'?(r.round===2?'Bonus 10 cleared!':'All 20 found!'):r.why==='broke'?'Out of coins':'Cashed out');
   $('dAgain').hidden=r.mode==='plus';$('dPlus').textContent=r.mode==='plus'?'Another new list ⭐':'New list ⭐ Plus';
   $('dFound').textContent='Banked '+money(banked(r));
   $('dRes').textContent=rLine(r)+' · '+r.spins+V(' deal',' spin')+(r.spins===1?'':'s');
@@ -771,7 +771,7 @@ function dailyStats(){const rs=[];for(let i=0;i<localStorage.length;i++){const k
 function streak(){const sv=savedDays(),on=d=>!!result(d.k)||sv.includes(d.k);let n=0;for(let i=on(dayAt(0))?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
   const best=Math.max(n,+store.get('streakBest',0));store.set('streakBest',String(best));return{n,best,today:on(dayAt(0))}}
 function showStats(){$('done').hidden=true;$('menu').hidden=true;$('cover').hidden=true;const g=+store.get('games',0),w=+store.get('wins',0),fw=+store.get('fewest',0);
-  const d=dailyStats(),sk=streak();const T=[[money(d.life),'Lifetime winnings'],[money(d.best),'Best day'],[d.played,'Days played'],[sk.n,'Streak'],[d.rides,'Let it ride'],[d.wins,'High Roller wins']];
+  const d=dailyStats(),sk=streak();const T=[[money(d.life),'Lifetime winnings'],[money(d.best),'Best day'],[d.played,'Days played'],[sk.n,'Streak'],[d.rides,'Kept going'],[d.wins,'Bonus 10 wins']];
   $('statGrid').innerHTML=T.map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');$('stats').hidden=false}
 let backTo=null;
 function goBack(){const b=backTo;backTo=null;if(b==='cover')cover();else if(b==='menu')$('menu').hidden=false;else if(b==='done')$('done').hidden=false}
@@ -781,7 +781,7 @@ $('statsBack').onclick=()=>{$('stats').hidden=true;goBack()};
 function save(){if(over||mode==='demo')return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,pendDD,dry,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
 let quick=false;   // tests only: no spin animation
 function pickWords(n,tag,avoid){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+tag));const ws=[];while(ws.length<n){const w=rnd(POOL);if(!ws.includes(w)&&!avoid.includes(w))ws.push(w)}return ws.sort()}
-function roundUI(){NWORDS=round===1?N1:N2;$('marqSub').textContent=(round===1?'Quick 10':'High Roller 10')+' · 5 credits a '+V('deal','spin');$('logLbl').textContent='Find all '+NWORDS+' words';document.body.classList.toggle('hr',round===2)}
+function roundUI(){NWORDS=round===1?N1:N2;$('marqSub').textContent=(round===1?'Quick 10':'Bonus 10')+' · 5 coins a '+V('deal','spin');$('logLbl').textContent='Find all '+NWORDS+' words';document.body.classList.toggle('hr',round===2)}
 function newGame(){round=1;ride=false;roundUI();words=pickWords(N1,'#q',[]);
   pend='';bonus=[];order=[0,1,2,3,4];found=[];hold=[0,0,0,0,0];bank=START;spins=0;dry=0;peak=START;spun=false;over=false;spinning=false;
   line=[0,1,2,3,4].map(()=>rnd(rnd(words).split('')));strips=line.map(c=>stripAround(c));
@@ -798,7 +798,7 @@ function resumeGame(){let p=null;try{p=JSON.parse(store.get(progKey(),''))}catch
   if(ride)return showRide();if(pend)showBonusCard();if(bank<COST&&!pend)end('broke')}
 function cover(){saverCheck();const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
   $('cvDate').textContent=t.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});$('cvNo').textContent='Game No. '+t.n;
-  $('coverGo').textContent=r?"See today's result (banked "+money(banked(r))+')':p&&p.spins?'Keep playing ('+(p.round===2?'High Roller':'Quick 10')+')':"Play today's game";
+  $('coverGo').textContent=r?"See today's result (banked "+money(banked(r))+')':p&&p.spins?'Keep playing ('+(p.round===2?'Bonus 10':'Quick 10')+')':"Play today's game";
   $('cvMore').hidden=!r;
   const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it')+(+store.get('saver',0)?' · 🛡 saver ready':'');
   const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[money(d.life),'Lifetime'],[money(d.best),'Best day'],[d.played,'Days played']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
@@ -808,20 +808,20 @@ let forced=null;   // demo only: the letters the next spin lands on
 const DEMO_WORDS=['BRAVE','CHAIR','DREAM','HONEY','LUCKY','MUSIC','PLANT','READY','SMILE','TOAST'];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const DEMO=[
- ['Every day you get <b>50 credits</b> and the same <b>10 words</b> as everyone else. Find them all with letter cards.',async()=>{}],
- ['Tap <b>Deal</b>. Each deal costs <b>5 credits</b>, and you get five letter cards.',async()=>{forced=['R','E','Z','D','A'];await spin()}],
+ ['Every day you get <b>50 coins</b> and the same <b>10 words</b> as everyone else. Find them all with letter cards.',async()=>{}],
+ ['Tap <b>Deal</b>. Each deal costs <b>5 coins</b>, and you get five letter cards.',async()=>{forced=['R','E','Z','D','A'];await spin()}],
  ['R, E, D, A could make <b>READY</b>. Tap a card to <b>hold</b> it. Held cards stay when you hit. On the list, READY lights up and the letters you have turn gray.',async()=>{for(const i of [0,1,3,4]){tapReel(i);await sleep(350)}}],
  ['<b>Hit.</b> Only the card you didn\'t hold is replaced.',async()=>{forced=['R','E','Y','D','A'];await spin()}],
- ['<b>READY!</b> Any order counts. Each word pays <b>2 credits a point</b> (the small numbers), and it\'s crossed off your list. A word dealt with nothing held is a <b>Jackpot</b> and pays double.',async()=>{}],
- ['Find all 10 before your money runs out and you get a <b>+50 credit clear bonus</b>…',async()=>{words.forEach(w=>{if(!found.includes(w))found.push(w)});bank=480;paint();clearRound()}],
- ['…then you choose. <b>Cash out</b> to bank your money. Or <b>let it ride</b> into the <b>High Roller 10</b>: find those 10 for <b>+100 credits</b>, but go broke and you bank nothing today.',async()=>{}],
- ['Whatever you bank adds to your <b>lifetime winnings</b>. Run out of money in the Quick 10 and you bank 0 credits. Good luck!',async()=>{$('ride').hidden=true}]];
+ ['<b>READY!</b> Any order counts. Each word pays <b>2 coins a point</b> (the small numbers), and it\'s crossed off your list. A word dealt with nothing held is a <b>Jackpot</b> and pays double.',async()=>{}],
+ ['Find all 10 before your coins run out and you get a <b>+50 coin clear bonus</b>…',async()=>{words.forEach(w=>{if(!found.includes(w))found.push(w)});bank=480;paint();clearRound()}],
+ ['…then you choose. <b>Bank it</b> to keep your coins. Or <b>keep going</b> into the <b>Bonus 10</b>: find those 10 for <b>+100 coins</b>, but go broke and you bank nothing today.',async()=>{}],
+ ['Whatever you bank adds to your <b>lifetime winnings</b>. Run out of coins in the Quick 10 and you bank 0 coins. Good luck!',async()=>{$('ride').hidden=true}]];
 let dStep=0,dBusy=false;
-const DEMO_V=['Every day you get <b>50 credits</b> and the same <b>10 words</b> as everyone else. Find them all on the slot machine.',
- 'Tap <b>Spin</b>. Each spin costs <b>5 credits</b>, and five reels land on letters.',
+const DEMO_V=['Every day you get <b>50 coins</b> and the same <b>10 words</b> as everyone else. Find them all on the slot machine.',
+ 'Tap <b>Spin</b>. Each spin costs <b>5 coins</b>, and five reels land on letters.',
  'R, E, D, A could make <b>READY</b>. Tap a reel to <b>lock</b> 🔒 it. Locked letters stay put and show as tiles below. On the list, READY lights up and the letters you have turn gray.',
  '<b>Spin again.</b> Only the unlocked reel spins.',
- '<b>READY!</b> Any order counts. Each word pays <b>2 credits a point</b> (the small numbers), and it\'s crossed off your list. A word with nothing locked is a <b>Jackpot</b> and pays double.'];
+ '<b>READY!</b> Any order counts. Each word pays <b>2 coins a point</b> (the small numbers), and it\'s crossed off your list. A word with nothing locked is a <b>Jackpot</b> and pays double.'];
 function demoShow(){$('dcStep').textContent='Demo · '+(dStep+1)+' of '+DEMO.length;$('dcText').innerHTML=(vegas&&DEMO_V[dStep])||DEMO[dStep][0];$('dcNext').textContent=dStep===DEMO.length-1?"Play today's game":dStep===1?V('Deal','Spin'):dStep===2?V('Hold R E D A','Lock R E D A'):dStep===3?V('Hit','Spin again'):'Next';
   reelEls.forEach((el,i)=>el.classList.toggle('hint',dStep===2&&[0,1,3,4].includes(i)))}
 function startDemo(){mode='demo';playDay=today();document.body.classList.add('demo');$('cover').hidden=true;$('quick').hidden=true;['done','menu','help','stats','ride'].forEach(k=>$(k).hidden=true);
@@ -842,10 +842,10 @@ $('coverSm').onclick=()=>window.open('https://smaisle.app/','_blank','noopener')
 $('helpGo').onclick=()=>{$('help').hidden=true;if(!$('cover').hidden)startMode('daily')};
 const sndLabel=()=>{const on=store.get('sound','on')==='on';$('mSound').innerHTML='<span>'+(on?'🔊':'🔇')+'</span>Sound: <b>'+(on?'On':'Off')+'</b>';$('mSound').classList.toggle('on',on)};
 $('menuBtn').onclick=()=>{sndLabel();$('lTot').textContent=over?'Game over':'Bank: '+money(bank)+' · found '+found.length+' of '+NWORDS;
-  $('mCashOut').hidden=over||round===1||ride;$('mCashOut').textContent='Cash out '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
+  $('mCashOut').hidden=over||round===1||ride;$('mCashOut').textContent='Bank it: '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
 $('mClose').onclick=()=>{$('menu').hidden=true};
 // Cash out and New game end the game. Tap twice so they can't happen by accident.
-$('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1'){$('mCashOut').dataset.sure='1';$('mCashOut').textContent='Tap again to cash out '+money(bank);return}
+$('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1'){$('mCashOut').dataset.sure='1';$('mCashOut').textContent='Tap again to bank '+money(bank);return}
   $('menu').hidden=true;end('cashout')};
 $('mNew').onclick=()=>{if(spinning)return;if(!over&&$('mNew').dataset.sure!=='1'){$('mNew').dataset.sure='1';$('mNew').textContent='Tap again to start over';return}
   $('menu').hidden=true;$('done').hidden=true;startMode(mode,true)};
@@ -875,19 +875,19 @@ const MACH=()=>LOOKS.filter(l=>l[2]);
 function machBox(gain){const life=lifeCr(),nx=MACH().find(l=>life<l[2]),B=$('dMach');B.hidden=false;
   if(!nx){B.innerHTML='<div class="t">'+V('All decks unlocked!','All machines unlocked!')+' <span>🎰</span></div><div class="g">Tap to pick one</div>';return}
   const pv=[0,...MACH().map(l=>l[2])].filter(v=>v<=life).pop(),pc=Math.max(3,Math.min(100,Math.round((life-pv)/(nx[2]-pv)*100)));
-  B.innerHTML='<div class="t">'+V('Next deck: ','Next machine: ')+nx[1]+' <span>'+life.toLocaleString()+' / '+nx[2].toLocaleString()+'</span></div><div class="pb"><i style="width:'+pc+'%"></i></div><div class="g">'+(gain?'+'+cr(gain).toLocaleString()+' today · ':'')+(nx[2]-life).toLocaleString()+' credits to go</div>'}
+  B.innerHTML='<div class="t">'+V('Next deck: ','Next machine: ')+nx[1]+' <span>'+life.toLocaleString()+' / '+nx[2].toLocaleString()+'</span></div><div class="pb"><i style="width:'+pc+'%"></i></div><div class="g">'+(gain?'+'+cr(gain).toLocaleString()+' today · ':'')+(nx[2]-life).toLocaleString()+' coins to go</div>'}
 function showMachines(){$('menu').hidden=true;$('lkSheet').classList.remove('show');const life=lifeCr(),cur=store.get('look3','paper'),nx=MACH().find(l=>life<l[2]);
   const rows=[['_',V('7 starter decks','7 starter looks'),'Free','linear-gradient(135deg,#9c1f18,#1c2a44 50%,#5b3a22)']].concat(MACH().map(l=>[l[0],l[1],l[2]]));
   $('mpList').innerHTML='';rows.forEach(r=>{const b=document.createElement('button');const k=r[0],own=k==='_'||lookOwned(k),isNx=nx&&nx[0]===k;
     b.className='stop'+(isNx?' cur':own?'':' lock');const sw=k==='_'?r[3]:'linear-gradient(135deg,'+LOOKSW[k][0]+','+LOOKSW[k][1]+')';
-    const sub=k==='_'?'Free':own?(cur===k?'In use':'Unlocked · tap to use'):r[2].toLocaleString()+' credits'+(isNx?' · '+(r[2]-life).toLocaleString()+' to go':'');
+    const sub=k==='_'?'Free':own?(cur===k?'In use':'Unlocked · tap to use'):r[2].toLocaleString()+' coins'+(isNx?' · '+(r[2]-life).toLocaleString()+' to go':'');
     b.innerHTML='<div class="sw" style="background:'+sw+'">'+(own?'':'🔒')+'</div><div class="n">'+r[1]+'<small>'+sub+'</small></div><div class="ok">'+(own?'✓':isNx?Math.round(life/r[2]*100)+'%':'')+'</div>';
     b.onclick=()=>{if(k==='_'){showLooks();return}if(own){setLook(k);sfx.lock();showMachines()}};$('mpList').appendChild(b)});
   $('mpSheet').classList.add('show')}
 $('dMach').onclick=showMachines;$('mpDone').onclick=()=>$('mpSheet').classList.remove('show');
 function checkUnlock(){const own=MACH().filter(l=>lookOwned(l[0])).map(l=>l[0]),seen=(store.get('mSeen','')||'').split(',').filter(Boolean),nw=own.filter(k=>!seen.includes(k));
   store.set('mSeen',own.join(','));if(!nw.length)return;const k=nw[nw.length-1],l=LOOKS.find(x=>x[0]===k);
-  $('unSw').style.background='linear-gradient(135deg,'+LOOKSW[k][0]+','+LOOKSW[k][1]+')';$('unT').textContent='Your lifetime winnings passed '+l[2].toLocaleString()+' credits. You unlocked '+l[1]+'!';
+  $('unSw').style.background='linear-gradient(135deg,'+LOOKSW[k][0]+','+LOOKSW[k][1]+')';$('unT').textContent='Your lifetime winnings passed '+l[2].toLocaleString()+' coins. You unlocked '+l[1]+'!';
   $('unUse').onclick=()=>{setLook(k);$('unCard').classList.remove('show')};$('unCard').classList.add('show');sfx.allFound&&sfx.allFound()}
 $('unLater').onclick=()=>$('unCard').classList.remove('show');
 // ---------- Countdown to the next list ----------
@@ -914,8 +914,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkIn(fa
 const HELP_V=[['Every deal or hit costs','Every spin costs'],['The deck helps less','The machine helps less'],
  ['<li><b>Deal:</b> tap <b>Deal</b> and you get five letter cards.</li>','<li><b>Spin:</b> tap <b>Spin</b> (or pull the lever). Five reels land on letters.</li>'],
  ['<li><b>Hold and hit:</b> tap a card to <b>hold</b> it. Then tap <b>Hit</b>: held cards stay, and the others are replaced with new cards. Tap a held card again to let it go.</li>','<li><b>Lock:</b> tap a reel (or its tile) to lock its letter 🔒. Locked letters stay put when you spin again. Tap again to unlock it.</li>'],
- ['with four cards held and one to go, a Double down? box appears above Hit. Tap Yes and your next hit costs','with four letters locked and one reel left, a Double down? box appears above Spin. Tap Yes and your next spin costs'],
- ['If the word lands on that hit','If the word lands on that spin'],['on a double down hit the deck helps','on a double down spin the machine helps'],
+ ['with four cards held and one to go, a Power play? box appears above Hit. Tap Yes and your next hit costs','with four letters locked and one reel left, a Power play? box appears above Spin. Tap Yes and your next spin costs'],
+ ['If the word lands on that hit','If the word lands on that spin'],['on a power play hit the deck helps','on a power play spin the machine helps'],
  ['words that still fit your held cards light up','words that still fit your locked letters light up'],['make the cards worth holding glow after each deal','make the letters worth keeping glow after each spin'],
  ['when your five cards can spell','when the five letters on the line can spell'],['shown on each card','shown on each reel'],['get dealt a list word with nothing held','spell a list word on a spin with nothing locked'],
  ['<b>The deck helps:</b> it only carries letters','<b>The machine helps:</b> the reels only carry letters'],['and it leans toward','and they lean toward'],['every deal without a word makes it help','every spin without a word makes it help'],
@@ -936,13 +936,13 @@ $('mStyle').onclick=()=>setStyle(!vegas);
 // ---------- First-time intro ----------
 const T=(s,c='')=>'<div class="qt '+c+'">'+s+'<sub>'+PTS[s]+'</sub></div>';
 const QS=[
-  [T('S')+T('T')+T('O')+T('N')+T('E'),'Quick 10','You get <b>50 credits</b> and a list of <b>10 words</b>. Find them all before your money runs out.'],
-  [T('R')+T('E')+T('Z')+T('D')+T('A'),'Deal','Each deal costs <b>5 credits</b>. You get five letter cards.'],
+  [T('S')+T('T')+T('O')+T('N')+T('E'),'Quick 10','You get <b>50 coins</b> and a list of <b>10 words</b>. Find them all before your coins run out.'],
+  [T('R')+T('E')+T('Z')+T('D')+T('A'),'Deal','Each deal costs <b>5 coins</b>. You get five letter cards.'],
   [T('R','l')+T('E','l')+T('Z')+T('D','l')+T('A','l'),'Hold','Tap cards to <b>hold</b> letters that could spell a word on your list (READY?). Words that still fit light up. Hit for the rest. Tap a held card again to let it go.'],
-  [T('R','l')+T('E','l')+T('Y','l')+T('D','l')+T('A','l'),'Found it!','When the five letters spell a list word, <b>in any order</b>, it\'s crossed off and pays <b>2 credits a point</b>.'],
-  ['<div class="qt" style="width:auto;padding:0 10px">+50 credits</div>','Let it ride?','Clear all 10 for a <b>+50 credit bonus</b>. Then <b>cash out</b>, or <b>let it ride</b> into the <b>High Roller 10</b>. 10 harder words: find them all for <b>+100 credits</b>, or go broke and bank nothing. What you bank adds to your <b>lifetime winnings</b>.']];
+  [T('R','l')+T('E','l')+T('Y','l')+T('D','l')+T('A','l'),'Found it!','When the five letters spell a list word, <b>in any order</b>, it\'s crossed off and pays <b>2 coins a point</b>.'],
+  ['<div class="qt" style="width:auto;padding:0 10px">+50 coins</div>','Keep going?','Clear all 10 for a <b>+50 coin bonus</b>. Then <b>bank it</b>, or <b>keep going</b> into the <b>Bonus 10</b>. 10 harder words: find them all for <b>+100 coins</b>, or go broke and bank nothing. What you bank adds to your <b>lifetime winnings</b>.']];
 let qStep=0;
-const QSV={0:'You get <b>50 credits</b> and a list of <b>10 words</b>. Find them all on the slot machine before your money runs out.',1:['Spin','Each spin costs <b>5 credits</b>. Five reels land on letters.'],2:['Lock','Tap reels to <b>lock</b> 🔒 letters that could spell a word on your list (READY?). Words that still fit light up. Spin again for the rest. Tap a locked letter again to unlock it.']};
+const QSV={0:'You get <b>50 coins</b> and a list of <b>10 words</b>. Find them all on the slot machine before your coins run out.',1:['Spin','Each spin costs <b>5 coins</b>. Five reels land on letters.'],2:['Lock','Tap reels to <b>lock</b> 🔒 letters that could spell a word on your list (READY?). Words that still fit light up. Spin again for the rest. Tap a locked letter again to unlock it.']};
 function qShow(){let q=QS[qStep];const qv=vegas&&QSV[qStep];if(qv)q=typeof qv==='string'?[q[0],q[1],qv]:[q[0],qv[0],qv[1]];$('qPic').innerHTML=q[0];$('qTitle').textContent=q[1];$('qText').innerHTML=q[2];
   $('qDots').innerHTML=QS.map((_,i)=>'<span class="'+(i===qStep?'on':'')+'"></span>').join('');$('quickGo').textContent=qStep<QS.length-1?'Next':'Play'}
 function qOpen(){qStep=0;qShow();$('quick').hidden=false}
