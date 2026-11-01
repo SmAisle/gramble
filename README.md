@@ -13,7 +13,7 @@ Play: https://smaisle.github.io/gramble/ (once GitHub Pages is on)
 - **Lifetime winnings:** the total banked over all daily games. Bragging rights only.
 - Tap a reel to **lock** it 🔒; tap again to unlock. Spin again spins only the unlocked reels.
 - Locked letters show as tiles under the machine. Drag a tile to rearrange; tap one to unlock it.
-- When the five letters on the line spell a list word **in any order**, it's found, crossed off, and pays Scrabble points × **20¢**. A red line strikes through the letters on the reels until the next spin.
+- When the five letters on the line spell a list word **in any order**, it's found, crossed off, and pays letter points × **20¢**. A red line strikes through the letters on the reels until the next spin.
 - Words that still fit your locked letters light up on the list, with the letters you already have in gray.
 - **Jackpot:** a list word on a spin with nothing locked pays double. Rare, because the machine gives no help on those spins.
 - **Bonus words:** any other everyday five-letter word (`source/bonus.txt`) offers Cash in (half pay, once per game) or Pass; a ★ BONUS WORD ★ badge shows on the reels while you choose. A pop-up card shows the word, the half-pay math (letter points × 10¢), and two plain buttons: Take (locks reset) or Keep my letters (names the list word you're close to).

@@ -433,7 +433,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
     <li><b>Deal:</b> tap <b>Deal</b> and you get five letter cards.</li>
     <li><b>Hold and hit:</b> tap a card to <b>hold</b> it. Then tap <b>Hit</b>: held cards stay, and the others are replaced with new cards. Tap a held card again to let it go.</li>
     <li><b>Double down:</b> with four cards held and one to go, a Double down? box appears above Hit. Tap Yes and your next hit costs 10 credits instead of 5. If the word lands on that hit, it pays double, and so does a bonus word. It's riskier, though: on a double down hit the deck helps a little less.</li><li><b>Hints:</b> words that still fit your held cards light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the cards worth holding glow after each deal, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
-        <li><b>Find a word:</b> when your five cards can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 credits a point</b> (Scrabble values). STONE pays 10 credits.</li>
+        <li><b>Find a word:</b> when your five cards can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 credits a point</b> (letter values shown on each card). STONE pays 10 credits.</li>
     <li><b>Jackpot:</b> get dealt a list word with nothing held and it pays double. It is rare, maybe once in 10 games.</li>
     <li><b>Bonus words:</b> if the letters spell a real word that isn't on your list, you can cash it in for half pay (once per game), or pass and keep your letters. It doesn't count toward your 20.</li>
     <li><b>The deck helps:</b> it only carries letters from words still on your list, and it leans toward words that fit what you're holding. In the Quick 10, every deal without a word makes it help a little more, so bad luck never lasts long. Words that fit your held letters light up yellow.</li>
@@ -504,7 +504,7 @@ body.lk-paper #bar #spinBtn{background:var(--ink);border-color:#000;box-shadow:2
 </div></div>
 
 <script>
-const VERSION='10.3',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.4',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -517,7 +517,7 @@ let lastTouch=0;document.addEventListener('touchend',e=>{const t=Date.now();if(t
 const POOL='__POOL__'.split(/\s+/);
 // Bonus words: any other everyday five-letter word (The Daily 15's accepted list). They pay half. Keyed by sorted letters.
 const BONUS=new Map();for(const w of '__BONUS__'.split(/\s+/)){const k=[...w].sort().join('');if(!BONUS.has(k))BONUS.set(k,w)}
-// Scrabble letter points.
+// Letter points (classic word-game values).
 const PTS={A:1,B:3,C:3,D:2,E:1,F:4,G:2,H:4,I:1,J:8,K:5,L:1,M:3,N:1,O:1,P:3,Q:10,R:1,S:1,T:1,U:1,V:4,W:4,X:8,Y:4,Z:10};
 const REELS=5,STRIP=24;let NWORDS=10;
 // Money is kept in cents. LOAD is how often a spinning reel lands on a letter that fits a word you could still make
@@ -914,7 +914,7 @@ const HELP_V=[['Every deal or hit costs','Every spin costs'],['The deck helps le
  ['with four cards held and one to go, a Double down? box appears above Hit. Tap Yes and your next hit costs','with four letters locked and one reel left, a Double down? box appears above Spin. Tap Yes and your next spin costs'],
  ['If the word lands on that hit','If the word lands on that spin'],['on a double down hit the deck helps','on a double down spin the machine helps'],
  ['words that still fit your held cards light up','words that still fit your locked letters light up'],['make the cards worth holding glow after each deal','make the letters worth keeping glow after each spin'],
- ['when your five cards can spell','when the five letters on the line can spell'],['get dealt a list word with nothing held','spell a list word on a spin with nothing locked'],
+ ['when your five cards can spell','when the five letters on the line can spell'],['shown on each card','shown on each reel'],['get dealt a list word with nothing held','spell a list word on a spin with nothing locked'],
  ['<b>The deck helps:</b> it only carries letters','<b>The machine helps:</b> the reels only carry letters'],['and it leans toward','and they lean toward'],['every deal without a word makes it help','every spin without a word makes it help'],
  ["can't afford a deal","can't afford a spin"]];
 const HELP_TILES='<li><b>Tiles:</b> the letters you lock show as tiles under the machine. Drag a tile left or right to rearrange them and try spelling your words. Tap a tile to unlock it.</li>';
