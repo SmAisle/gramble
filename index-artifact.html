@@ -87,7 +87,15 @@ button{font-family:var(--sans);cursor:pointer;touch-action:manipulation;color:va
 #bar button:disabled{opacity:.4;cursor:default}
 #bar #cashBtn,#bar #spinBtn{background:var(--ink);color:#fffdf6}
 #bar #spinBtn{background:var(--red);border-color:#5a0f0b;box-shadow:2px 3px 0 #5a0f0b;font-size:18px;letter-spacing:.08em;white-space:nowrap}
-#bar #bDD{background:linear-gradient(#ffe58a,#ffd23f);flex:0 0 42%!important}
+#bar #bDD{display:none!important}
+@keyframes ddp{0%,100%{box-shadow:0 0 0 0 rgba(255,210,63,.95),2px 3px 0 var(--ink)}50%{box-shadow:0 0 0 8px rgba(255,210,63,0),2px 3px 0 var(--ink)}}
+#ddX{display:flex;align-items:center;gap:10px;width:calc(100% - 20px);max-width:400px;margin:0 auto 8px;box-sizing:border-box;min-height:58px;padding:8px 10px;border:2.5px solid var(--ink);background:#fff3c4;box-shadow:2px 3px 0 var(--ink);font-family:var(--sans);font-weight:900;animation:ddp 1.3s infinite}
+#ddX[hidden]{display:none}#ddX.on{animation:none}
+#ddX .q{flex:1;font-size:16px;letter-spacing:.03em;text-transform:uppercase;text-align:left}#ddX .q small{display:block;font-size:11px;font-weight:700;color:#5a554a;letter-spacing:.02em;text-transform:none}
+#ddX .seg{display:flex;border:2px solid var(--ink);border-radius:4px;overflow:hidden;flex:none}
+#ddX .seg button{font:900 15px var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:10px 16px;background:#fffdf6;color:var(--ink);border:0;border-radius:0}
+#ddX .seg button+button{border-left:2px solid var(--ink)}#ddX .seg button.on{background:var(--ink);color:#ffd23f}
+body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;color:#000!important;border-color:#000!important;box-shadow:2px 3px 0 #000!important}
 #bCash{background:var(--ink);border-color:#000;color:var(--acc)}
 #word .wt.pick{outline:3px solid var(--red);outline-offset:2px;transform:translateY(-4px)}
 #word{touch-action:none}#word .wt{touch-action:none}
@@ -219,6 +227,48 @@ body.lk-onyx #cab{background:linear-gradient(#262626,#111);border-color:#8a8a8a;
 body.lk-onyx #marq,body.lk-onyx #reels{background:#050505}
 body.lk-onyx #lever .ball{background:radial-gradient(circle at 35% 35%,#fff,#bdbdbd 55%,#444)}
 body.lk-onyx #bar #spinBtn{background:#111;border-color:#000;box-shadow:2px 3px 0 #000}
+body.lk-gold{--trim:#fff2b0;--mq:#ffe9a0}
+body.lk-gold #cab{background:linear-gradient(160deg,#f7dc7a,#c9971f 45%,#f3d36a 60%,#a57a12);border-color:#7a5a0c;box-shadow:0 5px 0 #5a4208,0 8px 16px rgba(0,0,0,.3)}
+body.lk-gold #marq,body.lk-gold #reels{background:#2a1d00}
+body.lk-gold #bar #spinBtn{background:#8a6510;border-color:#4a3606;box-shadow:2px 3px 0 #4a3606}
+body.lk-neon{--trim:#3fd8ff;--mq:#ff7ad1}
+body.lk-neon #cab{background:linear-gradient(#1a0d33,#0b0518);border-color:#ff3fb4;box-shadow:0 0 14px #ff3fb4,0 5px 0 #05020c}
+body.lk-neon #marq,body.lk-neon #reels{background:#07030f}
+body[class*="lk-"].lk-neon #marq b{text-shadow:0 0 8px #ff3fb4,0 0 16px #ff3fb4}
+body.lk-neon #bar #spinBtn{background:#2a0f4a;border-color:#ff3fb4;box-shadow:2px 3px 0 #ff3fb4}
+body.lk-chrome{--trim:#e8e8e8;--mq:#f4f4f4}
+body.lk-chrome #cab{background:linear-gradient(#fafafa,#a9a9a9 30%,#ececec 52%,#8c8c8c 80%,#d6d6d6);border-color:#555;box-shadow:0 5px 0 #3a3a3a,0 8px 16px rgba(0,0,0,.3)}
+body.lk-chrome #marq,body.lk-chrome #reels{background:#161616}
+body.lk-chrome #bar #spinBtn{background:#3a3a3a;border-color:#111;box-shadow:2px 3px 0 #111}
+body.lk-diamond{--trim:#bff0ff;--mq:#e6fbff}
+body.lk-diamond #cab{background:linear-gradient(135deg,#e6f9ff,#8fcbe8 30%,#f2fdff 50%,#6fb6dc 75%,#d4f2ff);border-color:#2f7fb0;box-shadow:0 5px 0 #1d5678,0 8px 16px rgba(0,0,0,.25)}
+body.lk-diamond #marq,body.lk-diamond #reels{background:#0b2233}
+body.lk-diamond #bar #spinBtn{background:#1d5678;border-color:#0b2233;box-shadow:2px 3px 0 #0b2233}
+body.lk-jackpot{--trim:#ffd23f;--mq:#ffd23f}
+body.lk-jackpot #cab{background:radial-gradient(circle at 50% 25%,#e0242b,#7a0a0e);border-color:#ffd23f;border-width:3px;box-shadow:0 0 0 2px #7a0a0e,0 5px 0 #3d0507,0 8px 16px rgba(0,0,0,.3)}
+body.lk-jackpot #marq,body.lk-jackpot #reels{background:#1a0002}
+body[class*="lk-"].lk-jackpot #bulbs{display:flex}
+body.lk-jackpot #bar #spinBtn{background:#b3141a;border-color:#3d0507;box-shadow:2px 3px 0 #3d0507}
+.lkOpt.lock{opacity:.5}.lkOpt.lock i{filter:grayscale(1)}
+.mp{display:block;width:100%;box-sizing:border-box;margin:10px 0 4px;padding:10px 12px;border:2px solid var(--ink);background:#fff3c4;text-align:left;font-family:var(--sans);color:var(--ink);border-radius:0}
+.mp .t{display:flex;justify-content:space-between;font-weight:900;font-size:14px;letter-spacing:.02em;text-transform:uppercase}.mp .t span{font-weight:700;color:#5a554a;font-size:12px}
+.mp .pb{height:12px;border:2px solid var(--ink);background:#fffdf6;margin-top:6px;position:relative}.mp .pb i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(#ffe58a,#ffc400)}
+.mp .g{font-size:12px;font-weight:700;margin-top:4px;color:#5a554a}
+.cd{display:flex;gap:8px;margin:8px 0 2px;font-family:var(--sans)}.cd div{flex:1;border:1.5px dashed var(--ink);padding:6px 4px;font-size:12px;font-weight:700;line-height:1.25}.cd b{display:block;font-size:17px;font-weight:900;letter-spacing:.04em}
+#mpSheet{display:none;position:fixed;inset:0;z-index:75;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+#mpSheet.show{display:flex}#mpSheet>div{box-sizing:border-box;width:100%;max-width:420px;max-height:92vh;overflow:auto;background:#fffdf6;border:2px solid var(--ink);border-bottom:0;border-radius:16px 16px 0 0;padding:16px 16px 20px;font-family:var(--sans)}
+#mpSheet h4{margin:0;text-align:center;font:700 italic 24px var(--head)}#mpSheet p.s{margin:2px 0 10px;text-align:center;font-size:13px;color:var(--ink2)}
+.stop{display:flex;align-items:center;gap:12px;padding:8px 0;position:relative;width:100%;background:none;border:0;text-align:left;font-family:var(--sans);color:var(--ink)}.stop+.stop::before{content:'';position:absolute;left:25px;top:-10px;height:18px;border-left:3px dotted #9a9384}
+.stop .sw{width:50px;height:50px;border-radius:8px;border:2.5px solid var(--ink);flex:none;display:flex;align-items:center;justify-content:center;font-size:20px}
+.stop .n{flex:1;font-weight:900;font-size:16px}.stop .n small{display:block;font-weight:700;font-size:12px;color:#5a554a}
+.stop.lock .sw{filter:grayscale(1) brightness(1.3);opacity:.55}.stop.lock .n{color:#9a9384}.stop.cur{background:#fff3c4;margin:0 -8px;padding:8px;width:calc(100% + 16px);border:2px solid #b8860b}
+.stop .ok{font-weight:900;font-size:13px}
+#mpDone{display:block;width:100%;margin-top:12px;height:48px;background:var(--ink);color:#fffdf6;border:0;border-radius:8px;font:700 17px var(--sans)}
+#svCard,#unCard{display:none;position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:30px}
+#svCard.show,#unCard.show{display:flex}#svCard>div,#unCard>div{background:#fffdf6;border:2.5px solid var(--ink);box-shadow:4px 5px 0 var(--ink);padding:20px 18px;text-align:center;font-family:var(--sans);max-width:320px}
+#svCard .ic,#unCard .ic{font-size:54px;line-height:1}#svCard b,#unCard b{display:block;margin:6px 0 4px;font:700 italic 26px var(--head)}#svCard p,#unCard p{margin:6px 0;font-size:15px}#svCard .sm{font-size:12px;color:var(--ink2)}
+#unCard .sw{width:90px;height:70px;margin:8px auto;border-radius:10px;border:3px solid var(--ink)}
+#svCard button,#unCard button{margin-top:10px;width:100%;height:48px;background:var(--ink);color:#ffd23f;font:900 16px var(--sans);letter-spacing:.06em;border:0}#unCard button.l{background:transparent;color:var(--ink);height:40px;font-size:14px}
 #mLook{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
 #mLook b{font-size:10px}
 #mCross{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
@@ -301,7 +351,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
     <div class="box bank" id="bankBox"><small>Credits</small><b id="bank">50</b></div>
     <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
     <button id="menuBtn" aria-label="Menu">☰</button></div>
-  <div id="msg"></div><div id="bCard"><div><div class="st">⭐ BONUS WORD ⭐</div><div class="w" id="bcW"></div><p>That's a real word, but it's not on your list. Bonus words pay half.</p><div class="math" id="bcM"></div><button id="bcTake" class="g"></button><button id="bcKeep" class="w2"></button></div></div><div id="lkSheet"><div><b>Pick a look</b><p>Tap one to try it on the machine.</p><div id="lkList"></div><button id="lkDone">Done</button></div></div><div id="hintDone"><div><div class="ic">💡</div><b>Hints are done</b><p>You found your first 2 words.<br>From here, you're on your own.<br>Good luck!</p><button id="hintOk">Got it</button></div></div>
+  <div id="msg"></div><div id="bCard"><div><div class="st">⭐ BONUS WORD ⭐</div><div class="w" id="bcW"></div><p>That's a real word, but it's not on your list. Bonus words pay half.</p><div class="math" id="bcM"></div><button id="bcTake" class="g"></button><button id="bcKeep" class="w2"></button></div></div><div id="mpSheet"><div><h4>Your machines</h4><p class="s">Lifetime winnings unlock new machines. Tap one you own to use it.</p><div id="mpList"></div><button id="mpDone">Done</button></div></div><div id="svCard"><div><div class="ic">🛡</div><b>Streak saved!</b><p id="svT"></p><p class="sm">You get a new saver every Monday.</p><button id="svOk">Keep it going</button></div></div><div id="unCard"><div><div class="ic">🎰</div><b>New machine!</b><div class="sw" id="unSw"></div><p id="unT"></p><button id="unUse">Use it now</button><button class="l" id="unLater">Later</button></div></div><div id="lkSheet"><div><b>Pick a look</b><p>Tap one to try it on the machine.</p><div id="lkList"></div><button id="lkDone">Done</button></div></div><div id="hintDone"><div><div class="ic">💡</div><b>Hints are done</b><p>You found your first 2 words.<br>From here, you're on your own.<br>Good luck!</p><button id="hintOk">Got it</button></div></div>
   <div id="stage">
     <div id="cab">
       <div id="marq"><div id="bulbs"></div><b>GRAMBLE</b><small id="marqSub">Quick 10 · 5 credits a spin</small></div>
@@ -310,6 +360,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
     </div>
     <div id="word"></div>
     <div id="wsum"></div>
+    <div id="ddX" hidden><div class="q">Double down?<small>10 credits · win pays ×2</small></div><div class="seg"><button id="ddNo" class="on">No</button><button id="ddYes">Yes</button></div></div>
     <div id="bar"><button id="spinBtn">Spin<small>5 credits</small></button><button id="bDD" hidden>Double down<small>10 credits · pays ×2</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Cash in<small id="bCashN"></small></button></div>
     <div id="logLbl">Find all 10 words</div>
     <div id="list"></div>
@@ -340,7 +391,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
     <li><b>Lifetime winnings:</b> what you bank each day adds up. It's just for bragging rights.</li>
     <li><b>Spin:</b> tap <b>Spin</b> (or pull the lever). Five reels land on letters.</li>
     <li><b>Lock:</b> tap a reel (or its tile) to lock its letter 🔒. Locked letters stay put when you spin again. Tap again to unlock it.</li>
-    <li><b>Double down:</b> with four letters locked and one reel left, you can spin for 10 credits instead of 5. If the word lands on that spin, it pays double. It's riskier, though: on a double down spin the machine helps a little less.</li><li><b>Hints:</b> words that still fit your locked letters light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the letters worth keeping glow after each spin, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
+    <li><b>Double down:</b> with four letters locked and one reel left, a Double down? box appears above Spin. Tap Yes and your next spin costs 10 credits instead of 5. If the word lands on that spin, it pays double. It's riskier, though: on a double down spin the machine helps a little less.</li><li><b>Hints:</b> words that still fit your locked letters light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the letters worth keeping glow after each spin, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
     <li><b>Tiles:</b> the letters you lock show as tiles under the machine. Drag a tile left or right to rearrange them and try spelling your words. Tap a tile to unlock it.</li>
     <li><b>Find a word:</b> when the five letters on the line can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 credits a point</b> (Scrabble values). STONE pays 10 credits.</li>
     <li><b>Jackpot:</b> spell a list word on a spin with nothing locked and it pays double. It is rare, maybe once in 10 games.</li>
@@ -384,6 +435,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
   <p class="wl" id="dWords"></p>
   <p id="dTap" class="tapnote" hidden>Tap a word to see what it means</p>
   <p id="dBest" style="margin:0;font-style:italic;font-size:14px"></p>
+  <button class="mp" id="dMach" hidden></button><div class="cd" id="dCd" hidden></div>
   <button class="go" id="dAgain">Replay today's list</button>
   <button class="go alt" id="dPlus">New list ⭐ Plus</button>
   <div class="donegrid"><button class="go alt" id="dShare">Share</button><button class="go alt" id="dStats">Stats</button></div>
@@ -412,7 +464,7 @@ body.cue #marq b{color:#ffd23f!important}body.cue #marq small{font-size:14px;col
 </div></div>
 
 <script>
-const VERSION='8.2',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='8.5',VDATE='Oct 31',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(CODE+'_'+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(CODE+'_'+k,v)}catch(e){}}};
@@ -434,7 +486,8 @@ let START=500,LOAD=.4,NOHELP_FULL=true;const COST=50,PER_PT=20,CLEAR_BONUS=500,H
 // Credits: 1 credit = 10 of the old cents (start 50 credits, 5 a spin, 2 a point).
 const cr=c=>Math.round(c/10),money=c=>cr(c).toLocaleString()+' credits',cents=money;
 const wordPts=w=>[...w].reduce((a,c)=>a+PTS[c],0);
-const BONUS_MIN=0,bonusPay=w=>Math.max(wordPts(w)*PER_PT/2,BONUS_MIN);   // bonus words pay half (a 10-credit minimum was tried in v7.3: clear rate 42%→63%, too easy)
+const BONUS_MIN=0,bonusPay=w=>Math.max(wordPts(w)*PER_PT/2,BONUS_MIN)*(w===pend&&pendDD?2:1);   // a bonus word that lands on a double down spin pays double
+   // bonus words pay half (a 10-credit minimum was tried in v7.3: clear rate 42%→63%, too easy)
 // R is the random source: seeded by the date for the daily game and its replays (so everyone gets the same words and
 // the same spins for the same choices), and truly random for Plus lists.
 let R=Math.random;
@@ -455,7 +508,7 @@ function result(k){try{return JSON.parse(store.get('day_'+k,''))}catch(e){return
 
 // ---------- State ----------
 // line: the five letters on the line. strips: what each reel shows above and below (just for looks).
-let round=1,ride=false,pend='',bonus=[],order=[0,1,2,3,4],words=[],found=[],line=[],hold=[0,0,0,0,0],bank=START,spins=0,peak=START,spun=false,over=false,spinning=false,strips=[];
+let round=1,ride=false,pend='',pendDD=false,bonus=[],order=[0,1,2,3,4],words=[],found=[],line=[],hold=[0,0,0,0,0],bank=START,spins=0,peak=START,spun=false,over=false,spinning=false,strips=[];
 const left=()=>words.filter(w=>!found.includes(w));
 // Does word w contain all these letters (counting repeats)? Returns the letters of w still needed, or null.
 function needs(w,letters){const a=[...w];for(const c of letters){const j=a.indexOf(c);if(j<0)return null;a.splice(j,1)}return a}
@@ -491,7 +544,7 @@ function paint(){const lit=spun&&!over;const HH=bestHint();reelEls.forEach((el,i
   if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent='Spin again ▸';$('spinBtn').querySelector('small').textContent='Word cashed in · next round'}
   const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent='Pick letters ↑';$('spinBtn').querySelector('small').textContent='then spin · 5 credits'}
   $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
-  $('bDD').hidden=!(spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo');$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
+  const ddOK=spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo';if(!ddOK)ddArm=false;$('bDD').hidden=true;$('ddX').hidden=!ddOK;$('ddX').classList.toggle('on',ddArm);$('ddNo').classList.toggle('on',!ddArm);$('ddYes').classList.toggle('on',ddArm);document.body.classList.toggle('dd2',ddArm);if(ddArm){$('spinBtn').firstChild.textContent='Spin ×2';$('spinBtn').querySelector('small').textContent='10 credits · pays double'}$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
   const fs=new Set(F);$('bonusL').innerHTML=bonus.length?'Bonus words: '+bonus.map(w=>'<b data-w="'+w+'">'+w+'</b>').join(' · '):'';
   const hl=heldLetters(),xo=crossOn()&&lit&&!spinning;
   $('list').innerHTML=words.map(w=>'<span data-w="'+w+'" class="'+(found.includes(w)?'got':over?'miss':fs.has(w)?'fit':'')+(HH&&HH.w===w?' tgt':'')+'">'+(xo&&fs.has(w)?crossed(w,hl):w)+'</span>').join('')}
@@ -536,7 +589,7 @@ function tip(){const H=bestHint();
   if(!spun&&!found.length&&mode!=='demo')return step('Step 1: Tap Spin','Each spin costs 5 credits.');
   if(!spun)return msg(found.length?(hintsOn()&&round===1&&found.length===HINT_WORDS?'Nice! Hints are done for this game. You\'re on your own now. Spin for new letters.':'Spin for new letters.'):'Tap Spin or pull the lever. Each spin is 5 credits.');
   if(!nLocked())return step('Step 2: Keep some letters','Tap any letters that are in a word on your list.');
-  if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg('One letter to go! Spin for 5 credits, or Double down for 10. It\'s riskier, but a word pays double.');
+  if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg('One letter to go! Double down? Tap Yes to bet 10 credits. It\'s riskier, but a word pays double.');
   if(nLocked()===REELS)return msg('All five are locked. Tap a reel to unlock one, then spin.','warn');
   msg('Spin again, or tap a locked letter to unlock it.')}
 
@@ -548,9 +601,9 @@ function animReel(i,to,dur){return new Promise(res=>{const s=strips[i],n=STRIP,e
   strip.offsetHeight;strip.style.transition='transform '+dur+'ms cubic-bezier(.2,.6,.3,1.04)';strip.style.transform='translateY(calc(var(--t)*-.2))';
   let tk=0,ticks=setInterval(()=>sfx.tick(tk++),70);
   setTimeout(()=>{clearInterval(ticks);el.classList.remove('spin');drawReel(i);rolling.delete(i);drawTray();sfx.stop(i);res()},dur+30)})}
-let ddOn=false,DD_HELP=.8;   // Double down: with one reel left, the spin costs double and a word on it pays double
+let ddOn=false,ddArm=false,DD_HELP=.8;   // Double down: with one reel left, the spin costs double and a word on it pays double
 async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun){hold=[0,0,0,0,0];order=[0,1,2,3,4]}if(nLocked()===REELS)return;   // a new round: the tiles go back to reel order
-  $('reels').classList.remove('struck');spinCue=false;ddOn=!!dd&&spun&&nLocked()===REELS-1&&bank>=2*COST;bank-=ddOn?2*COST:COST;spins++;spinning=true;coinDrop(ddOn?10:5);sfx.pay();
+  $('reels').classList.remove('struck');spinCue=false;ddArm=false;ddOn=!!dd&&spun&&nLocked()===REELS-1&&bank>=2*COST;bank-=ddOn?2*COST:COST;spins++;spinning=true;coinDrop(ddOn?10:5);sfx.pay();
   const which=[0,1,2,3,4].filter(i=>!locked(i));fullSpin=which.length===REELS;const fixed=line.filter((c,i)=>locked(i)&&spun);hold=hold.map(h=>h===1?1:0);
   // With nothing locked the machine gives no help, so a whole word (a Jackpot) is pure luck.
   // Each reel lands in turn; a letter that lands counts as fixed for the reels after it, so the loaded letters fit together.
@@ -579,7 +632,7 @@ function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].
     const el=$('list').querySelector('[data-w="'+w+'"]');if(el)el.classList.add('new');
     if(found.length===NWORDS)return round===1?clearRound():end('win');if(bank<COST)return end('broke');return}
   // Not on the list but still an everyday word: it pays half, once per game, and isn't crossed off.
-  const b=BONUS.get(key);if(b&&!bonus.includes(b)&&!words.includes(b)){pend=b;sfx.bonus();save();paint();showBonusCard();
+  const b=BONUS.get(key);if(b&&!bonus.includes(b)&&!words.includes(b)){pend=b;pendDD=ddOn;sfx.bonus();save();paint();showBonusCard();
     msg('Bonus word '+b+'! It isn\'t on your list. Cash it in, or pass and keep your letters.','good');return}
   save();paint();tip();if(bank<COST)end('broke')}
 // A bonus word waits for your choice. Cash in: it pays half and a new round starts. Pass: keep your letters and locks and keep going.
@@ -603,7 +656,7 @@ $('rchSafe').onclick=()=>$('rCash').click();$('rchRide').onclick=()=>$('rRide').
 $('bDD').onclick=()=>spin(true);$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 // The bonus card: what a bonus word is, why it pays what it pays, and what each choice does.
 function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
-  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' credit = <b>'+cents(c)+'</b>');
+  $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' credit'+(pendDD?' × 2 (double down)':'')+' = <b>'+cents(c)+'</b>');
   $('bcTake').innerHTML='Take '+cents(c)+'<small>Your locked letters reset</small>';
   $('bcKeep').innerHTML='Keep my letters<small>'+(hl.length?'Keep '+hl.join(' ')+(f.length?' and go for '+f[0]:''):'Skip it and keep spinning')+'</small>';
   $('bCard').classList.add('show')}
@@ -612,7 +665,7 @@ function popUp(t,cls){const r=$('reels').getBoundingClientRect(),d=document.crea
   d.style.left=(r.left+r.width/2)+'px';d.style.top=(r.top-10)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}
 function jackpot(){const m=$('marq');m.classList.remove('jp');m.offsetWidth;m.classList.add('jp');
 }
-$('spinBtn').onclick=$('lever').onclick=()=>spin();
+$('spinBtn').onclick=$('lever').onclick=()=>spin(ddArm);$('ddYes').onclick=()=>{ddArm=true;sfx.lock();paint()};$('ddNo').onclick=()=>{ddArm=false;paint()};
 
 // ---------- Game over ----------
 // why: 'win' (all 20 found), 'broke' (can't afford a spin) or 'cashout' (from the menu).
@@ -638,10 +691,10 @@ function showDone(r){$('dTitle').textContent=(r.mode==='replay'?'Replay: ':r.mod
   r.list.forEach(w=>add(w));if(r.missed.length){WL.append(document.createElement('br'));WL.append('Missed: ');r.missed.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--fade)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   if(r.bonus&&r.bonus.length){WL.append(document.createElement('br'));WL.append('Bonus: ');r.bonus.forEach((w,i)=>{const b=document.createElement('span');b.className='dw';b.style.color='var(--ink)';b.textContent=w;b.onclick=()=>showDef(w);if(i)WL.append(' · ');WL.appendChild(b)})}
   $('dTap').hidden=false;
-  const sk=streak(),ds=dailyStats();$('dBest').textContent=r.mode==='daily'?'Lifetime winnings: '+money(ds.life)+(sk.n>1?' · 🔥 '+sk.n+'-day streak':'')+' · New list tomorrow':r.mode==='replay'?'Replays don\'t change today\'s score ('+(result(playDay)?money(banked(result(playDay))):'–')+' banked).':'Plus games don\'t change your daily score.';
+  const sk=streak(),ds=dailyStats();$('dBest').textContent=r.mode==='daily'?'Lifetime winnings: '+money(ds.life):r.mode==='replay'?'Replays don\'t change today\'s score ('+(result(playDay)?money(banked(result(playDay))):'–')+' banked).':'Plus games don\'t change your daily score.';
   const first=r.mode==='replay'?(result(playDay)||r):r;r=first;
   $('done').dataset.share='🎰 Gramble'+(r.mode==='plus'?'':' No. '+(r.n||dayNo()))+'\n'+'💰 Banked '+money(banked(r))+' today\n'+rLine(r)+' · '+r.spins+' spins\n'+'🏆 Lifetime winnings: '+money(dailyStats().life)+'\n'+(r.best?'Best word: '+r.best+'\n':'')+location.href.split('?')[0].split('#')[0];
-  $('done').hidden=false}
+  machBox(r.mode==='daily'?banked(r):0);cdBox();$('done').hidden=false;if(r.mode==='daily')setTimeout(checkUnlock,quick?0:700)}
 $('dShare').onclick=async()=>{const t=$('done').dataset.share;try{if(navigator.share){await navigator.share({text:t});return}}catch(e){return}
   try{await navigator.clipboard.writeText(t);$('dShare').textContent='Copied!'}catch(e){$('dShare').textContent='Could not copy'}setTimeout(()=>$('dShare').textContent='Share',1500)};
 // Meanings come from the free dictionary at dictionaryapi.dev (only the word is sent). If it can't be reached
@@ -664,7 +717,7 @@ $('dStats').onclick=()=>{backTo='done';showStats()};
 function dailyStats(){const rs=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!/^rw_day_\d{4}-\d\d-\d\d$/.test(k))continue;const r=result(k.slice(7));if(r)rs.push(r)}
   return{played:rs.length,wins:rs.filter(r=>r.why==='win').length,life:rs.reduce((a,r)=>a+banked(r),0),best:rs.reduce((a,r)=>Math.max(a,banked(r)),0),rides:rs.filter(r=>r.round===2).length}}
 // Streak: days in a row with the daily game finished. Today still open doesn't break it.
-function streak(){const on=d=>!!result(d.k);let n=0;for(let i=on(dayAt(0))?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
+function streak(){const sv=savedDays(),on=d=>!!result(d.k)||sv.includes(d.k);let n=0;for(let i=on(dayAt(0))?0:1;i<400;i++){const d=dayAt(i);if(d.n<1||!on(d))break;n++}
   const best=Math.max(n,+store.get('streakBest',0));store.set('streakBest',String(best));return{n,best,today:on(dayAt(0))}}
 function showStats(){$('done').hidden=true;$('menu').hidden=true;$('cover').hidden=true;const g=+store.get('games',0),w=+store.get('wins',0),fw=+store.get('fewest',0);
   const d=dailyStats(),sk=streak();const T=[[money(d.life),'Lifetime winnings'],[money(d.best),'Best day'],[d.played,'Days played'],[sk.n,'Streak'],[d.rides,'Let it ride'],[d.wins,'High Roller wins']];
@@ -674,7 +727,7 @@ function goBack(){const b=backTo;backTo=null;if(b==='cover')cover();else if(b===
 $('statsBack').onclick=()=>{$('stats').hidden=true;goBack()};
 
 // ---------- Save and start ----------
-function save(){if(over||mode==='demo')return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
+function save(){if(over||mode==='demo')return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,pendDD,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
 let quick=false;   // tests only: no spin animation
 function pickWords(n,tag,avoid){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+tag));const ws=[];while(ws.length<n){const w=rnd(POOL);if(!ws.includes(w)&&!avoid.includes(w))ws.push(w)}return ws.sort()}
 function roundUI(){NWORDS=round===1?N1:N2;$('marqSub').textContent=(round===1?'Quick 10':'High Roller 10')+' · 5 credits a spin';$('logLbl').textContent='Find all '+NWORDS+' words';document.body.classList.toggle('hr',round===2)}
@@ -690,13 +743,13 @@ function startMode(m,fresh){mode=m;playDay=today();if(m==='plus'&&!hasPlus())ret
 function resumeGame(){let p=null;try{p=JSON.parse(store.get(progKey(),''))}catch(e){}
   if(!p||p.v!==4)return newGame();round=p.round||1;ride=!!p.ride;roundUI();
   $('pno').textContent=mode==='daily'?'No. '+dayNo():mode==='replay'?'Replay':'⭐ Plus';
-  ({words,found,line,hold,bank,spins,peak,spun,strips}=p);order=p.order||[0,1,2,3,4];bonus=p.bonus||[];pend=p.pend||'';over=false;spinning=false;$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);paint();tip();
+  ({words,found,line,hold,bank,spins,peak,spun,strips}=p);order=p.order||[0,1,2,3,4];bonus=p.bonus||[];pend=p.pend||'';pendDD=!!p.pendDD;over=false;spinning=false;$('cover').hidden=true;layout();for(let i=0;i<REELS;i++)drawReel(i);paint();tip();
   if(ride)return showRide();if(pend)showBonusCard();if(bank<COST&&!pend)end('broke')}
-function cover(){const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
+function cover(){saverCheck();const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON.parse(store.get('prog_daily_'+t.k,''))}catch(e){}const r=result(t.k);
   $('cvDate').textContent=t.d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});$('cvNo').textContent='Game No. '+t.n;
   $('coverGo').textContent=r?"See today's result (banked "+money(banked(r))+')':p&&p.spins?'Keep playing ('+(p.round===2?'High Roller':'Quick 10')+')':"Play today's game";
   $('cvMore').hidden=!r;
-  const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it');
+  const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it')+(+store.get('saver',0)?' · 🛡 saver ready':'');
   const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[money(d.life),'Lifetime'],[money(d.best),'Best day'],[d.played,'Days played']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
   $('cover').hidden=false}
 let forced=null;   // demo only: the letters the next spin lands on
@@ -746,18 +799,54 @@ $('mHow').onclick=()=>{$('menu').hidden=true;$('help').hidden=false};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
 
 // Machine looks: tap Look in the menu to cycle through them. ?look=neon in the address also works (for previews).
-const LOOKS=[['classic','Classic red'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx']];
-const LOOKSW={classic:['#9c1f18','#e0a800'],navy:['#1c2a44','#c9a961'],walnut:['#5b3a22','#d8b46a'],ivory:['#f3ecd8','#b08d3c'],oxblood:['#5a1019','#d4b26a'],onyx:['#1a1a1a','#8a8a8a']};
-function setLook(k){if(!LOOKS.some(l=>l[0]===k))k='onyx';store.set('look2',k);LOOKS.forEach(l=>document.body.classList.toggle('lk-'+l[0],l[0]===k&&k!=='classic'));
+const LOOKS=[['classic','Classic red'],['navy','Navy & brass'],['walnut','Walnut'],['ivory','Ivory & gold'],['oxblood','Oxblood'],['onyx','Onyx'],['gold','Gold Rush',250],['neon','Neon',750],['chrome','Chrome',1500],['diamond','Diamond',3000],['jackpot','Jackpot',6000]];
+const LOOKSW={classic:['#9c1f18','#e0a800'],navy:['#1c2a44','#c9a961'],walnut:['#5b3a22','#d8b46a'],ivory:['#f3ecd8','#b08d3c'],oxblood:['#5a1019','#d4b26a'],onyx:['#1a1a1a','#8a8a8a'],gold:['#d9a92a','#fff2b0'],neon:['#140a2a','#ff3fb4'],chrome:['#c9c9c9','#555'],diamond:['#9fd6f0','#2f7fb0'],jackpot:['#b3141a','#ffd23f']};
+function setLook(k){if(!LOOKS.some(l=>l[0]===k)||!lookOwned(k))k='onyx';store.set('look2',k);LOOKS.forEach(l=>document.body.classList.toggle('lk-'+l[0],l[0]===k&&k!=='classic'));
   const n=LOOKS.find(l=>l[0]===k)[1];$('mLook').innerHTML='<span>🎰</span>Look: <b>'+n+'</b>'}
 // Look picker: a card with all the machine looks; tap one to try it, Done to close.
 function showLooks(){$('menu').hidden=true;const cur=store.get('look2','onyx'),L=$('lkList');L.innerHTML='';
   LOOKS.forEach(([k,n])=>{const b=document.createElement('button');b.className='lkOpt'+(k===cur?' on':'');const [c,t]=LOOKSW[k];
     b.innerHTML='<i style="background:'+c+';border-color:'+t+'"><u style="background:'+t+'"></u></i><span></span><em>✓</em>';b.querySelector('span').textContent=n;
-    b.onclick=()=>{setLook(k);sfx.lock();L.querySelectorAll('.lkOpt').forEach(x=>x.classList.toggle('on',x===b))};L.appendChild(b)});
+    const own=lookOwned(k);if(!own){b.classList.add('lock');b.querySelector('span').textContent='🔒 '+n+' · '+LOOKS.find(l=>l[0]===k)[2].toLocaleString()}
+    b.onclick=()=>{if(!own){showMachines();return}setLook(k);sfx.lock();L.querySelectorAll('.lkOpt').forEach(x=>x.classList.toggle('on',x===b))};L.appendChild(b)});
   $('lkSheet').classList.add('show')}
 $('mLook').onclick=showLooks;$('lkDone').onclick=()=>$('lkSheet').classList.remove('show');
 setLook((location.search.match(/look=(\w+)/)||[])[1]||store.get('look2','onyx'));
+// ---------- Machines: lifetime winnings (first daily game each day) unlock new looks ----------
+function lifeCr(){return cr(dailyStats().life)}
+function lookOwned(k){const l=LOOKS.find(x=>x[0]===k);return !l||!l[2]||lifeCr()>=l[2]||/look=/.test(location.search)}
+const MACH=()=>LOOKS.filter(l=>l[2]);
+function machBox(gain){const life=lifeCr(),nx=MACH().find(l=>life<l[2]),B=$('dMach');B.hidden=false;
+  if(!nx){B.innerHTML='<div class="t">All machines unlocked! <span>🎰</span></div><div class="g">Tap to pick one</div>';return}
+  const pv=[0,...MACH().map(l=>l[2])].filter(v=>v<=life).pop(),pc=Math.max(3,Math.min(100,Math.round((life-pv)/(nx[2]-pv)*100)));
+  B.innerHTML='<div class="t">Next machine: '+nx[1]+' <span>'+life.toLocaleString()+' / '+nx[2].toLocaleString()+'</span></div><div class="pb"><i style="width:'+pc+'%"></i></div><div class="g">'+(gain?'+'+cr(gain).toLocaleString()+' today · ':'')+(nx[2]-life).toLocaleString()+' credits to go</div>'}
+function showMachines(){$('menu').hidden=true;$('lkSheet').classList.remove('show');const life=lifeCr(),cur=store.get('look2','onyx'),nx=MACH().find(l=>life<l[2]);
+  const rows=[['_','6 starter looks','Free','linear-gradient(135deg,#9c1f18,#1c2a44 50%,#5b3a22)']].concat(MACH().map(l=>[l[0],l[1],l[2]]));
+  $('mpList').innerHTML='';rows.forEach(r=>{const b=document.createElement('button');const k=r[0],own=k==='_'||lookOwned(k),isNx=nx&&nx[0]===k;
+    b.className='stop'+(isNx?' cur':own?'':' lock');const sw=k==='_'?r[3]:'linear-gradient(135deg,'+LOOKSW[k][0]+','+LOOKSW[k][1]+')';
+    const sub=k==='_'?'Free':own?(cur===k?'In use':'Unlocked · tap to use'):r[2].toLocaleString()+' credits'+(isNx?' · '+(r[2]-life).toLocaleString()+' to go':'');
+    b.innerHTML='<div class="sw" style="background:'+sw+'">'+(own?'':'🔒')+'</div><div class="n">'+r[1]+'<small>'+sub+'</small></div><div class="ok">'+(own?'✓':isNx?Math.round(life/r[2]*100)+'%':'')+'</div>';
+    b.onclick=()=>{if(k==='_'){showLooks();return}if(own){setLook(k);sfx.lock();showMachines()}};$('mpList').appendChild(b)});
+  $('mpSheet').classList.add('show')}
+$('dMach').onclick=showMachines;$('mpDone').onclick=()=>$('mpSheet').classList.remove('show');
+function checkUnlock(){const own=MACH().filter(l=>lookOwned(l[0])).map(l=>l[0]),seen=(store.get('mSeen','')||'').split(',').filter(Boolean),nw=own.filter(k=>!seen.includes(k));
+  store.set('mSeen',own.join(','));if(!nw.length)return;const k=nw[nw.length-1],l=LOOKS.find(x=>x[0]===k);
+  $('unSw').style.background='linear-gradient(135deg,'+LOOKSW[k][0]+','+LOOKSW[k][1]+')';$('unT').textContent='Your lifetime winnings passed '+l[2].toLocaleString()+' credits. You unlocked '+l[1]+'!';
+  $('unUse').onclick=()=>{setLook(k);$('unCard').classList.remove('show')};$('unCard').classList.add('show');sfx.allFound&&sfx.allFound()}
+$('unLater').onclick=()=>$('unCard').classList.remove('show');
+// ---------- Countdown to the next list ----------
+let cdT=0;function cdBox(){const sk=streak(),sv=+store.get('saver',0),C=$('dCd');C.hidden=false;
+  const tick=()=>{const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const s=Math.max(0,Math.floor((m-n)/1000));
+    C.firstChild.querySelector('b').textContent=Math.floor(s/3600)+':'+String(Math.floor(s/60)%60).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if($('done').hidden)clearInterval(cdT)};
+  C.innerHTML='<div><b></b>until the next list</div><div><b>🔥 '+sk.n+(sv?' · 🛡 1':'')+'</b>'+(sk.n===1?'day':'day streak')+(sv?' · saver ready':'')+'</div>';clearInterval(cdT);tick();cdT=setInterval(tick,1000)}
+// ---------- Streak saver: one free each Monday; a missed day uses it automatically ----------
+function savedDays(){try{return JSON.parse(store.get('saved','[]'))}catch(e){return[]}}
+function saverCheck(){const d=dayAt(0).d,m=new Date(d);m.setDate(d.getDate()-((d.getDay()+6)%7));const wk=m.toDateString();let s=+store.get('saver',0),used=false;
+  const sv=savedDays(),on=x=>!!result(x.k)||sv.includes(x.k),y=dayAt(1),y2=dayAt(2);
+  if(store.get('saverWk','')!==wk){store.set('saverWk',wk);s=1}
+  if(s>0&&y.n>=1&&y2.n>=1&&!on(y)&&on(y2)){sv.push(y.k);store.set('saved',JSON.stringify(sv));s=0;used=true}
+  store.set('saver',String(s));if(used){$('svT').innerHTML='You missed yesterday, but your streak saver kept your <b style="display:inline;font:inherit;font-weight:800">'+streak().n+'-day streak</b> alive.';$('svCard').classList.add('show')}}
+$('svOk').onclick=()=>$('svCard').classList.remove('show');
 const hintLabel=()=>{const on=hintsOn();$('mHints').innerHTML='<span>💡</span>Hints: <b>'+(on?'On':'Off')+'</b>';$('mHints').classList.toggle('on',on)};
 $('hintOk').onclick=()=>$('hintDone').classList.remove('show');
 $('mHints').onclick=()=>{store.set('hints',hintsOn()?'off':'on');hintLabel();paint();tip()};hintLabel();
