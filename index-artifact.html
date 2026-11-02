@@ -127,7 +127,7 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 .sheet{position:fixed;inset:0;display:grid;place-items:center;background:rgba(26,24,20,.55);z-index:20;padding:16px}
 .card{background:var(--paper);border:3px double var(--ink);padding:18px;width:100%;max-width:400px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:10px;box-shadow:6px 6px 0 rgba(0,0,0,.25)}
 .card h2{font-family:var(--head);font-weight:900;font-size:28px;margin:0;text-align:center;border-bottom:1px solid var(--ink);padding-bottom:6px}
-#menu h2{text-align:left}
+#menu h2,#settings h2{text-align:left}
 .card b{font-family:var(--sans);font-weight:800}
 #togs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:2px 0 4px}
 #mSound{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
@@ -501,7 +501,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
     <button class="o" id="suOn"><div class="pv dk"><i>G</i><i>R</i></div><b>On</b><small>Navy</small></button>
     <button class="o" id="suAuto"><div class="pv au"><i>G</i><i>R</i></div><b>Match phone</b><small>Switches with phone</small></button></div>
   <button class="go" id="suGo">Let's play</button>
-  <div class="note">Same game and same odds either way. You can change these in the menu.</div>
+  <div class="note">Same game and same odds either way. You can change these in Settings.</div>
 </div></div>
 
 <div class="sheet" id="help" hidden><div class="card">
@@ -512,7 +512,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
     <li><b>Find a word:</b> when your five cards can spell a word on your list, in any order, it's found! It's crossed off and pays <b>2 coins a point</b> (letter values shown on each card). STONE pays 10 coins.</li>
     <li><b>Quick 10:</b> you start with <b>50 coins</b> and a list of <b>10 words</b>. Find them all before your coins run out. Every deal or hit costs <b>5 coins</b>.</li>
     <li><b>The deck helps:</b> it only carries letters from words still on your list, and it leans toward words that fit what you're holding. In the Quick 10, every deal without a word makes it help a little more, so bad luck never lasts long. Words that fit your held letters light up yellow.</li>
-    <li><b>Hints:</b> words that still fit your held cards light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the cards worth holding glow after each deal, and the message tells you what to do. You can turn Hints off in the menu, and they stay off.</li>
+    <li><b>Hints:</b> words that still fit your held cards light up, and the letters you already have turn gray. For your first 2 words each game, 💡 Hints make the cards worth holding glow after each deal, and the message tells you what to do. You can turn Hints off in Settings, and they stay off.</li>
     <li><b>Power play:</b> with four cards held and one to go, a Power play? box appears above Hit. Tap Yes and your next hit costs 10 coins instead of 5. If the word lands on that hit, it pays double, and so does a bonus word. It's riskier, though: on a power play hit the deck helps a little less.</li>
     <li><b>Jackpot:</b> get dealt a list word with nothing held and it pays double. It is rare, maybe once in 10 games.</li>
     <li><b>Bonus words:</b> if the letters spell a real word that isn't on your list, you can cash it in for half pay (once per game), or pass and keep your letters. It doesn't count toward your 20.</li>
@@ -540,16 +540,22 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 <div class="sheet" id="menu" hidden><div class="card" style="position:relative">
   <h2>Menu</h2>
   <p class="lsub" id="lTot"></p>
-  <div id="togs"><button id="mSound" aria-label="Sound"></button><button id="mHints" aria-label="Hints"></button><button id="mLook" aria-label="Deck look"></button><button id="mStyle" aria-label="Game style"></button></div>
   <button class="go" id="mClose">Back to game</button>
   <button class="go alt" id="mCashOut">Bank it</button>
   <button class="go alt" id="mHow">How to Play</button>
   <button class="go alt" id="mStats">Stats</button>
   <button class="go alt" id="mPlus">New list ⭐ Plus</button>
   <div class="lrow"><button id="mCover">Home screen</button><button id="mNew">New game</button><button id="mDemo">Demo</button></div>
+  <button class="go alt" id="mSet">Settings</button>
+  <div class="ver" id="menuVer"></div>
+</div></div>
+
+<div class="sheet" id="settings" hidden><div class="card" style="position:relative">
+  <h2>Settings</h2>
+  <div id="togs"><button id="mSound" aria-label="Sound"></button><button id="mHints" aria-label="Hints"></button><button id="mLook" aria-label="Deck look"></button><button id="mStyle" aria-label="Game style"></button></div>
   <div id="dmRow"><span>Dark mode</span><div class="seg3"><button id="dmOff">Off</button><button id="dmOn">On</button><button id="dmAuto">Match phone</button></div></div>
   <div class="dmNote">On uses Navy. Match phone switches with your phone.</div>
-  <div class="ver" id="menuVer"></div>
+  <button class="go" id="setBack">Back to the menu</button>
 </div></div>
 
 <div class="sheet" id="done" hidden><div class="card" style="text-align:center">
@@ -589,7 +595,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.20',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.21',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -950,6 +956,7 @@ const sndLabel=()=>{const on=store.get('sound','on')==='on';$('mSound').innerHTM
 $('menuBtn').onclick=()=>{sndLabel();$('lTot').textContent=over?'Game over':'Bank: '+money(bank)+' · found '+found.length+' of '+NWORDS;
   $('mCashOut').hidden=over||round===1||ride;$('mCashOut').textContent='Bank it: '+money(bank);$('mCashOut').dataset.sure='';$('mNew').dataset.sure='';$('mNew').textContent='Start over';$('mNew').hidden=mode==='daily';$('menu').hidden=false};
 $('mClose').onclick=()=>{$('menu').hidden=true};
+$('mSet').onclick=()=>{$('menu').hidden=true;$('settings').hidden=false};$('setBack').onclick=()=>{$('settings').hidden=true;$('menu').hidden=false};
 // Cash out and New game end the game. Tap twice so they can't happen by accident.
 $('mCashOut').onclick=()=>{if(spinning)return;if($('mCashOut').dataset.sure!=='1'){$('mCashOut').dataset.sure='1';$('mCashOut').textContent='Tap again to bank '+money(bank);return}
   $('menu').hidden=true;end('cashout')};
