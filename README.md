@@ -51,3 +51,6 @@ On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate ne
 
 ## v10.22 (Nov 2)
 - Pay for a deal sound is now Bubble blip, in both Classic and Vegas (Jeff).
+
+## v10.23 (Nov 2)
+- Deal or hit sound is off, as a try (Jeff). Pay and card flips still play. Vegas keeps its lever sound.
