@@ -162,7 +162,7 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 #cover .tag{font-style:italic;font-size:15px}
 /* Way back to smAisle Daily: the yellow button shows on the cover only; during play the way back is the menu row (Jeff, Nov 3). */
 .smback{flex:none;align-self:flex-start;display:block;box-sizing:border-box;height:30px;padding:4px 10px;background:#ffe27a;color:#1a1814!important;border:2px solid #1a1814;border-radius:4px;font:800 13px/18px var(--sans);letter-spacing:.06em;text-decoration:none;white-space:nowrap}
-#cvBar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:calc(max(0px,50vw - 270px) + 12px);z-index:2}
+#cvBar,#stBar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:calc(max(0px,50vw - 270px) + 12px);z-index:2}
 #cover{padding-top:calc(env(safe-area-inset-top,0px) + 42px);overflow:auto;place-items:safe center}
 #coverSm{color:inherit}
 @media (max-height:700px){#cover .in{gap:10px}}
@@ -500,6 +500,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <div class="sheet" id="setup" hidden><div class="in">
+  <a id="stBar" class="smback" href="/daily/">&lsaquo; smAisle Daily</a><!--SITEONLY-->
   <div class="mh"><h1>Gramble</h1></div>
   <p class="wel">Welcome! Set up your table.</p>
   <div class="q">1. Pick your style</div>
@@ -611,7 +612,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.26',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.27',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
