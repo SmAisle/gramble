@@ -154,9 +154,8 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 #cover h1{font-family:var(--head);font-weight:900;font-size:clamp(40px,13vw,52px);line-height:1;margin:0}
 #cover .ln{display:flex;justify-content:space-between;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;color:var(--ink2)}
 #cover .tag{font-style:italic;font-size:15px}
-/* Way back to smAisle Daily: same yellow button, same spot, on the cover and in the game (Jeff, Nov 3). */
+/* Way back to smAisle Daily: the yellow button shows on the cover only; during play the way back is the menu row (Jeff, Nov 3). */
 .smback{flex:none;align-self:flex-start;display:block;box-sizing:border-box;height:30px;padding:4px 10px;background:#ffe27a;color:#1a1814!important;border:2px solid #1a1814;border-radius:4px;font:800 13px/18px var(--sans);letter-spacing:.06em;text-decoration:none;white-space:nowrap}
-#smBar{margin:env(safe-area-inset-top,0px) 0 0 10px}
 #cvBar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:calc(max(0px,50vw - 270px) + 12px);z-index:2}
 #cover{padding-top:calc(env(safe-area-inset-top,0px) + 42px);overflow:auto;place-items:safe center}
 #coverSm{color:inherit}
@@ -598,7 +597,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.24',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.25',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.

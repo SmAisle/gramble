@@ -57,3 +57,6 @@ On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate ne
 
 ## v10.24 (Nov 3)
 - One way home (navigation standard): the yellow ‹ smAisle Daily button sits top left in the same spot on the cover and in the game. It replaces the white bars. smAisle Home is now a small link on the cover's version line. Cover links run Stats · How to Play · Demo.
+
+## v10.25 (Nov 3)
+- Correction from Jeff: the yellow ‹ smAisle Daily button shows on the cover only, never during play. During play the way back is the ‹ smAisle Daily row in the menu. The results screen keeps its row.
