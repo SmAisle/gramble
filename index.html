@@ -602,7 +602,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.22',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.23',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -1139,7 +1139,8 @@ const SOUNDS=[
    ['Card slide',()=>noise(.18,3000,.8,.25)],
    ['Bridge shuffle',()=>{riffle(14,0,.018,2000);noise(.12,1800,1,.25,.27)}],
    ['Soft whoosh',()=>noise(.22,1600,.7,.22)],
-   ['Chip + riffle',()=>{chip();riffle(7,.08)}]]},
+   ['Chip + riffle',()=>{chip();riffle(7,.08)}],
+   ['None',()=>{}]]},
  {k:'flip',name:'Card flips up',what:'Each new card, left to right',demo:f=>{for(let i=0;i<5;i++)setTimeout(()=>f(i),i*220)},o:[
    ['Snap',i=>{cSnap(0,3400,.45,.03);tone(1480,.05,'sine',.03,.01)}],
    ['Soft flick',i=>cSnap(0,2400,.35,.04)],
@@ -1277,7 +1278,7 @@ const SLOT_SOUNDS=[
    ['Falling tones',()=>arp([1047,880,698,587,440,349],.13,'square',.05,.14)],
    ['Game over jingle',()=>{arp([784,659,523],.18,'triangle',.08,.2);tone(392,.6,'triangle',.08,.6)}]]}];
 // Jeff's picks from the card sound board (0=A, 1=B, ...). Nov 1 picks.
-const PICK={deal:0,flip:1,hold:1,release:1,pay:16,win:0,bonus:0,jack:0,all:1,broke:1};
+const PICK={deal:6,flip:1,hold:1,release:1,pay:16,win:0,bonus:0,jack:0,all:1,broke:1};
 const SND=Object.fromEntries(SOUNDS.map(m=>[m.k,m.o[PICK[m.k]||0][1]]));
 // Vegas sounds: Jeff's Oct slot picks, except pay uses the Bubble blip he chose on Nov 2.
 const PICKV={lever:0,tick:2,stop:2,lock:4,unlock:2,tile:2,pay:2,win:2,bonus:2,jack:3,all:1,broke:3};

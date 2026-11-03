@@ -46,7 +46,8 @@ const SOUNDS=[
    ['Card slide',()=>noise(.18,3000,.8,.25)],
    ['Bridge shuffle',()=>{riffle(14,0,.018,2000);noise(.12,1800,1,.25,.27)}],
    ['Soft whoosh',()=>noise(.22,1600,.7,.22)],
-   ['Chip + riffle',()=>{chip();riffle(7,.08)}]]},
+   ['Chip + riffle',()=>{chip();riffle(7,.08)}],
+   ['None',()=>{}]]},
  {k:'flip',name:'Card flips up',what:'Each new card, left to right',demo:f=>{for(let i=0;i<5;i++)setTimeout(()=>f(i),i*220)},o:[
    ['Snap',i=>{cSnap(0,3400,.45,.03);tone(1480,.05,'sine',.03,.01)}],
    ['Soft flick',i=>cSnap(0,2400,.35,.04)],
