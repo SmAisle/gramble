@@ -130,6 +130,10 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 .card{background:var(--paper);border:3px double var(--ink);padding:18px;width:100%;max-width:400px;max-height:90%;overflow:auto;display:flex;flex-direction:column;gap:10px;box-shadow:6px 6px 0 rgba(0,0,0,.25)}
 .card h2{font-family:var(--head);font-weight:900;font-size:28px;margin:0;text-align:center;border-bottom:1px solid var(--ink);padding-bottom:6px}
 #menu h2,#settings h2{text-align:left}
+/* Menu standard, same as Straight Down Spell (Jeff, Nov 3). An odd last row spans both columns. */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mpair{display:flex;gap:8px}.mpair .go{flex:1}
+.mgrid .go,.mpair .go{padding:9px 4px;font-size:12px}
+.mgrid>:not([hidden]):nth-last-child(1 of :not([hidden])):nth-child(odd of :not([hidden])){grid-column:1/-1}
 .card b{font-family:var(--sans);font-weight:800}
 #togs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:2px 0 4px}
 #mSound{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
@@ -546,12 +550,17 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   <h2>Menu</h2>
   <p class="lsub" id="lTot"></p>
   <button class="go" id="mClose">Back to game</button>
-  <button class="go alt" id="mCashOut">Bank it</button>
-  <button class="go alt" id="mHow">How to Play</button>
-  <button class="go alt" id="mStats">Stats</button>
-  <button class="go alt" id="mPlus">New list ⭐ Plus</button>
-  <button class="go alt" id="mDaily" style="background:#ffe27a;color:#1a1814;text-transform:none;letter-spacing:.02em" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
-  <div class="lrow"><button id="mCover">Home screen</button><button id="mNew">New game</button><button id="mDemo">Demo</button></div>
+  <div class="mgrid">
+    <button class="go alt" id="mStats">Stats</button>
+    <button class="go alt" id="mHow">How to Play</button>
+    <button class="go alt" id="mPlus">⭐ Plus</button>
+    <button class="go alt" id="mNew">New game</button>
+    <button class="go alt" id="mCashOut">Bank it</button>
+  </div>
+  <div class="mpair">
+    <button class="go alt" id="mCover">Home screen</button>
+    <button class="go alt" id="mDaily" style="background:#ffe27a;color:#1a1814;text-transform:none" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
+  </div>
   <button class="go alt" id="mSet">Settings</button>
   <div class="ver" id="menuVer"></div>
 </div></div>
@@ -602,7 +611,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.25',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.26',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -970,7 +979,6 @@ $('mNew').onclick=()=>{if(spinning)return;if(!over&&$('mNew').dataset.sure!=='1'
   $('menu').hidden=true;$('done').hidden=true;startMode(mode,true)};
 $('mStats').onclick=()=>{backTo='menu';showStats()};
 $('mPlus').onclick=()=>{$('menu').hidden=true;startMode('plus',true)};   // always-there extra games (daily progress is saved separately)
-$('mDemo').onclick=()=>{$('menu').hidden=true;startDemo()};
 $('mHow').onclick=()=>{$('menu').hidden=true;openHelp()};
 $('mCover').onclick=()=>{$('menu').hidden=true;cover()};
 
