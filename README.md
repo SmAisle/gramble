@@ -32,7 +32,7 @@ Sounds are made in the browser (`source/sounds.js`, shared with the sound board)
 This game was called Reel Words while it was being built. `SEED='Reel Words'` keeps the daily lists, and `CODE='rw'` keeps saved games and the `rw_devices` stats, so nothing reset with the rename.
 
 ## Screens
-Cover (stats row, Play / Keep playing, Stats · How to play, smAisle link), 4-card intro, menu with Sound, Look and Cash out, Stats, game-over card (found and missed words, tap for meanings) with Share.
+Cover (yellow ‹ smAisle Daily button top left, stats row, Play / Keep playing, Stats · How to Play · Demo, smAisle Home · version line), 4-card intro, menu with Sound, Look and Cash out, Stats, game-over card (found and missed words, tap for meanings) with Share.
 
 ## Files
 - `index.html`: the whole game (built). `source/src.html` is the template; `python3 source/build.py` fills in the words from `source/tray.txt` and `source/bonus.txt`, the sound engine and the smAisle icon and writes `index.html`. `index-artifact.html` is the same without the invite gate, for the Claude copy.
@@ -54,3 +54,6 @@ On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate ne
 
 ## v10.23 (Nov 2)
 - Deal or hit sound is off, as a try (Jeff). Pay and card flips still play. Vegas keeps its lever sound.
+
+## v10.24 (Nov 3)
+- One way home (navigation standard): the yellow ‹ smAisle Daily button sits top left in the same spot on the cover and in the game. It replaces the white bars. smAisle Home is now a small link on the cover's version line. Cover links run Stats · How to Play · Demo.
