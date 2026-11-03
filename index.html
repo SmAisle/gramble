@@ -156,6 +156,12 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 #cover h1{font-family:var(--head);font-weight:900;font-size:clamp(40px,13vw,52px);line-height:1;margin:0}
 #cover .ln{display:flex;justify-content:space-between;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-top:6px;color:var(--ink2)}
 #cover .tag{font-style:italic;font-size:15px}
+/* Way back to smAisle Daily: the yellow button shows on the cover only; during play the way back is the menu row (Jeff, Nov 3). */
+.smback{flex:none;align-self:flex-start;display:block;box-sizing:border-box;height:30px;padding:4px 10px;background:#ffe27a;color:#1a1814!important;border:2px solid #1a1814;border-radius:4px;font:800 13px/18px var(--sans);letter-spacing:.06em;text-decoration:none;white-space:nowrap}
+#cvBar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);left:calc(max(0px,50vw - 270px) + 12px);z-index:2}
+#cover{padding-top:calc(env(safe-area-inset-top,0px) + 42px);overflow:auto;place-items:safe center}
+#coverSm{color:inherit}
+@media (max-height:700px){#cover .in{gap:10px}}
 #cover .links{display:flex;gap:8px;align-items:center;font-family:var(--sans);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
 #cover .links button{background:none;border:none;padding:6px 2px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--ink);text-decoration:underline}
 #cvReels{display:flex;gap:5px;justify-content:center}
@@ -164,8 +170,6 @@ body.dd2 #bar #spinBtn{background:linear-gradient(#ffe58a,#ffc400)!important;col
 #cvStats{display:flex;width:100%;background:none;border:none;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:6px 0;color:var(--ink)}
 #cvStats div{flex:1;display:flex;flex-direction:column}#cvStats div+div{border-left:1px solid var(--fade)}
 #cvStats b{font-family:var(--head);font-weight:900;font-size:22px}#cvStats span{font-family:var(--sans);font-weight:800;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.smline{display:flex;align-items:center;gap:8px;background:none;border:none;padding:6px;margin-top:6px;color:var(--ink);font-family:var(--sans);font-size:14px}
-.smline b{font-weight:800}.smline em{font-family:var(--body);color:var(--ink2);font-size:13px}
 .smico{display:inline-block;flex:none;width:24px;height:24px;background-size:cover;border-radius:22%;background-image:url(data:image/png;base64,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)}
 .qpic{display:flex;justify-content:center;gap:4px;margin:6px 0 12px;min-height:44px;flex-wrap:wrap}
 .qt{position:relative;width:40px;height:44px;border-radius:5px;display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:23px;background:linear-gradient(#fffdf3,#f1e6c8);box-shadow:0 2px 0 #b9a77a,0 3px 4px rgba(0,0,0,.25)}
@@ -401,7 +405,6 @@ html[data-mode=navy] body #list span.got{background:#1a2438;border-color:#3a4a6b
 html[data-mode=navy] body #list span.fit,html[data-mode=navy] body #list span.tgt{color:#fff0c0}
 html[data-mode=navy] body .card{box-shadow:6px 6px 0 rgba(0,0,0,.5)}
 html[data-mode=navy] body #cover,html[data-mode=navy] body #setup{background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px)}
-html[data-mode=navy] body #smBar,html[data-mode=navy] body #cvBar{color:#efe6cc!important;border-bottom-color:#c9a961!important}
 /* First-open setup: pick style and mode */
 #setup{background:var(--paper);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px;z-index:31;overflow:auto;place-items:safe center}
 #setup .in{display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px}
@@ -457,7 +460,6 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </script>
 
 <div id="app">
-  <a id="smBar" href="/daily/" style="flex:none;display:flex;align-items:center;height:30px;margin:-6px -2px 0;padding:0 12px;background:var(--card);border-bottom:2px solid #1a1814;font:800 12px 'Libre Franklin','Helvetica Neue',Arial,sans-serif;color:#1a1814;text-decoration:none;letter-spacing:.02em">&lsaquo; smAisle Daily</a><!--SITEONLY-->
   <div class="top"><div id="pno">Gramble</div>
     <div class="box bank" id="bankBox"><small>Coins</small><b id="bank">50</b></div>
     <div class="box"><small>Found</small><b id="nFound">0/20</b></div>
@@ -480,7 +482,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div>
 
 <div class="sheet" id="cover"><div class="in">
-  <a id="cvBar" href="/daily/" style="position:absolute;top:0;left:0;right:0;display:flex;align-items:center;height:32px;padding:0 12px;padding-top:env(safe-area-inset-top,0px);background:var(--card);border-bottom:2px solid #1a1814;font:800 12px 'Libre Franklin','Helvetica Neue',Arial,sans-serif;color:#1a1814;text-decoration:none;letter-spacing:.02em;z-index:2">&lsaquo; smAisle Daily</a><!--SITEONLY-->
+  <a id="cvBar" class="smback" href="/daily/">&lsaquo; smAisle Daily</a><!--SITEONLY-->
   <div class="mh"><h1>Gramble</h1><div class="ln"><span id="cvDate"></span><span id="cvNo"></span></div></div>
   <div id="cvReels"><span>D</span><span>E</span><span>A</span><span>L</span><span>S</span></div>
   <div class="tag">Clear 10 words with 50 coins. Then bank it, or keep going.</div>
@@ -489,10 +491,8 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   <button class="go" id="coverGo">Play today's game</button>
   <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay" hidden>Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists · part of smAisle Daily Plus</small></button></div>
   <div id="cvNote" style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
-  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverDemo">Watch the demo</button><span>·</span><button id="coverHow">How to play</button></div>
-  <style>#cvBar~#coverSm,#cvBar~* #coverSm{display:none}</style><!--SITEONLY-->
-  <button id="coverSm" class="smline"><i class="smico"></i><b>smAisle</b><em>See our other games ›</em></button>
-  <div class="ver" id="cvVer" style="margin-top:0"></div>
+  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverHow">How to Play</button><span>·</span><button id="coverDemo">Demo</button></div>
+  <div class="ver" style="margin-top:0"><a id="coverSm" href="https://smaisle.app/" target="_blank" rel="noopener">smAisle Home</a> · <span id="cvVer"></span></div>
 </div></div>
 
 <div class="sheet" id="setup" hidden><div class="in">
@@ -602,7 +602,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.23',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.25',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -942,7 +942,6 @@ $('coverReplay').onclick=()=>startMode('replay');
 $('coverPlus').onclick=()=>startMode('plus');
 $('cvStats').onclick=$('coverStats').onclick=()=>{backTo='cover';showStats()};
 $('coverHow').onclick=openHelp;
-$('coverSm').onclick=()=>window.open('https://smaisle.app/','_blank','noopener');
 // How to Play is paged so each page fits the screen without scrolling (smAisle rule, Nov 2)
 let hpPages=[[]],hpAt=0;
 function hpPaginate(){const ul=$('help').querySelector('ul'),card=$('help').querySelector('.card'),lis=[...ul.children];
