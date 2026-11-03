@@ -602,7 +602,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.21',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.22',VDATE='Nov 2',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -1277,9 +1277,9 @@ const SLOT_SOUNDS=[
    ['Falling tones',()=>arp([1047,880,698,587,440,349],.13,'square',.05,.14)],
    ['Game over jingle',()=>{arp([784,659,523],.18,'triangle',.08,.2);tone(392,.6,'triangle',.08,.6)}]]}];
 // Jeff's picks from the card sound board (0=A, 1=B, ...). Nov 1 picks.
-const PICK={deal:0,flip:1,hold:1,release:1,pay:15,win:0,bonus:0,jack:0,all:1,broke:1};
+const PICK={deal:0,flip:1,hold:1,release:1,pay:16,win:0,bonus:0,jack:0,all:1,broke:1};
 const SND=Object.fromEntries(SOUNDS.map(m=>[m.k,m.o[PICK[m.k]||0][1]]));
-// Vegas sounds: Jeff's Oct slot picks, except pay keeps the Muted bell he chose on Nov 1.
+// Vegas sounds: Jeff's Oct slot picks, except pay uses the Bubble blip he chose on Nov 2.
 const PICKV={lever:0,tick:2,stop:2,lock:4,unlock:2,tile:2,pay:2,win:2,bonus:2,jack:3,all:1,broke:3};
 const SNDV=Object.fromEntries(SLOT_SOUNDS.map(m=>[m.k,m.o[PICKV[m.k]||0][1]]));
 const sfx={lever:()=>vegas?SNDV.lever():SND.deal(),tick:k=>{if(vegas)SNDV.tick(k)},stop:i=>vegas?SNDV.stop(i):SND.flip(i),lock:()=>vegas?SNDV.lock():SND.hold(),unlock:()=>vegas?SNDV.unlock():SND.release(),tile:()=>vegas?SNDV.tile():cSnap(0,2200,.3,.03),

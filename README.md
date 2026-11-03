@@ -49,3 +49,5 @@ Website only (github.io / smaisle.app): an anonymous check-in to Firebase projec
 ## Invite gate
 On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate needs a `gramble` entry (the existing one) before it lets anyone in.
 
+## v10.22 (Nov 2)
+- Pay for a deal sound is now Bubble blip, in both Classic and Vegas (Jeff).
