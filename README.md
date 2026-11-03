@@ -60,3 +60,6 @@ On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate ne
 
 ## v10.25 (Nov 3)
 - Correction from Jeff: the yellow ‹ smAisle Daily button shows on the cover only, never during play. During play the way back is the ‹ smAisle Daily row in the menu. The results screen keeps its row.
+
+## v10.26 (Nov 3)
+- Menu standard (Jeff): the menu now matches Straight Down Spell. Top to bottom: Menu, the status line, Back to game, then the two-column grid, Home Screen and ‹ smAisle Daily side by side, Settings, version. The ⭐ Plus row opens a New list (in the app, the hub's Plus screen without Plus). Bank it and Start over, when they show, sit in the grid. The demo is no longer in the menu; it stays as the Watch the demo link in How to Play.
