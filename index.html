@@ -3,6 +3,7 @@
 <head>
 <script src="/gate.js" data-game="gramble" data-name="Gramble"></script>
 <meta charset="utf-8">
+<script>/* one Sound setting for every smAisle game */(function(){try{var s=localStorage.getItem('smaisle-sound');if(s==='on'||s==='off')localStorage.setItem('rw_sound',s)}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f4efe1">
 <script>(function(){var m=null;try{m=localStorage.getItem('smaisle-dark');if(!m&&localStorage.getItem('rw_mode')==='dark'){m='on';localStorage.setItem('smaisle-dark','on')}}catch(e){}var d=m==='on'||(m==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.setAttribute('data-mode','navy');var t=document.querySelector('meta[name=theme-color]');if(t)t.content='#121b2e'}})()</script>
@@ -612,7 +613,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.27',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.28',VDATE='Nov 4',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -1318,5 +1319,7 @@ addEventListener('resize',()=>{layout();if(vegas)fitStage()});
 const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' '+vline;
 buildReels();roundUI();words=POOL.slice(0,NWORDS);setStyle(store.get('style','classic')==='vegas',true);line=vegas?['S','P','I','N','S']:['D','E','A','L','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);applyDark();cover();if(!store.get('setup','')&&!store.get('mode',''))showSetup();checkIn(false);
 </script>
+<script>/* sound icon at the top right of the menu; it and Settings stay in step */
+(function(){var K='rw_sound',C='#mSound',m=document.querySelector('#menu');if(!m)return;var c=m.querySelector('.card,.sc')||m,x=c.querySelector('.x,[data-close]'),b=document.createElement('button');b.type='button';b.id='smSnd';b.setAttribute('style','position:absolute;top:9px;right:'+(x?'51px':'9px')+';width:38px;height:34px;padding:0;display:grid;place-items:center;background:var(--card,#fffdf6);color:var(--ink,#1a1814);border:2px solid var(--ink,#1a1814);border-radius:4px;z-index:3;cursor:pointer;touch-action:manipulation');if(getComputedStyle(c).position==='static')c.style.position='relative';c.appendChild(b);function on(){var v='on';try{v=(localStorage.getItem(K)||'on').replace(/"/g,'')}catch(e){}return v!=='off'}function draw(){var o=on();b.setAttribute('aria-label',o?'Turn sound off':'Turn sound on');b.innerHTML='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5l5 4v-13l-5 4z" fill="currentColor"/>'+(o?'<path d="M16 9a4.2 4.2 0 0 1 0 6"/><path d="M18.6 6.5a8 8 0 0 1 0 11"/>':'<path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>')+'</svg>'}function share(){try{localStorage.setItem('smaisle-sound',on()?'on':'off')}catch(e){}}b.onclick=function(e){e.stopPropagation();var v=on()?'off':'on';var b=document.querySelector(C);if(b&&on()!==(v==='on'))b.click();draw();share()};document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest(C);setTimeout(function(){if(t)share();draw()},0)},true);draw()})();</script>
 </body>
 </html>
