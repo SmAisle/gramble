@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>/* one Sound setting for every smAisle game */(function(){try{var s=localStorage.getItem('smaisle-sound');if(s==='on'||s==='off')localStorage.setItem('rw_sound',s)}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f4efe1">
 <script>(function(){var m=null;try{m=localStorage.getItem('smaisle-dark');if(!m&&localStorage.getItem('rw_mode')==='dark'){m='on';localStorage.setItem('smaisle-dark','on')}}catch(e){}var d=m==='on'||(m==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.setAttribute('data-mode','navy');var t=document.querySelector('meta[name=theme-color]');if(t)t.content='#121b2e'}})()</script>
@@ -288,13 +289,6 @@ body.lk-jackpot #bar #spinBtn{background:#b3141a;border-color:#3d0507;box-shadow
 #mCross{display:flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--ink);border-radius:6px;padding:3px 6px;font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);line-height:1.1}
 #mCross b{font-size:10px}#mCross.on{background:var(--solid);color:var(--on)}
 #list span i{font-style:normal}#list span i.x{color:#b5ad9a}
-/* ---------- Demo: a guided walk-through on the real machine ---------- */
-#demoCap{position:fixed;left:50%;transform:translateX(-50%);top:8px;width:min(94vw,500px);z-index:40;background:var(--card);border:2px solid var(--ink);box-shadow:3px 4px 0 var(--ink);padding:10px 12px;font-family:var(--sans)}
-#demoCap .st{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
-#demoCap p{margin:4px 0 8px;font-family:var(--body);font-size:15px;line-height:1.35}
-#demoCap .row{display:flex;gap:8px}#demoCap button{flex:1;height:40px;border:2px solid var(--ink);background:var(--solid);color:var(--on);font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:3px}
-#demoCap button.sk{flex:none;width:80px;background:var(--card);color:var(--ink)}
-body.demo #bar,body.demo #menuBtn{pointer-events:none}body.demo .reel,body.demo #word{pointer-events:none}
 .reel.hint{box-shadow:0 0 0 3px #ffd23f,0 0 14px #ffd23f}
 #reels .strike{position:absolute;left:4px;right:4px;top:50%;height:5px;margin-top:-2px;background:var(--red);border-radius:3px;z-index:4;pointer-events:none;transform:scaleX(0);transform-origin:left;box-shadow:none}
 #reels.struck .strike{animation:strike .45s ease-out forwards}
@@ -445,6 +439,23 @@ html[data-mode=navy] #dDaily{color:#121b2e!important}
 @media (max-height:760px){#done .card{padding:12px 14px;gap:6px}#done h2{font-size:22px;padding-bottom:4px}#done .big{font-size:32px;margin:0}#done .tapnote{display:none!important}
  #done .mp{margin:4px 0 0;padding:6px 10px}#done .cd{margin:2px 0 0}#done .go{padding:9px}#dMoreI a{width:30px;height:30px;border-radius:7px}#dMoreI{gap:4px}#dMore .dmT{margin-bottom:4px}}
 html[data-mode=navy] .mp .t span,html[data-mode=navy] .mp .g{color:var(--ink2)}
+/* ---------- Demo: Try it with a coach ---------- */
+#smDemo{position:fixed;left:0;right:0;top:0;height:100vh;height:100dvh;z-index:50;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-family:var(--sans,"Libre Franklin",Arial,sans-serif);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#smDemo::after{content:"";position:absolute;inset:0;z-index:30;pointer-events:none;border:6px solid transparent;background:repeating-linear-gradient(45deg,#ffe27a 0 12px,#1a1814 12px 24px) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0)}
+.smTop{flex:none;height:50px;display:flex;align-items:center;justify-content:space-between;padding:6px 12px 0 14px;background:#ffe27a;color:#1a1814;border-bottom:3px solid #1a1814}.smTop span{display:flex;align-items:center;gap:8px;min-width:0}.smTop b{background:#1a1814;color:#ffe27a;font:900 15px/1 var(--sans,Arial);letter-spacing:.14em;padding:5px 7px 5px 9px;border-radius:3px}.smTop i{font:800 11.5px var(--sans,Arial);font-style:normal}.smTop button{position:relative;z-index:31;height:32px;padding:0 12px;border:2px solid #1a1814;border-radius:3px;background:#fffdf6;color:#1a1814;font:800 12px var(--sans,Arial);letter-spacing:.08em;text-transform:uppercase}
+.smStage{position:relative;flex:1 1 0;min-height:0;overflow:hidden;padding:10px 14px 8px}.smStage::before{content:"DEMO";position:absolute;left:50%;top:52%;z-index:3;transform:translate(-50%,-50%) rotate(-22deg);font:900 118px/1 var(--head,Georgia,serif);letter-spacing:.04em;color:var(--ink);opacity:.09;pointer-events:none}
+.smCap{flex:none;background:var(--card);border-top:2px solid var(--ink);padding:9px 16px 14px;display:grid;gap:5px}.smH{display:flex;justify-content:space-between;align-items:baseline}.smH b{font:900 19px var(--head,Georgia,serif)}.smH small{font:800 11px var(--sans,Arial);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}.smCap p{margin:0;min-height:60px;font:500 15px/20px var(--sans,Arial)}.smCap p.nudge{background:#ffe27a;color:#1a1814;margin:0 -6px;padding:0 6px;border-radius:3px}
+.smDots{display:flex;gap:6px}.smDots i{width:10px;height:10px;border:2px solid var(--ink);border-radius:50%}.smDots i.on{background:var(--btn)}
+.smSlot{min-height:44px;margin-top:2px}.smTurn{height:44px;display:flex;align-items:center;justify-content:center;text-align:center;border:2px dashed var(--ink2);border-radius:3px;font:800 12px var(--sans,Arial);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.smBtn{display:block;width:100%;height:46px;border:2px solid var(--ink);border-radius:3px;background:var(--btn);color:var(--paper);font:800 14px var(--sans,Arial);letter-spacing:.08em;text-transform:uppercase}.smBtn.alt{background:var(--card);color:var(--ink)}
+.smF{position:absolute;z-index:7;width:0;height:0;pointer-events:none;transition:left .5s ease,top .5s ease}.smF svg{position:absolute;left:-13px;top:-2px;width:38px;height:46px;transform-origin:13px 2px;animation:smBob .9s ease-in-out infinite}.smF.up svg{transform:scaleY(-1);animation:none}.smR{position:absolute;z-index:6;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #ffe27a;pointer-events:none;animation:smRip .5s ease-out forwards}.smW{animation:smWob .28s ease 2}
+@keyframes smBob{50%{translate:3px 6px}}@keyframes smRip{to{transform:scale(4.4);opacity:0}}@keyframes smWob{25%{translate:-4px 0}75%{translate:4px 0}}
+.smPop{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(26,24,20,.62);animation:smIn .25s ease both}.smPc{width:100%;max-width:340px;background:var(--paper);color:var(--ink);border:3px double var(--ink);box-shadow:6px 6px 0 rgba(0,0,0,.3);padding:16px;display:grid;gap:10px;text-align:center}.smPc h3{margin:0;font:900 34px/1.1 var(--head,Georgia,serif);border-bottom:3px double var(--ink);padding-bottom:8px}.smPc p{margin:0 0 4px;font:500 15px/1.35 var(--sans,Arial)}
+@keyframes smIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.smF svg{animation:none}.smF{transition:none}}
+@media (max-height:640px){.smTop{height:42px;padding-top:4px}.smStage{padding:6px 12px 4px}.smCap{padding:5px 14px 9px;gap:3px}.smCap p{min-height:40px;font-size:13.5px;line-height:18px}.smH b{font-size:16px}.smDots{display:none}.smSlot{min-height:0;margin:0}.smTurn{display:none}.smBtn{height:40px}}
+#smDemo{--btn:var(--solid)}
+.grP{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}.grP .top{align-self:stretch;margin:0;justify-content:space-between;flex:none;padding:0 0 4px}.grP #msg{min-height:22px;margin:0;flex:none}.grP #cab{flex:none}.grP #word{min-height:44px;flex:none}.grP #word .wt{cursor:default;touch-action:manipulation}.grP #wsum{min-height:18px;font-size:12.5px;flex:none}.grP #bar{padding:0;max-width:none;flex:none}.grP #bar button{height:46px}.grP #list{padding:0;max-width:none;flex:none}.grP #list span{font-size:15px;padding:3px 0}.grP .reel{cursor:default}.grP #lever{pointer-events:none}.grP.tight #wsum,.grP.tight #msg{display:none}.grP.tight2 #list span:nth-child(n+5){display:none}
 </style>
 </head>
 <body class="cards">
@@ -492,7 +503,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   <button class="go" id="coverGo">Play today's game</button>
   <div id="cvMore" hidden style="display:flex;flex-direction:column;gap:8px;width:100%"><button class="go alt" id="coverReplay" hidden>Replay today's list<small style="display:block;font-size:10px;letter-spacing:.06em">Free · doesn't change your score</small></button><button class="go alt" id="coverPlus">New list ⭐ Plus<small style="display:block;font-size:10px;letter-spacing:.06em">Fresh lists · part of smAisle Daily Plus</small></button></div>
   <div id="cvNote" style="font-size:12px;font-style:italic;color:var(--ink2)">Everyone gets the same words each day. Your first game counts.</div>
-  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverHow">How to Play</button><span>·</span><button id="coverDemo">Demo</button></div>
+  <div class="links"><button id="coverStats">Stats</button><span>·</span><button id="coverHow">How to Play</button><span>·</span><button id="coverDemo">Try the demo</button></div>
   <div class="ver" style="margin-top:0"><a id="coverSm" href="https://smaisle.app/" target="_blank" rel="noopener">smAisle Home</a> · <span id="cvVer"></span></div>
 </div></div>
 
@@ -530,7 +541,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   </ul>
   <div id="hpNav"><button class="go alt" id="hpBack">Back</button><span id="hpPg"></span><button class="go" id="hpNext">Next</button></div>
   <button class="go" id="helpGo">Let's play</button>
-  <div id="hpDemo"><button id="hpDemoB">Watch the demo</button></div>
+  <div id="hpDemo"><button id="hpDemoB">Try the demo</button></div>
   <div class="ver" id="ver"></div>
 </div></div>
 
@@ -584,7 +595,6 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   <div id="dMore" hidden><div class="dmT">More smAisle games</div><div id="dMoreI"></div></div>
 </div></div>
 
-<div id="demoCap" hidden><div class="st" id="dcStep"></div><p id="dcText"></p><div class="row"><button class="sk" id="dcSkip">Skip</button><button id="dcNext">Next</button></div></div>
 
 <div class="sheet" id="ride" hidden><div id="confetti"></div><div class="card" id="rCard">
   <div class="rstars">★ ★ ★ ★ ★</div>
@@ -606,7 +616,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.27',VDATE='Nov 3',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.29',VDATE='Nov 4',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -690,7 +700,7 @@ const HH=bestHint();reelEls.forEach((el,i)=>el.classList.toggle('hint',!!HH&&HH.
   if(spinCue&&!over&&!pend&&!ride&&bank>=COST){$('spinBtn').firstChild.textContent=V('Deal again ▸','Spin again ▸');$('spinBtn').querySelector('small').textContent=V('Word banked · next hand','Word banked · next round')}
   const pick=pickCue();$('spinBtn').classList.toggle('pick',pick);if(pick){$('spinBtn').firstChild.textContent=V('Keep some cards ↑','Pick letters ↑');$('spinBtn').querySelector('small').textContent=V('or tap here for a new hand · 5 coins','then spin · 5 coins')}
   $('spinBtn').disabled=over||spinning||bank<COST||nh===REELS;
-  const ddOK=spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo';if(!ddOK)ddArm=false;$('bDD').hidden=true;$('ddX').hidden=!ddOK;if(ddOK){const fw=fits().filter(w=>!found.includes(w)).sort((a,b)=>wordPts(b)-wordPts(a))[0],v=fw?cr(wordPts(fw)*PER_PT):0;   // show what the word they're going for pays, plain vs doubled
+  const ddOK=spun&&!spinning&&!over&&!pend&&!ride&&nLocked()===REELS-1&&bank>=2*COST;if(!ddOK)ddArm=false;$('bDD').hidden=true;$('ddX').hidden=!ddOK;if(ddOK){const fw=fits().filter(w=>!found.includes(w)).sort((a,b)=>wordPts(b)-wordPts(a))[0],v=fw?cr(wordPts(fw)*PER_PT):0;   // show what the word they're going for pays, plain vs doubled
     $('ddInfo').textContent=fw?fw+' pays '+v+' · ×2 = '+(2*v):'10 coins · win pays ×2';$('ddN1').textContent=fw?'win '+v:'';$('ddN2').textContent=fw?'win '+(2*v):''}$('ddX').classList.toggle('on',ddArm);$('ddNo').classList.toggle('on',!ddArm);$('ddYes').classList.toggle('on',ddArm);document.body.classList.toggle('dd2',ddArm);if(ddArm){$('spinBtn').firstChild.textContent=V('Hit ×2','Spin ×2');$('spinBtn').querySelector('small').textContent='10 coins · pays double'}$('spinBtn').hidden=!!pend;$('bPass').hidden=$('bCash').hidden=!pend;if(pend)$('bCashN').textContent=pend+' +'+cents(bonusPay(pend));$('lever').disabled=$('spinBtn').disabled||!!pend;
   const fs=new Set(F);$('bonusL').innerHTML=bonus.length?'Bonus words: '+bonus.map(w=>'<b data-w="'+w+'">'+w+'</b>').join(' · '):'';
   const hl=heldLetters(),xo=crossOn()&&lit&&!spinning;
@@ -719,24 +729,24 @@ function msg(t,cls=''){const m=$('msg');m.textContent=t;m.className=cls}
 // Hints (menu → Hints, on by default; only for the first 2 words of each game; turning them off stays off): after each spin, the letters worth keeping glow and the word they make glows on the list.
 const hintsOn=()=>store.get('hints','on')==='on';
 const HINT_WORDS=2,hintLive=()=>hintsOn()&&round===1&&found.length<HINT_WORDS;
-function bestHint(){if(!hintLive()||!spun||spinning||over||pend||ride||mode==='demo')return null;let best=null;
+function bestHint(){if(!hintLive()||!spun||spinning||over||pend||ride)return null;let best=null;
   for(const w of left()){const a=[...w],h=[0,0,0,0,0];
     line.forEach((c,i)=>{if(locked(i)){const j=a.indexOf(c);if(j>=0){a.splice(j,1);h[i]=1}else h[i]=-9}});   // locked letters must be in the word
     if(h.includes(-9))continue;line.forEach((c,i)=>{if(!locked(i)){const j=a.indexOf(c);if(j>=0){a.splice(j,1);h[i]=1}}});
     const m=h.reduce((x,y)=>x+y,0);if(!best||m>best.m)best={w,h,m}}
   return best&&best.m>=2?best:null}
 // Right after a spin with nothing locked: a plain 'Step 2' message and a white 'Pick letters' Spin button (it still spins if tapped).
-const pickCue=()=>spun&&!spinning&&!over&&!pend&&!ride&&!spinCue&&nLocked()===0&&mode!=='demo'&&bank>=COST&&!(hintLive()&&!bestHint());   // not when the hint says there's nothing worth keeping
+const pickCue=()=>spun&&!spinning&&!over&&!pend&&!ride&&!spinCue&&nLocked()===0&&bank>=COST&&!(hintLive()&&!bestHint());   // not when the hint says there's nothing worth keeping
 const step=(h,t)=>{const m=$('msg');m.className='step';m.innerHTML='<b></b><span></span>';m.firstChild.textContent=h;m.lastChild.textContent=t};
 function tip(){const H=bestHint();
   if(H){const add=H.h.map((v,i)=>v&&!locked(i)?i:-1).filter(i=>i>=0);
     if(add.length)return msg('💡 '+add.map(i=>line[i]).join(', ')+(add.length>1?' are':' is')+' in '+H.w+'. Tap the glowing letter'+(add.length>1?'s':'')+' to keep '+(add.length>1?'them':'it')+', then tap '+V('Hit','Spin')+'.','good');
     return msg('💡 Good. Now tap '+V('Hit','Spin')+' to fill in the rest of '+H.w+'.','good')}
-  if(hintLive()&&spun&&!spinning&&!over&&!pend&&!ride&&mode!=='demo'&&!nLocked())return msg(V('💡 No good cards this time. Just tap Deal again.','💡 No good letters this time. Just tap Spin again.'),'good');if(over)return msg(found.length===NWORDS?'You found them all!':'Game over. Tap Play again for a new list.');
-  if(!spun&&!found.length&&mode!=='demo')return step(V('Step 1: Tap Deal','Step 1: Tap Spin'),V('Each deal costs 5 coins.','Each spin costs 5 coins.'));
+  if(hintLive()&&spun&&!spinning&&!over&&!pend&&!ride&&!nLocked())return msg(V('💡 No good cards this time. Just tap Deal again.','💡 No good letters this time. Just tap Spin again.'),'good');if(over)return msg(found.length===NWORDS?'You found them all!':'Game over. Tap Play again for a new list.');
+  if(!spun&&!found.length)return step(V('Step 1: Tap Deal','Step 1: Tap Spin'),V('Each deal costs 5 coins.','Each spin costs 5 coins.'));
   if(!spun)return msg(found.length?(hintsOn()&&round===1&&found.length===HINT_WORDS?'Nice! Hints are done for this game. You\'re on your own now. '+V('Deal for new cards.','Spin for new letters.'):V('Deal for new cards.','Spin for new letters.')):V('Tap Deal for 5 cards. Each deal is 5 coins.','Tap Spin or pull the lever. Each spin is 5 coins.'));
   if(!nLocked())return step(V('Step 2: Hold some cards','Step 2: Keep some letters'),V('Tap any cards that are in a word on your list.','Tap any letters that are in a word on your list.'));
-  if(nLocked()===REELS-1&&bank>=2*COST&&mode!=='demo')return msg(V('One card to go!','One letter to go!')+' Power play? Tap Yes to play 10 coins. It\'s riskier, but a word pays double.');
+  if(nLocked()===REELS-1&&bank>=2*COST)return msg(V('One card to go!','One letter to go!')+' Power play? Tap Yes to play 10 coins. It\'s riskier, but a word pays double.');
   if(nLocked()===REELS)return msg(V('All five are held. Tap a card to let it go, then hit.','All five are locked. Tap a reel to unlock one, then spin.'),'warn');
   msg(V('Hit for new cards, or tap a held card to let it go.','Spin again, or tap a locked letter to unlock it.'))}
 
@@ -758,7 +768,7 @@ async function spin(dd){if(over||spinning||bank<COST||pend||ride)return;if(!spun
   // With nothing locked the machine gives no help, so a whole word (a Jackpot) is pure luck.
   // Each reel lands in turn; a letter that lands counts as fixed for the reels after it, so the loaded letters fit together.
   R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+':'+spins));
-  for(const i of which){const c=forced?forced[i]:landLetter(fixed);line[i]=c;fixed.push(c);strips[i]=stripAround(c)}
+  for(const i of which){const c=landLetter(fixed);line[i]=c;fixed.push(c);strips[i]=stripAround(c)}
   which.forEach(i=>rolling.add(i));spun=true;save();
   $('lever').classList.add('pull');setTimeout(()=>$('lever').classList.remove('pull'),350);sfx.lever();
   paint();msg(V('Dealing…','Spinning…'));
@@ -778,7 +788,7 @@ function check(){const key=line.slice().sort().join(''),w=left().find(x=>[...x].
   if(w){const jp=fullSpin;if(jp)nJack++;const c=wordPts(w)*PER_PT*(jp?2:1)*(ddOn?2:1);bank+=c;peak=Math.max(peak,bank);found.push(w);hold=[0,0,0,0,0];spun=false;
     strike('Found '+w);
     reelEls.forEach(el=>el.classList.add('sel'));setTimeout(()=>reelEls.forEach(el=>el.classList.remove('sel')),900);
-    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS||round===1)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?V('🎰 JACKPOT! Dealt a word, double pay. ','🎰 JACKPOT! No locks, double pay. '):'')+(ddOn?'⏫ Power play paid! ':'')+'Found '+w+'! +'+cents(c)+' · '+V('Deal','Spin')+' again.','good');if(hintsOn()&&round===1&&found.length===HINT_WORDS&&mode!=='demo')setTimeout(()=>$('hintDone').classList.add('show'),1400);
+    popUp((jp?'JACKPOT ':'')+w+' +'+cents(c),'jp');jackpot();if(found.length<NWORDS||round===1)(jp?sfx.jack:sfx.win)();save();paint();msg((jp?V('🎰 JACKPOT! Dealt a word, double pay. ','🎰 JACKPOT! No locks, double pay. '):'')+(ddOn?'⏫ Power play paid! ':'')+'Found '+w+'! +'+cents(c)+' · '+V('Deal','Spin')+' again.','good');if(hintsOn()&&round===1&&found.length===HINT_WORDS)setTimeout(()=>$('hintDone').classList.add('show'),1400);
     const el=$('list').querySelector('[data-w="'+w+'"]');if(el)el.classList.add('new');
     if(found.length===NWORDS)return round===1?clearRound():end('win');if(bank<COST)return end('broke');return}
   // Not on the list but still an everyday word: it pays half, once per game, and isn't crossed off.
@@ -797,15 +807,15 @@ function clearRound(){bank+=CLEAR_BONUS;peak=Math.max(peak,bank);ride=true;spun=
 function showRide(){if(!ride||over)return;$('rBank').textContent=money(bank);$('rSafeN').textContent=cr(bank);$('rRideN').textContent=(cr(bank)+cr(HR_BONUS))+'+';$('rWin').textContent=money(bank-CLEAR_BONUS);$('rCashN').textContent=money(bank);
   const C=$('confetti');C.innerHTML='';const cols=['#ffd23f','#e0a800','#fff3c4','#1a1814','#fff'];
   if(!quick)for(let k=0;k<70;k++){const i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.background=cols[k%cols.length];i.style.animationDuration=(2.2+Math.random()*2)+'s';i.style.animationDelay=(Math.random()*1.2)+'s';i.style.transform='rotate('+Math.random()*180+'deg)';C.appendChild(i)}
-  $('ride').hidden=false;if(mode!=='demo'||true)sfx.allFound()}
+  $('ride').hidden=false;sfx.allFound()}
 function letItRide(){if(!ride)return;ride=false;$('ride').hidden=true;round=2;roundUI();words=pickWords(N2,'#hr',found);found=[];spun=false;hold=[0,0,0,0,0];order=[0,1,2,3,4];
   strips=line.map(c=>stripAround(c));for(let i=0;i<REELS;i++)drawReel(i);save();paint();tip();sfx.jack();msg('Bonus 10! You have '+money(bank)+'. Good luck.','good')}
-$('rRide').onclick=()=>{if(mode!=='demo')letItRide()};$('rCash').onclick=()=>{if(!ride||mode==='demo')return;ride=false;$('ride').hidden=true;end('cashout')};
+$('rRide').onclick=()=>letItRide();$('rCash').onclick=()=>{if(!ride)return;ride=false;$('ride').hidden=true;end('cashout')};
 function bonusPass(){if(!pend)return;pend='';sfx.unlock();save();paint();tip();if(bank<COST)end('broke')}
 $('rchSafe').onclick=()=>$('rCash').click();$('rchRide').onclick=()=>$('rRide').click();
 $('bDD').onclick=()=>spin(true);$('bCash').onclick=bonusCash;$('bPass').onclick=bonusPass;
 // The bonus card: what a bonus word is, why it pays what it pays, and what each choice does.
-function showBonusCard(){if(!pend||mode==='demo')return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
+function showBonusCard(){if(!pend)return;const b=pend,c=bonusPay(b),f=fits().filter(w=>!found.includes(w)),hl=heldLetters();
   $('bcW').textContent=b;$('bcM').innerHTML=[...b].map(x=>x+'='+PTS[x]).join(' + ')+' = '+wordPts(b)+' points<br>'+(wordPts(b)*PER_PT/2<BONUS_MIN?'Half pay is '+wordPts(b)+', so you get the minimum: <b>'+cents(c)+'</b>':'Half pay: '+wordPts(b)+' × '+(PER_PT/20)+' coin'+(pendDD?' × 2 (power play)':'')+' = <b>'+cents(c)+'</b>');
   $('bcTake').innerHTML='Take '+cents(c)+'<small>'+V('Your held cards reset','Your locked letters reset')+'</small>';
   $('bcKeep').innerHTML=V('Keep my cards','Keep my letters')+'<small>'+(hl.length?'Keep '+hl.join(' ')+(f.length?' and go for '+f[0]:''):V('Skip it and keep playing','Skip it and keep spinning'))+'</small>';
@@ -886,7 +896,7 @@ function goBack(){const b=backTo;backTo=null;if(b==='cover')cover();else if(b===
 $('statsBack').onclick=()=>{$('stats').hidden=true;goBack()};
 
 // ---------- Save and start ----------
-function save(){if(over||mode==='demo')return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,pendDD,dry,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
+function save(){if(over)return;store.set(progKey(),JSON.stringify({v:4,round,ride,pend,pendDD,dry,bonus,order,words,found,line,hold,bank,spins,peak,spun,strips}))}
 let quick=false;   // tests only: no spin animation
 function pickWords(n,tag,avoid){R=mode==='plus'?Math.random:rngFrom(hash(SEED+playDay+tag));const ws=[];while(ws.length<n){const w=rnd(POOL);if(!ws.includes(w)&&!avoid.includes(w))ws.push(w)}return ws.sort()}
 function roundUI(){NWORDS=round===1?N1:N2;$('marqSub').textContent=(round===1?'Quick 10':'Bonus 10')+' · 5 coins a '+V('deal','spin');$('logLbl').textContent='Find all '+NWORDS+' words';document.body.classList.toggle('hr',round===2)}
@@ -911,34 +921,43 @@ function cover(){saverCheck();const t=dayAt(0);playDay=t.k;let p=null;try{p=JSON
   const sk=streak();$('cvStreak').hidden=!sk.n;$('cvStreak').textContent='🔥 '+sk.n+'-day streak'+(sk.today?'':' · play today to keep it')+(+store.get('saver',0)?' · 🛡 saver ready':'');
   const d=dailyStats();$('cvStats').hidden=!d.played;if(d.played)$('cvStats').innerHTML=[[money(d.life),'Lifetime'],[money(d.best),'Best day'],[d.played,'Days played']].map(([v,l])=>'<div><b>'+v+'</b><span>'+l+'</span></div>').join('');
   $('cover').hidden=false}
-let forced=null;   // demo only: the letters the next spin lands on
-// The demo plays a scripted mini game on the real machine, one step per tap of Next.
-const DEMO_WORDS=['BRAVE','CHAIR','DREAM','HONEY','LUCKY','MUSIC','PLANT','READY','SMILE','TOAST'];
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const DEMO=[
- ['Every day you get <b>50 coins</b> and the same <b>10 words</b> as everyone else. Find them all with letter cards.',async()=>{}],
- ['Tap <b>Deal</b>. Each deal costs <b>5 coins</b>, and you get five letter cards.',async()=>{forced=['R','E','Z','D','A'];await spin()}],
- ['R, E, D, A could make <b>READY</b>. Tap a card to <b>hold</b> it. Held cards stay when you hit. On the list, READY lights up and the letters you have turn gray.',async()=>{for(const i of [0,1,3,4]){tapReel(i);await sleep(350)}}],
- ['<b>Hit.</b> Only the card you didn\'t hold is replaced.',async()=>{forced=['R','E','Y','D','A'];await spin()}],
- ['<b>READY!</b> Any order counts. Each word pays <b>2 coins a point</b> (the small numbers), and it\'s crossed off your list. A word dealt with nothing held is a <b>Jackpot</b> and pays double.',async()=>{}],
- ['Find all 10 before your coins run out and you get a <b>+50 coin clear bonus</b>…',async()=>{words.forEach(w=>{if(!found.includes(w))found.push(w)});bank=480;paint();clearRound()}],
- ['…then you choose. <b>Bank it</b> to keep your coins. Or <b>keep going</b> into the <b>Bonus 10</b>: find those 10 for <b>+100 coins</b>, but go broke and you bank nothing today.',async()=>{}],
- ['Whatever you bank adds to your <b>lifetime winnings</b>. Run out of coins in the Quick 10 and you bank 0 coins. Good luck!',async()=>{$('ride').hidden=true}]];
-let dStep=0,dBusy=false;
-const DEMO_V=['Every day you get <b>50 coins</b> and the same <b>10 words</b> as everyone else. Find them all on the slot machine.',
- 'Tap <b>Spin</b>. Each spin costs <b>5 coins</b>, and five reels land on letters.',
- 'R, E, D, A could make <b>READY</b>. Tap a reel to <b>lock</b> 🔒 it. Locked letters stay put and show as tiles below. On the list, READY lights up and the letters you have turn gray.',
- '<b>Spin again.</b> Only the unlocked reel spins.',
- '<b>READY!</b> Any order counts. Each word pays <b>2 coins a point</b> (the small numbers), and it\'s crossed off your list. A word with nothing locked is a <b>Jackpot</b> and pays double.'];
-function demoShow(){$('dcStep').textContent='Demo · '+(dStep+1)+' of '+DEMO.length;$('dcText').innerHTML=(vegas&&DEMO_V[dStep])||DEMO[dStep][0];$('dcNext').textContent=dStep===DEMO.length-1?"Play today's game":dStep===1?V('Deal','Spin'):dStep===2?V('Hold R E D A','Lock R E D A'):dStep===3?V('Hit','Spin again'):'Next';
-  reelEls.forEach((el,i)=>el.classList.toggle('hint',dStep===2&&[0,1,3,4].includes(i)))}
-function startDemo(){mode='demo';playDay=today();document.body.classList.add('demo');$('cover').hidden=true;$('quick').hidden=true;['done','menu','help','stats','ride'].forEach(k=>$(k).hidden=true);
-  round=1;ride=false;roundUI();words=DEMO_WORDS.slice();pend='';bonus=[];order=[0,1,2,3,4];found=[];hold=[0,0,0,0,0];bank=START;spins=0;peak=START;spun=false;over=false;spinning=false;
-  line=['G','R','A','M','B'];strips=line.map(c=>stripAround(c));$('pno').textContent='Demo';layout();for(let i=0;i<REELS;i++)drawReel(i);paint();msg('');dStep=0;demoShow();$('demoCap').hidden=false}
-function endDemo(go){$('demoCap').hidden=true;$('ride').hidden=true;document.body.classList.remove('demo');reelEls.forEach(el=>el.classList.remove('hint'));forced=null;ride=false;over=true;
-  store.set('seenHelp3','1');if(go)startMode('daily');else cover()}
-$('dcNext').onclick=async()=>{if(dBusy)return;if(dStep===DEMO.length-1)return endDemo(true);dBusy=true;dStep++;demoShow();try{await DEMO[dStep][1]()}finally{forced=null;dBusy=false}};
-$('dcSkip').onclick=()=>endDemo(false);
+// Demo: Try it with a coach. A small practice machine with the real look, in Classic or Vegas. Three moves, nothing saved, no check-ins.
+// The practice board reuses the machine's ids (#cab, #reels, #list...) so every Look styles it. They sit after the real ones, so $() still finds the real ones.
+/* smAisle demo frame v1 (Nov 4, 2026). One demo for every game: Try it with a coach (change list #30).
+   Add demo-frame.css to the page, this script after it, then call:
+   smDemo({name:'Game',moves:[{cap:'What to do',nudge:'What to say after a wrong tap'},...],win:'How you win',
+     play:function(){start the real game},
+     board:function(stage){draw a tiny practice board in stage; return {to:function(n){show the board after n moves},
+       tgt:function(n){return the element to tap for move n},win:function(){show the finished board}}},
+     auto:true for fast games that can't pause (it plays itself, model B)});
+   Uses the page's --paper --card --ink --ink2 --btn --hi colors. Saves nothing and counts nothing. */
+function smDemo(o){
+ var E=function(h){var t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstChild},root=document.getElementById('smDemo'),timers=[],k=0,busy=false,B,stage,capT,capN,capH,dots,slot;
+ var HAND='<svg viewBox="0 0 38 46" aria-hidden="true"><path d="M13 2c3 0 5 2 5 5v11l11 2c4 1 6 3 6 7l-1 9c-1 5-4 8-9 8H17c-3 0-5-1-7-4L3 29c-2-3 2-6 5-4l1 1 0-19c0-3 2-5 4-5z" fill="#ffe27a" stroke="#1a1814" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+ var TOP='<div class="smTop"><span><b>DEMO</b><i>Practice only. Nothing counts.</i></span><button type="button" id="smSkip">Skip</button></div>';
+ if(root)root.remove();root=E('<div id="smDemo" role="dialog" aria-label="'+o.name+' demo"></div>');document.body.appendChild(root);
+ function later(f,ms){timers.push(setTimeout(f,ms))}function stop(){timers.forEach(clearTimeout);timers=[]}
+ function close(){stop();root.remove()}
+ function run(){stop();k=0;busy=false;root.innerHTML=TOP+'<div class="smStage"></div><div class="smCap"><div class="smH"><b></b><small></small></div><p></p><div class="smDots"></div><div class="smSlot"></div></div>';root.querySelector('#smSkip').onclick=close;stage=root.querySelector('.smStage');var c=root.querySelector('.smCap');capH=c.querySelector('b');capN=c.querySelector('small');capT=c.querySelector('p');dots=c.querySelector('.smDots');slot=c.querySelector('.smSlot');B=o.board(stage);slot.innerHTML='<div class="smTurn">'+(o.auto?'Plays by itself':'Your turn. Tap where the finger points.')+'</div>';show();if(!o.auto)stage.onclick=tap}
+ function cap(h,i,n,t){capH.textContent=h;capN.textContent=n?'Step '+(i+1)+' of '+n:'Done';capT.textContent=t;capT.className='';dots.innerHTML=o.moves.map(function(m,j){return '<i class="'+(j<=i?'on':'')+'"></i>'}).join('')}
+ function fin(){var f=stage.querySelector('.smF');if(f)f.remove()}
+ function point(el){var f=stage.querySelector('.smF');if(!f){f=E('<div class="smF">'+HAND+'</div>');f.style.left=stage.clientWidth/2+'px';f.style.top=stage.clientHeight-60+'px';stage.appendChild(f);void f.offsetWidth}var a=el.getBoundingClientRect(),b=stage.getBoundingClientRect(),x=a.left-b.left+a.width/2,y=a.top-b.top+a.height-6;f.classList.toggle('up',y+46>stage.clientHeight);f.style.left=x+'px';f.style.top=(y+46>stage.clientHeight?a.top-b.top+6:y)+'px'}
+ function rip(el){var a=el.getBoundingClientRect(),b=stage.getBoundingClientRect(),r=E('<i class="smR"></i>');r.style.left=a.left-b.left+a.width/2+'px';r.style.top=a.top-b.top+a.height/2+'px';stage.appendChild(r);setTimeout(function(){r.remove()},520)}
+ function show(){B.to(k);cap('Your move',k,o.moves.length,o.moves[k].cap);var t=B.tgt(k);t.classList.add('smNow');point(t);busy=false;if(o.auto)later(function(){done(t)},1700)}
+ function done(t){busy=true;rip(t);fin();k++;if(k<o.moves.length){B.to(k);later(show,o.auto?900:450)}else{B.to(k);later(function(){B.win();cap('How you win',k-1,0,o.win);slot.innerHTML='';later(ready,1500)},900)}}
+ function tap(e){if(busy)return;var h=e.target.closest('.smNow');if(h){done(h);return}capT.textContent=o.moves[k].nudge;capT.className='nudge';var n=stage.querySelector('.smNow');if(n){n.classList.remove('smW');void n.offsetWidth;n.classList.add('smW')}}
+ function ready(){stop();fin();var p=E('<div class="smPop"><div class="smPc"><h3>You’re ready</h3><p>'+o.win+'</p><button type="button" class="smBtn" id="smPlay">Play</button><button type="button" class="smBtn alt" id="smAg">Demo again</button></div></div>');root.appendChild(p);root.querySelector('#smPlay').onclick=function(){close();o.play()};root.querySelector('#smAg').onclick=run}
+ run();return {close:close}}
+const GD_WORDS=['BRAVE','CHAIR','READY','HONEY','LUCKY','MUSIC','PLANT','SMILE','TOAST','STONE'],GD_LINE=[['R','E','Z','D','A'],['R','E','Y','D','A']],GD_HELD=[[],[0,1,3],[0,1,3,4],[]];
+function grBoard(stage){const el=document.createElement('div');let was=0;el.className='grP';stage.appendChild(el);
+ function fit(){const R=el.style,w=el.clientWidth;let t=Math.max(30,Math.min(Math.floor((w-100)/REELS)-2,60)),c=Math.min(Math.floor((w-40-4*8)/REELS),70);el.classList.remove('tight','tight2');R.setProperty('--t',t+'px');R.setProperty('--cw',c+'px');for(let k=0;k<30&&el.scrollHeight>el.clientHeight+1;k++){if(vegas&&t>30)R.setProperty('--t',(t-=2)+'px');else if(!vegas&&c>38)R.setProperty('--cw',(c-=2)+'px');else if(!el.classList.contains('tight'))el.classList.add('tight');else el.classList.add('tight2')}}
+ function draw(n){const ln0=n<1?(vegas?['S','P','I','N','S']:['D','E','A','L','S']):GD_LINE[n>=3?1:0],h=GD_HELD[n],pay=wordPts('READY')*2,bk=n<1?50:n<3?45:40+pay,got=n>=3,hl=h.map(i=>ln0[i]);
+  const reels=ln0.map((c,i)=>'<div class="reel'+(h.includes(i)?' sel':'')+(!vegas&&n<1?' down':'')+(n===1&&i===4?' hint':'')+'"><div class="strip">'+(vegas?symHTML(ln0[(i+1)%5])+symHTML(c,true)+symHTML(ln0[(i+2)%5]):faceHTML(c))+'</div><div class="tag"'+(h.includes(i)?'':' hidden')+'><span>'+V('HELD','🔒')+'</span></div></div>').join('');
+  const m=n<1?V('Every deal costs 5 coins.','Every spin costs 5 coins.'):n===1?'Words that fit your letters light up.':n===2?V('Held cards stay when you hit.','Locked letters stay when you spin.'):'Found READY! +'+pay+' coins';
+  el.innerHTML='<div class="top"><div class="box bank"><small>Coins</small><b>'+bk+'</b></div><div class="box"><small>Found</small><b>'+(got?1:0)+'/10</b></div></div><div id="msg"'+(got?' class="good"':'')+'>'+m+'</div><div id="cab"><div id="marq"><b>GRAMBLE</b><small>Quick 10 · 5 coins a '+V('deal','spin')+'</small></div><div id="row"><div id="reels"'+(got?' class="struck"':'')+'>'+reels+'<div id="line"></div><div class="strike"></div></div><div id="lever"><div class="base"></div><div class="arm"><div class="ball"></div></div></div></div></div><div id="word">'+hl.map(c=>'<div class="wt">'+c+'<sub>'+PTS[c]+'</sub></div>').join('')+'</div><div id="wsum">'+(h.length?V('Holding','Locked')+' <b>'+hl.join(' ')+'</b> · 1 word still fits':'')+'</div><div id="bar"><button type="button" id="spinBtn" tabindex="-1">'+(n===2?V('Hit','Spin again'):V('Deal','Spin'))+'<small>5 coins'+(n===2?V(' · 1 new card',' · 1 reel'):'')+'</small></button></div><div id="list">'+GD_WORDS.map(w=>{const hit=w==='READY';return '<span class="'+(hit&&got?'got':hit&&h.length?'fit':'')+'">'+(hit&&h.length&&!got&&crossOn()?crossed(w,hl):w)+'</span>'}).join('')+'</div>';
+  fit()}
+ return {to(n){if(n>was){if(n===2)sfx.lock();else sfx.lever();if(n===3)sfx.win()}was=n;draw(n)},tgt(n){draw(n);return n===1?el.querySelectorAll('.reel')[4]:el.querySelector('#spinBtn')},win(){}}}
+function startDemo(){store.set('seenHelp3','1');smDemo({name:TITLE,moves:[{cap:V('Find the words on your list. Tap Deal to get five letter cards.','Find the words on your list. Tap Spin and five reels land on letters.'),nudge:V('Tap Deal to get your cards.','Tap Spin to start the reels.')},{cap:V('We held R, E and D for READY. Held cards stay when you hit. Tap the A to hold it too.','We locked R, E and D for READY. Locked letters stay when you spin. Tap the A to lock it too.'),nudge:'READY needs the A. Tap the A.'},{cap:V('Any order counts. Tap Hit and only the Z is replaced.','Any order counts. Tap Spin again and only the Z reel spins.'),nudge:V('Tap Hit to replace the Z.','Tap Spin again to spin the Z reel.')}],win:'Words pay 2 coins a point. Find all 10 before your coins run out for a +50 coin bonus. Then bank it or keep going.',play:()=>startMode('daily'),board:grBoard})}
 $('coverDemo').onclick=startDemo;
 const play=()=>{if(!store.get('seenHelp3',''))return startDemo();startMode('daily')};
 $('coverGo').onclick=play;
@@ -1312,5 +1331,7 @@ addEventListener('resize',()=>{layout();if(vegas)fitStage()});
 const vline='v'+VERSION+' · '+VDATE;$('ver').textContent=vline;$('cvVer').textContent=vline;$('menuVer').textContent=TITLE+' '+vline;
 buildReels();roundUI();words=POOL.slice(0,NWORDS);setStyle(store.get('style','classic')==='vegas',true);line=vegas?['S','P','I','N','S']:['D','E','A','L','S'];strips=line.map(c=>stripAround(c));layout();for(let i=0;i<REELS;i++)drawReel(i);applyDark();cover();if(!store.get('setup','')&&!store.get('mode',''))showSetup();checkIn(false);
 </script>
+<script>/* sound icon at the top right of the menu; it and Settings stay in step */
+(function(){var K='rw_sound',C='#mSound',m=document.querySelector('#menu');if(!m)return;var c=m.querySelector('.card,.sc')||m,x=c.querySelector('.x,[data-close]'),b=document.createElement('button');b.type='button';b.id='smSnd';b.setAttribute('style','position:absolute;top:9px;right:'+(x?'51px':'9px')+';width:38px;height:34px;padding:0;display:grid;place-items:center;background:var(--card,#fffdf6);color:var(--ink,#1a1814);border:2px solid var(--ink,#1a1814);border-radius:4px;z-index:3;cursor:pointer;touch-action:manipulation');if(getComputedStyle(c).position==='static')c.style.position='relative';c.appendChild(b);function on(){var v='on';try{v=(localStorage.getItem(K)||'on').replace(/"/g,'')}catch(e){}return v!=='off'}function draw(){var o=on();b.setAttribute('aria-label',o?'Turn sound off':'Turn sound on');b.innerHTML='<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5l5 4v-13l-5 4z" fill="currentColor"/>'+(o?'<path d="M16 9a4.2 4.2 0 0 1 0 6"/><path d="M18.6 6.5a8 8 0 0 1 0 11"/>':'<path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/>')+'</svg>'}function share(){try{localStorage.setItem('smaisle-sound',on()?'on':'off')}catch(e){}}b.onclick=function(e){e.stopPropagation();var v=on()?'off':'on';var b=document.querySelector(C);if(b&&on()!==(v==='on'))b.click();draw();share()};document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest(C);setTimeout(function(){if(t)share();draw()},0)},true);draw()})();</script>
 </body>
 </html>

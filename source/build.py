@@ -4,6 +4,7 @@ s=open(os.path.join(here,'src.html')).read()
 # The Daily 15's everyday five-letter puzzle words (word-lists/daily-15/tray.txt).
 w=' '.join(x for x in open(os.path.join(here,'tray.txt')).read().split() if len(x)==5)
 s=s.replace('__SOUNDS__',open(os.path.join(here,'sounds.js')).read().strip())
+s=s.replace('__DEMOCSS__',open(os.path.join(here,'demo-frame.css')).read().strip()).replace('__DEMOJS__',open(os.path.join(here,'demo-frame.js')).read().strip())
 s=s.replace('__SMICO__',open(os.path.join(here,'smico.css')).read().strip())
 # Bonus words: The Daily 15's accepted five-letter words (word-lists/daily-15/words.txt).
 bw=' '.join(x for x in open(os.path.join(here,'bonus.txt')).read().split() if len(x)==5)

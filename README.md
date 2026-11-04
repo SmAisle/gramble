@@ -20,7 +20,7 @@ Play: https://smaisle.app/gramble/
 - **Credits (v6.9+):** money shows as coins, 1 credit = 10 of the old cents (internal values are unchanged). Start 50, spin 5, words pay 2 coins a point, clear bonus +50, High Roller bonus +100.
 - **Double down (v6.9+):** with 4 letters locked, a Double down button spins the last reel for 10 coins and a word on it pays double. The machine gives 80% of its usual help on that spin (`DD_HELP=.8`); sims: clear rate ~40% vs 42% never doubling, average day 57 vs 37 coins. Full help was too easy (55% clear); half help (22% hit) and no help (7% hit) were traps. Test: `tests/dd.js N always|never`.
 - **Hints (💡):** for the first 2 words of each game, the letters worth keeping glow after each spin, the target word glows on the list, and the message says what to tap. A "Hints are done" card appears when the second word is found. Hints never show in the High Roller round. The menu has Hints On/Off, and Off stays off.
-- **Demo:** first-time players get a guided demo on the real machine (8 steps, scripted letters). Also on the cover and in the menu.
+- **Demo:** Try it with a coach, the shared smAisle frame: three real moves on a small practice machine, in Classic or Vegas. First-time players get it when they tap Play. Also on the cover and in How to Play. `source/demo-frame.js` and `.css` are copies of the shared frame; do not edit them here.
 
 ## The loaded machine
 When at least one letter is locked, each spinning reel lands, with chance `LOAD` (0.4), on a letter that fits a list word you could still make with what's held (counting reels that already landed this spin). Otherwise it lands on a letter from a random word still on the list. With nothing locked there is no help (`NOHELP_FULL`). Daily spins are seeded, so the same choices give the same letters for everyone. Robot tests (`tests/flow.js`, always letting it ride): a careful robot clears the Quick 10 about 40% of the time with about $10, then wins the High Roller 10 about half the time, banking about $16.50. A sloppy robot wins the High Roller about 40% of the time. `START`, `COST`, `PER_PT`, `LOAD`, `CLEAR_BONUS` and `HR_BONUS` in `source/src.html` tune it.
@@ -32,7 +32,7 @@ Sounds are made in the browser (`source/sounds.js`, shared with the sound board)
 This game was called Reel Words while it was being built. `SEED='Reel Words'` keeps the daily lists, and `CODE='rw'` keeps saved games and the `rw_devices` stats, so nothing reset with the rename.
 
 ## Screens
-Cover (yellow ‹ smAisle Daily button top left, stats row, Play / Keep playing, Stats · How to Play · Demo, smAisle Home · version line), 4-card intro, menu with Sound, Look and Cash out, Stats, game-over card (found and missed words, tap for meanings) with Share.
+Cover (yellow ‹ smAisle Daily button top left, stats row, Play / Keep playing, Stats · How to Play · Try the demo, smAisle Home · version line), 4-card intro, menu with Sound, Look and Cash out, Stats, game-over card (found and missed words, tap for meanings) with Share.
 
 ## Files
 - `index.html`: the whole game (built). `source/src.html` is the template; `python3 source/build.py` fills in the words from `source/tray.txt` and `source/bonus.txt`, the sound engine and the smAisle icon and writes `index.html`. `index-artifact.html` is the same without the invite gate, for the Claude copy.
@@ -56,10 +56,16 @@ On smaisle.app the page loads `/gate.js` with `data-game="gramble"`. The gate ne
 - Deal or hit sound is off, as a try (Jeff). Pay and card flips still play. Vegas keeps its lever sound.
 
 ## v10.24 (Nov 3)
-- One way home (navigation standard): the yellow ‹ smAisle Daily button sits top left in the same spot on the cover and in the game. It replaces the white bars. smAisle Home is now a small link on the cover's version line. Cover links run Stats · How to Play · Demo.
+- One way home (navigation standard): the yellow ‹ smAisle Daily button sits top left in the same spot on the cover and in the game. It replaces the white bars. smAisle Home is now a small link on the cover's version line. Cover links run Stats · How to Play · Try the demo.
 
 ## v10.25 (Nov 3)
 - Correction from Jeff: the yellow ‹ smAisle Daily button shows on the cover only, never during play. During play the way back is the ‹ smAisle Daily row in the menu. The results screen keeps its row.
 
 ## v10.26 (Nov 3)
 - Menu standard (Jeff): the menu now matches Straight Down Spell. Top to bottom: Menu, the status line, Back to game, then the two-column grid, Home Screen and ‹ smAisle Daily side by side, Settings, version. The ⭐ Plus row opens a New list (in the app, the hub's Plus screen without Plus). Bank it and Start over, when they show, sit in the grid. The demo is no longer in the menu; it stays as the Watch the demo link in How to Play.
+
+## v10.27 and v10.28
+v10.28's sound icon and shared Sound setting were added to `index.html` only; v10.29 moves them into `source/src.html`, so the build and the Claude copy now match.
+
+## v10.29 (Nov 4)
+New demo: Try it with a coach. Replaces the old 8-step walkthrough.
