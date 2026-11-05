@@ -69,3 +69,6 @@ v10.28's sound icon and shared Sound setting were added to `index.html` only; v1
 
 ## v10.29 (Nov 4)
 New demo: Try it with a coach. Replaces the old 8-step walkthrough.
+
+## v10.30 (Nov 4)
+Finished game: the yellow ‹ smAisle Daily button moved up beside Share on the results popup, so it shows without scrolling on small phones, and it also appears on the finished table after See the table. Website and app, not the Claude copy.

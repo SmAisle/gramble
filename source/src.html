@@ -16,6 +16,7 @@
 <meta name="description" content="Gramble: a word card game. Hold and hit to find all 20 words before your 50 coins run out.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Libre+Baskerville:ital@0;1&family=Libre+Franklin:wght@700;800;900&family=Courier+Prime:wght@700&display=swap">
 <style>
+.dgo{display:flex;gap:8px}.dgo .go{flex:1 1 0;min-width:0;padding-left:4px;padding-right:4px;white-space:nowrap}
 /* The Daily 15's newspaper look, with a red-and-gold slot machine in the middle. */
 :root{--paper:#f4efe1;--ink:#1a1814;--ink2:#4a453b;--fade:#8c8574;--red:#1a1814;--acc:#ffd23f;--accD:#b8860b;--hi:#ffd23f;--hiE:#e0a800;--gold:#e0a800;--cab:#9c1f18;--cab2:#6e130e;--card:#fffdf6;--on:#fffdf6;--solid:var(--ink);--soft:#fff3c4;
   --head:"Playfair Display",Georgia,serif;--body:"Libre Baskerville",Georgia,serif;--sans:"Libre Franklin","Helvetica Neue",Arial,sans-serif;--t:58px;color-scheme:light}
@@ -477,6 +478,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
     <div id="wsum"></div>
     <div id="ddX" hidden><div class="q">Power play?<small id="ddInfo">10 coins · win pays ×2</small></div><div class="seg"><button id="ddNo" class="on">No<small id="ddN1"></small></button><button id="ddYes">Yes<small id="ddN2"></small></button></div></div>
     <div id="bar"><button id="spinBtn">Deal<small>5 coins</small></button><button id="bDD" hidden>Power play<small>10 coins · pays ×2</small></button><button id="bPass" hidden>Pass<small>Keep going</small></button><button id="bCash" hidden>Collect<small id="bCashN"></small></button></div>
+    <button class="go alt" id="overHub" hidden style="flex:none;background:#ffe27a;color:#1a1814;text-transform:none;letter-spacing:.02em;padding:8px;margin:6px auto 0;width:calc(100% - 24px)" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
     <div id="logLbl">Find all 10 words</div>
     <div id="list"></div>
     <div id="bonusL"></div>
@@ -581,10 +583,12 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
   <p id="dTap" class="tapnote" hidden>Tap a word to see what it means</p>
   <p id="dBest" style="margin:0;font-style:italic;font-size:14px"></p>
   <button class="mp" id="dMach" hidden></button><div class="cd" id="dCd" hidden></div>
+  <div class="dgo">
   <button class="go" id="dShare">Share</button>
+  <button class="go alt" id="dDaily" style="background:#ffe27a;color:#1a1814;text-transform:none;letter-spacing:.02em" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
+  </div>
   <button class="go alt" id="dPlus">New list ⭐ Plus</button>
   <div class="lrow"><button id="dAgain">Replay today</button><button id="dStats">Stats</button><button id="dClose">See the table</button></div>
-  <button class="go alt" id="dDaily" style="background:#ffe27a;color:#1a1814;text-transform:none;letter-spacing:.02em" onclick="location.href='/daily/'">&lsaquo; smAisle Daily</button><!--SITEONLY-->
   <div id="dMore" hidden><div class="dmT">More smAisle games</div><div id="dMoreI"></div></div>
 </div></div>
 
@@ -609,7 +613,7 @@ document.addEventListener('dblclick',function(e){e.preventDefault()},{passive:fa
 </div></div>
 
 <script>
-const VERSION='10.29',VDATE='Nov 4',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
+const VERSION='10.30',VDATE='Nov 4',TITLE='Gramble',CODE='rw',SEED='Reel Words';   // SEED keeps the daily lists the same as before the rename; CODE keeps saved games and stats
 const FB_KEY='AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',FB_PROJ='aislerun-88e79';
 const $=id=>document.getElementById(id);
 let vegas=false;const V=(c,v)=>vegas?v:c;   // Vegas = the slot machine style, Classic = the cards. Same game and odds, only the look, words and sounds change.
@@ -681,7 +685,7 @@ const faceHTML=c=>'<div class="face"><i>'+c+'</i><b class="sym on">'+c+'</b><u>'
 function drawReel(i){const s=strips[i],el=reelEls[i],strip=el.querySelector('.strip');
   strip.style.transition='none';strip.style.transform='translateY(calc(var(--t)*-.2))';
   strip.innerHTML=vegas?symHTML(s[0])+symHTML(line[i],true)+symHTML(s[2]):faceHTML(line[i]);el.classList.remove('spin','down')}
-function paint(){const lit=spun&&!over;if(!vegas&&spins===0&&!spinning)reelEls.forEach(el=>el.classList.add('down'));   // before the first deal the cards are face down
+function paint(){const lit=spun&&!over;if(!over&&$('overHub'))$('overHub').hidden=true;if(!vegas&&spins===0&&!spinning)reelEls.forEach(el=>el.classList.add('down'));   // before the first deal the cards are face down
 const HH=bestHint();reelEls.forEach((el,i)=>el.classList.toggle('hint',!!HH&&HH.h[i]===1&&!locked(i)));$('reels').classList.toggle('bonus',!!pend);
   reelEls.forEach((el,i)=>{const h=lit?hold[i]:0;el.classList.toggle('sel',h===1);
     el.querySelector('.tag').hidden=h!==1;el.querySelector('.tag span').textContent=V('HELD','🔒')});
@@ -867,7 +871,7 @@ async function showDef(w){if(!w)return;$('defW').textContent=w;const T=$('defT')
 $('defOk').onclick=()=>{$('def').hidden=true};$('def').onclick=e=>{if(e.target.id==='def')$('def').hidden=true};
 $('dAgain').onclick=()=>{$('done').hidden=true;startMode('replay',true)};
 $('dPlus').onclick=()=>{$('done').hidden=true;startMode('plus',true)};
-$('dClose').onclick=()=>$('done').hidden=true;
+$('dClose').onclick=()=>{$('done').hidden=true;if($('overHub'))$('overHub').hidden=!over};
 // "More smAisle games" row on the finish popup, from smaisle.app/daily/games.js (website only; hidden elsewhere)
 function moreGames(){const S=window.SMAISLE;if(!S||!S.games||$('dMoreI').childElementCount)return;
   const g=S.games.filter(x=>x.id!=='gr'&&x.icon&&x.url);if(!g.length)return;
