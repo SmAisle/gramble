@@ -72,3 +72,6 @@ New demo: Try it with a coach. Replaces the old 8-step walkthrough.
 
 ## v10.30 (Nov 4)
 Finished game: the yellow ‹ smAisle Daily button moved up beside Share on the results popup, so it shows without scrolling on small phones, and it also appears on the finished table after See the table. Website and app, not the Claude copy.
+
+## v10.31 (Nov 5)
+The 💡 hints on the first 2 words now run only in a player's first game, not every game (change #39, replaces #37).
